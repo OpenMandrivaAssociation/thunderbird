@@ -56,7 +56,7 @@
 %define nss_libname %mklibname nss 3
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
-Name:		mozilla-thunderbird
+Name:		thunderbird
 Version:	12.0.1
 Release:	%{release}
 Summary:	Full-featured email, RSS, and newsgroup client
@@ -71,7 +71,7 @@ Source31:       mozilla-thunderbird-open-browser-xdg.sh
 # Mandriva sources (Source300+)
 Source300:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz
 Source301:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz.asc
-Source302:      %{name}-icons.tar.bz2
+Source302:      %{name}-icons.tar.gz
 # Language package template
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 # Build patches
@@ -135,56 +135,12 @@ Requires(post,postun):	desktop-file-utils
 Requires(post):	mktemp
 Requires(post,postun): rpm-helper
 Requires: xdg-utils
+Obsoletes: mozilla-thunderbird < %{version}-%{release}
+Provides: mozilla-thunderbird = %{version}-%{release}
 
 %description
 %{title} is a full-featured email, RSS and newsgroup client that
 makes emailing safer, faster and easier than ever before.
-
-#===============================================================================
-
-%package enigmail
-Summary:        Access the authentication and encryption features provided by GnuPG
-Group:          Networking/Mail
-Requires:       %{name} >= %{version}
-Requires:       gnupg
-Requires(post,preun): %{name} >= %{version}
-Requires(post,postun):	mktemp
-# Bug #35180
-Suggests:	pinentry-gtk
-
-%description enigmail
-Enigmail is an extension to the mail client of %{title}
-which allows users to access the authentication and encryption
-features provided by GnuPG.
-
-Main Features
-
-    * Encrypt/sign mail when sending, decrypt/authenticate received
-      mail
-    * Support for inline-PGP (RFC 2440) and PGP/MIME (RFC 3156)
-    * Per-Account based encryption and signing defaults
-    * Per-Recipient rules for automated key selection, and
-      enabling/disabling encryption and signing
-    * OpenPGP key management interface
-
-#===============================================================================
-
-%package -n nsinstall
-Summary:        Netscape portable install command
-Group:          Development/Other
-
-%description -n nsinstall
-Netscape portable install command.
-
-#===============================================================================
-%package lightning
-Summary:	Calendar extension for Thunderbird
-Group:		Networking/Mail
-URL:		http://www.mozilla.org/projects/calendar/lightning/
-Requires:	%{name} >= %{version}
-
-%description lightning
-Calendar extension for Thunderbird.
 
 #===============================================================================
 # enigmail-l10n
@@ -275,6 +231,62 @@ Calendar extension for Thunderbird.
 	done\
 	)
 }
+
+#===============================================================================
+
+%package enigmail
+Summary:        Access the authentication and encryption features provided by GnuPG
+Group:          Networking/Mail
+Requires:       %{name} >= %{version}
+Requires:       gnupg
+Requires(post,preun): %{name} >= %{version}
+Requires(post,postun):	mktemp
+# Bug #35180
+Suggests:	pinentry-gtk
+Obsoletes:	mozilla-thunderbird-enigmail < %{version}-%{release}
+Provides:	mozilla-thunderbird-enigmail = %{version}-%{release}
+%(for lang in %l10n_langlist %disabled_l10n_langlist; do
+    echo "Obsoletes: mozilla-thunderbird-enigmail-$lang < %{version}-%{release}"
+    echo "Obsoletes: mozilla-thunderbird-enigmail-l10n-$lang < %{version}-%{release}"
+done)
+
+%description enigmail
+Enigmail is an extension to the mail client of %{title}
+which allows users to access the authentication and encryption
+features provided by GnuPG.
+
+Main Features
+
+    * Encrypt/sign mail when sending, decrypt/authenticate received
+      mail
+    * Support for inline-PGP (RFC 2440) and PGP/MIME (RFC 3156)
+    * Per-Account based encryption and signing defaults
+    * Per-Recipient rules for automated key selection, and
+      enabling/disabling encryption and signing
+    * OpenPGP key management interface
+
+#===============================================================================
+
+%package -n nsinstall
+Summary:        Netscape portable install command
+Group:          Development/Other
+
+%description -n nsinstall
+Netscape portable install command.
+
+#===============================================================================
+%package lightning
+Summary:	Calendar extension for Thunderbird
+Group:		Networking/Mail
+URL:		http://www.mozilla.org/projects/calendar/lightning/
+Requires:	%{name} >= %{version}
+Obsoletes:	mozilla-thunderbird-lightning < %{version}-%{release}
+Provides:	mozilla-thunderbird-lightning = %{version}-%{release}
+
+%description lightning
+Calendar extension for Thunderbird.
+
+
 #===============================================================================
 
 %prep
@@ -449,7 +461,7 @@ GenericName=Mail/News
 Comment=Mail and News Client
 Comment[ru]=Почтовый клиент и клиент новостей
 Exec=%{name}
-Icon=mozilla-thunderbird
+Icon=thunderbird
 Terminal=false
 Type=Application
 StartupWMClass=Thunderbird-bin
