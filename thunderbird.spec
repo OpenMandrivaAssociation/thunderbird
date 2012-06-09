@@ -30,8 +30,8 @@
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
 
 %define xpi 0
-%define enigmail_version 1.4.1
-%define enigmail_short_version 1.4
+%define enigmail_version 1.4.2
+%define enigmail_short_version 1.5
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
 %define _provides_exceptions libgtkembedmoz.so\\|libxpcom.so
