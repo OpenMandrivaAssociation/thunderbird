@@ -57,7 +57,7 @@
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
 Name:		thunderbird
-Version:	12.0.1
+Version:	13.0
 Release:	%{release}
 Summary:	Full-featured email, RSS, and newsgroup client
 License:	MPL
@@ -77,6 +77,9 @@ Source303:	thunderbird.desktop
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 # Build patches
 Patch2:         mozilla-firefox-1.0-prdtoa.patch
+Patch3:		thunderbird-13.0-buildfix.patch
+Patch4:		firefox-13-fix-nspr-include.patch
+Patch5:		firefox-13-fix-cairo-build.patch
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
@@ -298,6 +301,12 @@ Calendar extension for Thunderbird.
 %setup -q -T -D -n %{name}-%{version}/comm-release
 
 %patch2 -p0
+
+pushd mozilla
+%patch3 -p0
+%patch4 -p1
+%patch5 -p1
+popd
 
 %patch201 -p2 -b .default_mail
 
