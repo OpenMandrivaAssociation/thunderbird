@@ -94,9 +94,6 @@ Patch304:       mozilla-thunderbird-run-mozilla.patch
 Patch400:	thunderbird-appname.patch
 Patch401:	mozilla-thunderbird-10.0.1-no_optimization_override.diff
 
-# https://bugzilla.mozilla.org/show_bug.cgi?id=722975
-Patch500: firefox_add_ifdefs_to_gfx_thebes_gfxPlatform.cpp.patch
-
 %if %{official_branding}
 BuildRequires:	imagemagick
 %endif
@@ -316,7 +313,6 @@ popd
 
 %patch400 -p1 -b .appname
 %patch401 -p0 -b .no_optimization_override
-%patch500 -p1
 
 #===============================================================================
 # Enigmail
@@ -466,11 +462,6 @@ install -p -D %{SOURCE302} %{buildroot}%{_datadir}/pixmaps/%{name}.png
 %{__install} -p -D %{SOURCE303} %{buildroot}/%{_datadir}/applications/mandriva-%{name}.desktop
 
 # set up the thunderbird start script
-(cd %{buildroot}%{_bindir} && %{__ln_s} thunderbird %{name})
-
-%{__perl} -pi -e 's|^moz_libdir=.*|moz_libdir=%{tbdir}|' %{buildroot}%{_bindir}/thunderbird
-%{__perl} -pi -e 's|^MRE_HOME=.*|MRE_HOME=%{tbdir}|' %{buildroot}%{_bindir}/thunderbird
-
 # For backwards compatibility with old profiles. Bug #37528
 install -m 755 %{SOURCE31} %{buildroot}%{tbdir}/open-browser.sh
 # For new profiles
@@ -638,7 +629,6 @@ fi
 
 %files
 %doc mozilla/LEGAL
-%attr(755,root,root) %{_bindir}/mozilla-thunderbird
 %attr(755,root,root) %{_bindir}/thunderbird
 %attr(644,root,root) %{_datadir}/applications/*.desktop
 %attr(644,root,root) %{_datadir}/pixmaps/%{name}.png
