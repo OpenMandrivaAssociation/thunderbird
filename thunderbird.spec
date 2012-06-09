@@ -72,6 +72,7 @@ Source31:       mozilla-thunderbird-open-browser-xdg.sh
 Source300:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz
 Source301:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz.asc
 Source302:      %{name}-icons.tar.gz
+Source303:	thunderbird.desktop
 # Language package template
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 # Build patches
@@ -453,21 +454,7 @@ install -p -D %{buildroot}/%{tbdir}/chrome/icons/default/default256.png %{buildr
 install -p -D %{SOURCE302} %{buildroot}%{_datadir}/pixmaps/%{name}.png
 %endif
 
-cat << EOF > %{buildroot}/%{_datadir}/applications/mandriva-%{name}.desktop
-[Desktop Entry]
-Version=1.0
-Name=%{title}
-GenericName=Mail/News
-Comment=Mail and News Client
-Comment[ru]=Почтовый клиент и клиент новостей
-Exec=%{name}
-Icon=thunderbird
-Terminal=false
-Type=Application
-StartupWMClass=Thunderbird-bin
-MimeType=message/rfc822;x-scheme-handler/mailto;
-Categories=GTK;Network;News;Email;X-MandrivaLinux-CrossDesktop;
-EOF
+%{__install} -p -D %{SOURCE303} %{buildroot}/%{_datadir}/applications/mandriva-%{name}.desktop
 
 # set up the thunderbird start script
 (cd %{buildroot}%{_bindir} && %{__ln_s} thunderbird %{name})
