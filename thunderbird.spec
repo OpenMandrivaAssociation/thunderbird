@@ -57,7 +57,7 @@
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
 Name:		thunderbird
-Version:	13.0
+Version:	14.0
 Release:	%{release}
 Summary:	Full-featured email, RSS, and newsgroup client
 License:	MPL
@@ -78,8 +78,6 @@ Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 # Build patches
 Patch2:         mozilla-firefox-1.0-prdtoa.patch
 Patch3:		thunderbird-13.0-buildfix.patch
-Patch4:		firefox-13-fix-nspr-include.patch
-Patch5:		firefox-13-fix-cairo-build.patch
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
@@ -301,8 +299,6 @@ Calendar extension for Thunderbird.
 
 pushd mozilla
 %patch3 -p0
-%patch4 -p1
-%patch5 -p1
 popd
 
 %patch201 -p2 -b .default_mail
@@ -409,7 +405,7 @@ MOZ_SMP_FLAGS=-j1
 %endif
 
 export LDFLAGS="%{ldflags}"
-make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS"
+make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_PKG_FATAL_WARNINGS=0
 
 #===============================================================================
 
@@ -448,7 +444,7 @@ mkdir -p %buildroot%tbdir
 
 rm -f extensions/spellcheck/locales/en-US/hunspell/en-US.{dic,aff}
 
-%makeinstall_std STRIP=/bin/true
+%makeinstall_std STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0
 
 rm -rf %buildroot%tbdir/dictionaries
 ln -s /usr/share/dict/mozilla %buildroot%tbdir/dictionaries
