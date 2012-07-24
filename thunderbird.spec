@@ -297,9 +297,7 @@ Calendar extension for Thunderbird.
 
 %patch2 -p0
 
-pushd mozilla
 %patch3 -p0
-popd
 
 %patch201 -p2 -b .default_mail
 
