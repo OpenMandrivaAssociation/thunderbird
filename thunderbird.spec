@@ -77,8 +77,8 @@ Source303:	thunderbird.desktop
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 # Build patches
 Patch2:         mozilla-firefox-1.0-prdtoa.patch
-Patch3:		thunderbird-13.0-buildfix.patch
-Patch5:		firefox-13-fix-cairo-build.patch
+Patch3:		iceape-2.12-system-virtualenv.patch
+Patch5:		thunderbird-15-fix-cairo-build.patch
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
@@ -297,8 +297,7 @@ Calendar extension for Thunderbird.
 %setup -q -T -D -n %{name}-%{version}/comm-release
 
 %patch2 -p0
-
-%patch3 -p0
+%patch3 -p1
 
 pushd mozilla
 %patch5 -p1
@@ -431,6 +430,7 @@ pushd mozilla/extensions/enigmail
  %{__perl} -pi -e 's|es-AR/enigmail.properties|es-ES/enigmail.properties|' jar.mn
  echo 'zh-TW' >> current-languages.txt
  make
+ chmod 0755 ./make-lang.sh
  for i in `cat current-languages.txt`; do
    ./make-lang.sh $i %{enigmail_short_version}
  done
