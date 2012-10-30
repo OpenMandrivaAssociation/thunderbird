@@ -78,6 +78,7 @@ Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 # Build patches
 Patch2:         mozilla-firefox-1.0-prdtoa.patch
 Patch3:		iceape-2.12-system-virtualenv.patch
+Patch4:		thunderbird-16.0.1-bytecode_fix.patch
 Patch5:		thunderbird-15-fix-cairo-build.patch
 # Debian patches (Patch200+)
 #
@@ -299,6 +300,7 @@ Calendar extension for Thunderbird.
 
 %patch2 -p0
 %patch3 -p1
+%patch4 -p0
 
 pushd mozilla
 %patch5 -p1
