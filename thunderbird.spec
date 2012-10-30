@@ -30,7 +30,7 @@
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
 
 %define xpi 0
-%define enigmail_version 1.4.2
+%define enigmail_version 1.4.5
 %define enigmail_short_version 1.5
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
@@ -57,7 +57,7 @@
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
 Name:		thunderbird
-Version:	14.0
+Version:	16.0.2
 Release:	%{release}
 Summary:	Full-featured email, RSS, and newsgroup client
 License:	MPL
