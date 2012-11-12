@@ -1,0 +1,11 @@
+--- ./comm-miramar/mail/app/profile/all-thunderbird.js.default_mail	2011-08-10 11:49:57.772406773 -0300
++++ ./comm-miramar/mail/app/profile/all-thunderbird.js	2011-08-10 11:50:04.827491258 -0300
+@@ -177,7 +177,7 @@ pref("lightweightThemes.update.enabled",
+ pref("general.autoScroll", true);
+ #endif
+ 
+-pref("mail.shell.checkDefaultClient", true);
++pref("mail.shell.checkDefaultClient", false);
+ pref("mail.spellcheck.inline", true);
+ 
+ pref("mail.biff.alert.show_preview", true);

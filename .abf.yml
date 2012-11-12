@@ -1,0 +1,11 @@
+sources:
+  "enigmail-1.4.5.tar.gz:"	16d0450a9f5fb4de0e9cc5b9f8091dce4b070aaf
+  "enigmail-1.4.5.tar.gz.asc:"	0a25dc290ed26b67b3f1e19ba867adbb73d1b804
+  "mozilla-thunderbird-enigmail-l10n-template.in:"	6bdac4a61062358e9669d06a75b0b814618e2dfa
+  "mozilla-thunderbird-mandriva-default-prefs.js:"	2a8d9ea8d69708287191216326e2daca2dafebec
+  "mozilla-thunderbird-open-browser.sh:"	7ab5059db45ea58fc3e0ffa84351d0eeb9cf357b
+  "mozilla-thunderbird-open-browser-xdg.sh:"	d34f507dbedf86035454e8db1ecd9875b2d2a936
+  "thunderbird-16.0.2.source.tar.bz2:"	842d852b31a388d4cf3ac59bc89e8611474e2ec7
+  "thunderbird-16.0.2.source.tar.bz2.asc:"	af2b8b20ea1be293022cb30397add7a3b9505ba1
+  "thunderbird.desktop:"	ed5d91dfb22cce78e5b609cc5ba7612d167cac45
+  "thunderbird-icons.tar.gz:"	e6eb5edbe72c579cdaec9fdc29c2fc81535d609c

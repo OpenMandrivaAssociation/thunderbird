@@ -1,0 +1,14 @@
+Index: mozilla/extensions/enigmail/build/nsEnigModule.cpp
+===================================================================
+--- mozilla/extensions/enigmail/build/nsEnigModule.cpp
++++ mozilla/extensions/enigmail/build/nsEnigModule.cpp	2009-07-28 17:09:02.000000000 +0200
+@@ -39,7 +39,9 @@
+ #include "nsCOMPtr.h"
+ 
+ #include "nsIFactory.h"
++#pragma GCC visibility push(default)
+ #include "nsIGenericFactory.h"
++#pragma GCC visibility pop
+ #include "nsIServiceManager.h"
+ #include "nsIModule.h"
+ 

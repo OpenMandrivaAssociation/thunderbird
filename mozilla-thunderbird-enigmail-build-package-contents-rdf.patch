@@ -1,0 +1,11 @@
+--- mozilla/extensions/enigmail/build/package/contents.rdf.orig	2005-01-16 01:56:19.000000000 +0000
++++ mozilla/extensions/enigmail/build/package/contents.rdf	2005-01-16 01:56:47.000000000 +0000
+@@ -13,7 +13,7 @@
+         chrome:author="Team Enigmail"
+         chrome:authorURL="http://enigmail.mozdev.org/"
+         chrome:name="enigmime"
+-        chrome:extension="true"
++        chrome:extension="false"
+         chrome:description="This is the platform dependent part of the Enigmail extension.">
+   </RDF:Description>
+ </RDF:RDF>
