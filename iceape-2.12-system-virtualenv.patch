@@ -4,7 +4,7 @@
  AC_MSG_RESULT([Creating Python virtualenv])
  rm -rf _virtualenv
  mkdir -p _virtualenv
--MACOSX_DEPLOYMENT_TARGET= PYTHONDONTWRITEBYTECODE= $PYTHON $_topsrcdir/other-licenses/virtualenv/virtualenv.py --system-site-packages ./_virtualenv
+-MACOSX_DEPLOYMENT_TARGET= PYTHONDONTWRITEBYTECODE= $PYTHON $_topsrcdir/python/virtualenv/virtualenv.py --system-site-packages ./_virtualenv
 +MACOSX_DEPLOYMENT_TARGET= PYTHONDONTWRITEBYTECODE= /usr/bin/virtualenv -v --system-site-packages ./_virtualenv && find _virtualenv
  case "$host_os" in
  mingw*)
