@@ -110,7 +110,7 @@ BuildRequires:	python-virtualenv
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
-#BuildRequires:	pkgconfig(gl)
+BuildRequires:	pkgconfig(gl)
 BuildRequires:	pkgconfig(gtk+-2.0)
 BuildRequires:	pkgconfig(hunspell)
 BuildRequires:	pkgconfig(libevent) >= 1.4.7
