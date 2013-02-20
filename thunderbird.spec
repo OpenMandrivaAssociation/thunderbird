@@ -295,7 +295,7 @@ Calendar extension for Thunderbird.
 
 #===================
 # Thunderbird itself
-%setup -q -T -D -n %{name}-%{version}/comm-release
+%setup -q -T -D -n %{name}-%{version}/comm-esr17
 
 %patch2 -p0
 %patch3 -p1
@@ -315,17 +315,17 @@ popd
 
 #===============================================================================
 # Enigmail
-%setup -q -T -D -n %{name}-%{version}/comm-release/mozilla/extensions -a300
+%setup -q -T -D -n %{name}-%{version}/comm-esr17/mozilla/extensions -a300
 %if 0
 %patch212 -p2 -b .enigmail-ui-content-contents-rdf
 %patch213 -p2 -b .enigmail-build-package-contents-rdf
 %endif
 
 %if !%{official_branding}
-%setup -q -T -D -n %{name}-%{version}/comm-release -a302
+%setup -q -T -D -n %{name}-%{version}/comm-esr17 -a302
 %endif
 
-%setup -q -T -D -n %{name}-%{version}/comm-release
+%setup -q -T -D -n %{name}-%{version}/comm-esr17
 
 #===============================================================================
 
