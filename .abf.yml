@@ -3,7 +3,7 @@ removed_sources:
 sources:
   enigmail-1.5.1.tar.gz: fec4c169731a9f0f47d1e443ea6f427196f759a7
   enigmail-1.5.1.tar.gz.asc: f6a182eac1e42ccb865558acae925da6b4c401a4
-  thunderbird-17.0.4esr.source.tar.bz2: a60453c7264ae60ab45e8c20d0a613d899678d38
+  thunderbird-17.0.4esr.source.tar.bz2: 6c90382a97ee671fbf5f9f83f086de282bde7958
   thunderbird-17.0.4esr.source.tar.bz2.asc: a54c86e7457f126b7825222420b2edc0fcc45dea
   mozilla-thunderbird-mandriva-default-prefs.js: 2a8d9ea8d69708287191216326e2daca2dafebec
   mozilla-thunderbird-enigmail-l10n-template.in: 6bdac4a61062358e9669d06a75b0b814618e2dfa
