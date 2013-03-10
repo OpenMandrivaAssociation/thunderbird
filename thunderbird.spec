@@ -57,14 +57,14 @@
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
 Name:		thunderbird
-Version:	17.0.3
+Version:	17.0.4
 Release:	%{release}
 Summary:	Full-featured email, RSS, and newsgroup client
 License:	MPL
 Group:		Networking/Mail
 URL:		http://www.mozillamessaging.com/
-Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.bz2
-Source1:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.bz2.asc
+Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}esr.source.tar.bz2
+Source1:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}esr.source.tar.bz2.asc
 Source12:       mozilla-thunderbird-mandriva-default-prefs.js
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
