@@ -57,7 +57,7 @@
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
 Name:		thunderbird
-Version:	17.0.4
+Version:	17.0.5
 Release:	%{release}
 Summary:	Full-featured email, RSS, and newsgroup client
 License:	MPL
