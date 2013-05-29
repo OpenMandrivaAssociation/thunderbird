@@ -3,15 +3,6 @@
 
 %define official_branding 1
 
-%if %mandriva_branch == Cooker
-# Cooker
-%define release 1
-%else
-# Old distros
-%define subrel 1
-%define release %mkrel 0
-%endif
-
 %if %mdkversion >= 201200
 # rpmlint just sucks!!!
 %define _build_pkgcheck_set %{nil}
@@ -56,13 +47,13 @@
 %define nss_libname %mklibname nss 3
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
+Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	17.0.6
-Release:	%{release}
-Summary:	Full-featured email, RSS, and newsgroup client
+Release:	2
 License:	MPL
 Group:		Networking/Mail
-URL:		http://www.mozillamessaging.com/
+Url:		http://www.mozillamessaging.com/
 Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}esr.source.tar.bz2
 Source1:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}esr.source.tar.bz2.asc
 Source12:       mozilla-thunderbird-mandriva-default-prefs.js
