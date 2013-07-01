@@ -49,8 +49,8 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	17.0.6
-Release:	2
+Version:	17.0.7
+Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
