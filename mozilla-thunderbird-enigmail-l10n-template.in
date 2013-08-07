@@ -1,0 +1,19 @@
+%package -n mozilla-thunderbird-enigmail-__LANG__
+Summary:	%{langname___LANG__} interface for Enigmail
+License:	GPL
+Group:		Networking/Mail
+Url:		http://www.mozilla.org/products/thunderbird/
+Requires:	mozilla-thunderbird-enigmail = %{version}
+Requires:	locales-%{locale___LANG__}
+%if %mdkversion >= 201000
+BuildArch:	noarch
+%endif
+Obsoletes:	mozilla-thunderbird-enigmail-l10n-__LANG__
+Obsoletes:	mozilla-thunderbird-enigmail-__LANG__ < %{version}-%{release}
+
+%description -n mozilla-thunderbird-enigmail-__LANG__
+%{langname___LANG__} localization for Enigmail
+
+%files -n mozilla-thunderbird-enigmail-__LANG__
+%defattr(644,root,root,755)
+%{_datadir}/mozilla/extensions/%{tb_appid}/enigmail-__LANG__@enigmail.mozdev.org
