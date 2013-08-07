@@ -5,10 +5,6 @@ sources:
   enigmail-1.5.1.tar.gz.asc: f6a182eac1e42ccb865558acae925da6b4c401a4
   thunderbird-17.0.7esr.source.tar.bz2: 4fbfa738e43d67022a6b426ebb26efb86ec2c52a
   thunderbird-17.0.7esr.source.tar.bz2.asc: 708c7505e7f8ca6cd9c23a1652c239205cf92316
-  mozilla-thunderbird-mandriva-default-prefs.js: 2a8d9ea8d69708287191216326e2daca2dafebec
-  mozilla-thunderbird-enigmail-l10n-template.in: 6bdac4a61062358e9669d06a75b0b814618e2dfa
-  mozilla-thunderbird-open-browser.sh: 7ab5059db45ea58fc3e0ffa84351d0eeb9cf357b
-  mozilla-thunderbird-open-browser-xdg.sh: d34f507dbedf86035454e8db1ecd9875b2d2a936
-  thunderbird.desktop: ed5d91dfb22cce78e5b609cc5ba7612d167cac45
+  thunderbird-17.0.8.source.tar.bz2: 4bcbb33f0b3ea050e805723680b5669d80438812
+  thunderbird-17.0.8.source.tar.bz2.asc: 263b268570d083f10773c7d8b11da23c8924a97a
   thunderbird-icons.tar.gz: e6eb5edbe72c579cdaec9fdc29c2fc81535d609c
-
