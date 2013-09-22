@@ -1,10 +1,6 @@
-removed_sources:
-  enigmail-1.4.5.tar.gz: 16d0450a9f5fb4de0e9cc5b9f8091dce4b070aaf
 sources:
   enigmail-1.5.1.tar.gz: fec4c169731a9f0f47d1e443ea6f427196f759a7
   enigmail-1.5.1.tar.gz.asc: f6a182eac1e42ccb865558acae925da6b4c401a4
-  thunderbird-17.0.7esr.source.tar.bz2: 4fbfa738e43d67022a6b426ebb26efb86ec2c52a
-  thunderbird-17.0.7esr.source.tar.bz2.asc: 708c7505e7f8ca6cd9c23a1652c239205cf92316
-  thunderbird-17.0.8.source.tar.bz2: 4bcbb33f0b3ea050e805723680b5669d80438812
-  thunderbird-17.0.8.source.tar.bz2.asc: 263b268570d083f10773c7d8b11da23c8924a97a
+  thunderbird-17.0.9esr.source.tar.bz2: c7f64c895ef8d815cee023876e81a71d0e4868a1
+  thunderbird-17.0.9esr.source.tar.bz2.asc: dadb4239ced6d1034a614d2a2bb5d916d15a7996
   thunderbird-icons.tar.gz: e6eb5edbe72c579cdaec9fdc29c2fc81535d609c

@@ -49,7 +49,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	17.0.8
+Version:	17.0.9
 Release:	1
 License:	MPL
 Group:		Networking/Mail
