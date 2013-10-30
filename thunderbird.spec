@@ -21,8 +21,8 @@
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
 
 %define xpi 0
-%define enigmail_version 1.5.1
-%define enigmail_short_version 1.5
+%define enigmail_version 1.6
+%define enigmail_short_version 1.6
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
 %define _provides_exceptions libgtkembedmoz.so\\|libxpcom.so
@@ -49,7 +49,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	17.0.9
+Version:	17.0.10
 Release:	1
 License:	MPL
 Group:		Networking/Mail
