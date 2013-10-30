@@ -1,6 +1,6 @@
 sources:
-  enigmail-1.6.tar.gz: 51a7eb7d86ce24d8199f741a0079f0d56ecd6368
-  enigmail-1.6.tar.gz.asc: f26f8dd96c8b52699ce2ef84058694d815dca8b9
+  enigmail-1.5.2.tar.gz: 6f9d3be09e3858cfa65795389aa4d79ec2d1a4a9
+  enigmail-1.5.2.tar.gz.asc: d03034165969a39659418e9d8d07aea10935a3b0
   thunderbird-17.0.10esr.source.tar.bz2: 7776c1086f185904d3cc02a73b114967cb8bd0fe
   thunderbird-17.0.10esr.source.tar.bz2.asc: 8869834506841c11477883d5fb12cc1da098762b
   thunderbird-icons.tar.gz: e6eb5edbe72c579cdaec9fdc29c2fc81535d609c
