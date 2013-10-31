@@ -21,8 +21,8 @@
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
 
 %define xpi 0
-%define enigmail_version 1.5.2
-%define enigmail_short_version 1.5
+%define enigmail_version 1.6
+%define enigmail_short_version 1.6
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
 %define _provides_exceptions libgtkembedmoz.so\\|libxpcom.so
@@ -50,7 +50,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	17.0.10
-Release:	1
+Release:	2
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -234,7 +234,7 @@ Requires:       gnupg
 Requires(post,preun): %{name} >= %{version}
 Requires(post,postun):	mktemp
 # Bug #35180
-Suggests:	pinentry-gtk
+Suggests:	pinentry-gtk2
 Obsoletes:	mozilla-thunderbird-enigmail < %{version}-%{release}
 Provides:	mozilla-thunderbird-enigmail = %{version}-%{release}
 %(for lang in %l10n_langlist %disabled_l10n_langlist; do
