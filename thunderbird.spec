@@ -416,7 +416,7 @@ done
 popd
 
 pushd mozilla/extensions/enigmail
-%make
+make
 
 (cd lang
  %{__perl} -pi -e 's|es-AR/enigmail.properties|es-ES/enigmail.properties|' jar.mn
