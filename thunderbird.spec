@@ -49,13 +49,13 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	17.0.10
-Release:	6
+Version:	24.2.0
+Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
-Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}esr.source.tar.bz2
-Source1:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}esr.source.tar.bz2.asc
+Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.bz2
+Source1:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.bz2.asc
 Source12:       mozilla-thunderbird-mandriva-default-prefs.js
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
@@ -68,8 +68,6 @@ Source303:	thunderbird.desktop
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 # Build patches
 Patch2:         mozilla-firefox-1.0-prdtoa.patch
-Patch3:		iceape-2.12-system-virtualenv.patch
-Patch5:		thunderbird-15-fix-cairo-build.patch
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
@@ -286,14 +284,9 @@ Calendar extension for Thunderbird.
 
 #===================
 # Thunderbird itself
-%setup -q -T -D -n %{name}-%{version}/comm-esr17
+%setup -q -T -D -n %{name}-%{version}/comm-esr24
 
 %patch2 -p0
-%patch3 -p1
-
-pushd mozilla
-%patch5 -p1
-popd
 
 %patch201 -p2 -b .default_mail
 
@@ -306,17 +299,17 @@ popd
 
 #===============================================================================
 # Enigmail
-%setup -q -T -D -n %{name}-%{version}/comm-esr17/mozilla/extensions -a300
+%setup -q -T -D -n %{name}-%{version}/comm-esr24/mozilla/extensions -a300
 %if 0
 %patch212 -p2 -b .enigmail-ui-content-contents-rdf
 %patch213 -p2 -b .enigmail-build-package-contents-rdf
 %endif
 
 %if !%{official_branding}
-%setup -q -T -D -n %{name}-%{version}/comm-esr17 -a302
+%setup -q -T -D -n %{name}-%{version}/comm-esr24 -a302
 %endif
 
-%setup -q -T -D -n %{name}-%{version}/comm-esr17
+%setup -q -T -D -n %{name}-%{version}/comm-esr24
 
 #===============================================================================
 
