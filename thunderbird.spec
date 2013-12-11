@@ -80,7 +80,6 @@ Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 Patch400:	thunderbird-appname.patch
-Patch401:	mozilla-thunderbird-10.0.1-no_optimization_override.diff
 
 %if %{official_branding}
 BuildRequires:	imagemagick
@@ -295,7 +294,6 @@ Calendar extension for Thunderbird.
 %patch304 -p0 -b .run-mozilla
 
 %patch400 -p1 -b .appname
-%patch401 -p0 -b .no_optimization_override
 
 #===============================================================================
 # Enigmail
