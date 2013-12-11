@@ -317,7 +317,7 @@ cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
 #mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/objdir
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
 ac_add_options --sysconfdir="%{_sysconfdir}"
@@ -406,7 +406,7 @@ done
 ./makemake -r
 popd
 
-pushd mozilla/extensions/enigmail
+pushd objdir/mozilla/extensions/enigmail
 make
 
 (cd lang
@@ -491,11 +491,11 @@ install -m 644 %{name}-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/app
 mkdir -p %{buildroot}%{tbextdir}/%{enigmail_id}
 %if !%{xpi}
 # MD this is odd, the short version here is 1.5 but the rest of the files still contain 1.4
-#{_bindir}/unzip -q mozilla/dist/bin/enigmail-%{enigmail_short_version}*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
-%{_bindir}/unzip -q mozilla/dist/bin/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
+#{_bindir}/unzip -q objdir/mozilla/dist/bin/enigmail-%{enigmail_short_version}*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
+%{_bindir}/unzip -q objdir/mozilla/dist/bin/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
 %{__chmod} 644 %{buildroot}%{tbextdir}/%{enigmail_id}/chrome.manifest
 %else
-cp -aL mozilla/dist/bin/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
+cp -aL objdir/mozilla/dist/bin/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
 %endif
 
 #==============================================================================
@@ -504,7 +504,7 @@ cp -aL mozilla/dist/bin/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tb
 %{expand:%(for lang in %langlist; do echo "language_$lang=%%{language_$lang}"; done)}
 %{expand:%(for lang in %langlist; do echo "with_$lang=%%{with $lang}"; done)}
 %{expand:%(for lang in %l10n_langlist; do echo "l10n_$lang=%%{l10n_$lang}"; done)}
-pushd mozilla/extensions/enigmail/lang
+pushd objdir/mozilla/extensions/enigmail/lang
  for lang in %langlist; do
     mkdir -p %{buildroot}%{_datadir}/mozilla/extensions/%{tb_appid}/enigmail-$lang@enigmail.mozdev.org
     language="language_$lang"
@@ -525,7 +525,7 @@ popd
 
 #===============================================================================
 
-cp -aL mozilla/dist/bin/nsinstall %{buildroot}%{_bindir}
+cp -aL objdir/mozilla/dist/bin/nsinstall %{buildroot}%{_bindir}
 
 #==============================================================================
 #exclude devel files
