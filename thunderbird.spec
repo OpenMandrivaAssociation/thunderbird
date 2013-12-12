@@ -415,9 +415,6 @@ popd
 
 pushd mozilla/extensions/enigmail
 (cd lang
- %{__perl} -pi -e 's|es-AR/enigmail.properties|es-ES/enigmail.properties|' jar.mn
- echo 'zh-TW' >> current-languages.txt
- make
  chmod 0755 ./make-lang.sh
  for i in `cat current-languages.txt`; do
    ./make-lang.sh $i %{enigmail_short_version}
@@ -508,7 +505,7 @@ cp -aL objdir/mozilla/dist/bin/enigmail-%{enigmail_short_version}*.xpi %{buildro
 %{expand:%(for lang in %langlist; do echo "language_$lang=%%{language_$lang}"; done)}
 %{expand:%(for lang in %langlist; do echo "with_$lang=%%{with $lang}"; done)}
 %{expand:%(for lang in %l10n_langlist; do echo "l10n_$lang=%%{l10n_$lang}"; done)}
-pushd objdir/mozilla/extensions/enigmail/lang
+pushd mozilla/extensions/enigmail/lang
  for lang in %langlist; do
     mkdir -p %{buildroot}%{_datadir}/mozilla/extensions/%{tb_appid}/enigmail-$lang@enigmail.mozdev.org
     language="language_$lang"
