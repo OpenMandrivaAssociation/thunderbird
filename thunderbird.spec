@@ -431,7 +431,7 @@ mkdir -p %buildroot%tbdir
 
 rm -f extensions/spellcheck/locales/en-US/hunspell/en-US.{dic,aff}
 
-%makeinstall_std STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0
+%makeinstall_std -f client.mk STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0
 
 rm -rf %buildroot%tbdir/dictionaries
 ln -s /usr/share/dict/mozilla %buildroot%tbdir/dictionaries
