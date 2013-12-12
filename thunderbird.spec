@@ -516,7 +516,7 @@ popd
 
 #===============================================================================
 # lightning ext here
-pushd mozilla/dist/xpi-stage/
+pushd objdir/mozilla/dist/xpi-stage/
   for ext in {calendar-timezones,gdata-provider,lightning}; do
     hash="$(sed -n '/^    <em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' $ext/install.rdf)"
     mkdir -p %buildroot%{tbextdir}/$hash
