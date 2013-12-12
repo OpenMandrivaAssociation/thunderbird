@@ -409,7 +409,11 @@ popd
 
 pushd objdir/mozilla/extensions/enigmail
 make
+%make xpi
+popd
 
+
+pushd mozilla/extensions/enigmail
 (cd lang
  %{__perl} -pi -e 's|es-AR/enigmail.properties|es-ES/enigmail.properties|' jar.mn
  echo 'zh-TW' >> current-languages.txt
@@ -420,7 +424,6 @@ make
  done
 )
 
-%make xpi
 popd
 
 #===============================================================================
