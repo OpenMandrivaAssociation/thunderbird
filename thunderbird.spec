@@ -520,7 +520,7 @@ pushd objdir/mozilla/dist/xpi-stage/
   for ext in {gdata-provider,lightning}; do
     hash="$(sed -n '/^    <em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' $ext/install.rdf)"
     mkdir -p %buildroot%{tbextdir}/$hash
-    %{_bindir}/unzip -q $ext.xpi -d %buildroot%{tbextdir}/$hash/
+    %{_bindir}/unzip -q $ext-*.xpi -d %buildroot%{tbextdir}/$hash/
   done
 popd
 
