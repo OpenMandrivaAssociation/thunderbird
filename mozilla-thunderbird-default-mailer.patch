@@ -1,6 +1,6 @@
---- ./comm-miramar/mail/app/profile/all-thunderbird.js.default_mail	2011-08-10 11:49:57.772406773 -0300
-+++ ./comm-miramar/mail/app/profile/all-thunderbird.js	2011-08-10 11:50:04.827491258 -0300
-@@ -177,7 +177,7 @@ pref("lightweightThemes.update.enabled",
+--- ./comm-esr24/mail/app/profile/all-thunderbird.js.orig	2014-03-18 23:18:29.607626995 +0000
++++ ./comm-esr24/mail/app/profile/all-thunderbird.js	2014-03-18 23:18:39.476627310 +0000
+@@ -211,7 +211,7 @@
  pref("general.autoScroll", true);
  #endif
  
