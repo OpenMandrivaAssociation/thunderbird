@@ -78,6 +78,7 @@ Patch215:	mozilla-thunderbird-enigmail-visibility.patch
 Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
+Patch305:	thunderbird-24.5.0-nss_detect.patch
 # OpenSuse patches (Patch400+)
 Patch400:	thunderbird-appname.patch
 
@@ -292,6 +293,7 @@ Calendar extension for Thunderbird.
 %patch300 -p0 -b .progname
 %patch301 -p1 -b .enigmailpackage
 %patch304 -p0 -b .run-mozilla
+%patch305 -p1 -b .nss
 
 %patch400 -p1 -b .appname
 
