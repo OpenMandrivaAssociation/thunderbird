@@ -97,6 +97,7 @@ BuildRequires:	nss-static-devel >= 2:3.13.2
 BuildRequires:	python-devel
 BuildRequires:	python-virtualenv
 BuildRequires:	pkgconfig(alsa)
+BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(gl)
