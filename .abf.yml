@@ -1,7 +1,6 @@
 sources:
   enigmail-1.6.tar.gz: 51a7eb7d86ce24d8199f741a0079f0d56ecd6368
   enigmail-1.6.tar.gz.asc: f26f8dd96c8b52699ce2ef84058694d815dca8b9
-  thunderbird-24.4.0.source.tar.bz2.asc: 2f65b2a39f877765897a30f43cd0058b830e9e79
-  thunderbird-24.5.0.source.tar.bz2: d77c91c341398bb6506a588e53e0f8973f361811
-  thunderbird-24.5.0.source.tar.bz2.asc: fcb8c2b0b6077c265f5b5a69d9df2ed38ba7f73e
+  thunderbird-24.6.0.source.tar.bz2: f3b5abd9f9012c4cc4275b9b6bebd1c285e5c15a
+  thunderbird-24.6.0.source.tar.bz2.asc: 08d77c075bbd92e4b42553f7f2da834676a5d0f4
   thunderbird-icons.tar.gz: e6eb5edbe72c579cdaec9fdc29c2fc81535d609c
