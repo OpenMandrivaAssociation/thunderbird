@@ -50,7 +50,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	24.6.0
-Release:	2
+Release:	3
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
