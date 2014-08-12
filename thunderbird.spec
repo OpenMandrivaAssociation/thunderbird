@@ -49,7 +49,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	24.6.0
+Version:	24.7.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -315,6 +315,10 @@ Calendar extension for Thunderbird.
 #===============================================================================
 
 %build
+# (crisb) use gcc for now
+export CXX=g++
+export CC=gcc
+
 export MOZCONFIG=`pwd`/.mozconfig
 cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
