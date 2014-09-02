@@ -406,8 +406,8 @@ make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_PK
 
 pushd mozilla/extensions/enigmail
 %configure2_5x
-%make
-%make xpi
+%make PYTHON=python2
+%make xpi PYTHON=python2
 popd
 
 
