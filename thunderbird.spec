@@ -21,8 +21,8 @@
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
 
 %define xpi 0
-%define enigmail_version 1.6
-%define enigmail_short_version 1.6
+%define enigmail_version 1.7.2
+%define enigmail_short_version 1.7
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
 %define _provides_exceptions libgtkembedmoz.so\\|libxpcom.so
@@ -49,7 +49,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	24.7.0
+Version:	31.1.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -94,6 +94,7 @@ BuildRequires:	zip
 BuildRequires:	jpeg-devel
 BuildRequires:	libiw-devel
 BuildRequires:	nss-static-devel >= 2:3.13.2
+BuildRequires:	icu-devel
 BuildRequires:	python-devel
 BuildRequires:	python-virtualenv
 BuildRequires:	pkgconfig(alsa)
@@ -101,12 +102,13 @@ BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(gl)
-BuildRequires:  pkgconfig(gstreamer-plugins-base-0.10)
+BuildRequires:  pkgconfig(gstreamer-plugins-base-1.0)
 BuildRequires:	pkgconfig(gtk+-2.0)
 BuildRequires:	pkgconfig(hunspell)
 BuildRequires:	pkgconfig(libevent) >= 1.4.7
 BuildRequires:	pkgconfig(libIDL-2.0)
 BuildRequires:	pkgconfig(libnotify)
+BuildRequires:  pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libstartup-notification-1.0)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
@@ -115,8 +117,7 @@ BuildRequires:	pkgconfig(xft)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(vpx) >= 0.9.7
 BuildRequires:	pkgconfig(zlib)
-%if %mdkversion >= 201100
-BuildRequires:	pkgconfig(cairo) >= 1.10
+%if %mdkversion >= 201500
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
 %endif
 
@@ -285,7 +286,7 @@ Calendar extension for Thunderbird.
 
 #===================
 # Thunderbird itself
-%setup -q -T -D -n %{name}-%{version}/comm-esr24
+%setup -q -T -D -n %{name}-%{version}/comm-esr31
 
 %patch2 -p0
 
@@ -300,17 +301,17 @@ Calendar extension for Thunderbird.
 
 #===============================================================================
 # Enigmail
-%setup -q -T -D -n %{name}-%{version}/comm-esr24/mozilla/extensions -a300
+%setup -q -T -D -n %{name}-%{version}/comm-esr31/mozilla/extensions -a300
 %if 0
 %patch212 -p2 -b .enigmail-ui-content-contents-rdf
 %patch213 -p2 -b .enigmail-build-package-contents-rdf
 %endif
 
 %if !%{official_branding}
-%setup -q -T -D -n %{name}-%{version}/comm-esr24 -a302
+%setup -q -T -D -n %{name}-%{version}/comm-esr31 -a302
 %endif
 
-%setup -q -T -D -n %{name}-%{version}/comm-esr24
+%setup -q -T -D -n %{name}-%{version}/comm-esr31
 
 #===============================================================================
 
@@ -336,17 +337,17 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
+ac_add_options --with-system-icu
 ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
-%if %mdkversion >= 201100
+%if %mdkversion >= 201500
 ac_add_options --with-system-png
-ac_add_options --enable-system-cairo
+ac_add_options --enable-system-sqlite
 %else
 ac_add_options --disable-system-png
-ac_add_options --disable-system-cairo
 %endif
+ac_add_options --disable-system-cairo
 ac_add_options --with-system-bz2
-ac_add_options --enable-system-sqlite
 ac_add_options --enable-system-hunspell
 ac_add_options --with-pthreads
 ac_add_options --disable-tests
@@ -364,6 +365,7 @@ ac_add_options --enable-svg
 ac_add_options --enable-canvas
 ac_add_options --enable-crypto
 ac_add_options --enable-mathml
+ac_add_options --enable-gstreamer=1.0
 ac_add_options --disable-gnomevfs
 ac_add_options --enable-gio
 ac_add_options --enable-calendar
@@ -397,25 +399,14 @@ MOZ_SMP_FLAGS=-j1
 %endif
 
 export LDFLAGS="%{ldflags}"
+mkdir -p mozilla/objdir
 make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_PKG_FATAL_WARNINGS=0
 
 #===============================================================================
 
 pushd mozilla/extensions/enigmail
-for i in `find . -type f -name Makefile.in`; do
-    if [ -f $i.bak ]; then
-        cp $i.bak $i
-    else
-        cp $i $i.bak
-    fi
-#    %{__perl} -pi -e 's|^(DEPTH.*= )../|\1|;' $i
-done
-./makemake -r
-popd
-
-pushd objdir/mozilla/extensions/enigmail
-make
-%make xpi
+%configure2_5x
+make PYTHON=python2
 popd
 
 
@@ -497,12 +488,10 @@ install -m 644 %{name}-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/app
 
 mkdir -p %{buildroot}%{tbextdir}/%{enigmail_id}
 %if !%{xpi}
-# MD this is odd, the short version here is 1.5 but the rest of the files still contain 1.4
-#{_bindir}/unzip -q objdir/mozilla/dist/bin/enigmail-%{enigmail_short_version}*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
-%{_bindir}/unzip -q objdir/mozilla/dist/bin/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
+%{_bindir}/unzip -q mozilla/extensions/enigmail/build/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
 %{__chmod} 644 %{buildroot}%{tbextdir}/%{enigmail_id}/chrome.manifest
 %else
-cp -aL objdir/mozilla/dist/bin/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
+cp -aL mozilla/extensions/enigmail/build/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
 %endif
 
 #==============================================================================
