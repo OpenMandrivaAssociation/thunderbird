@@ -3,6 +3,6 @@ removed_sources:
 sources:
   enigmail-1.7.2.tar.gz: e72eeff5a47491267981090129b0b2594b5dc96f
   enigmail-1.7.2.tar.gz.asc: 1b01b5fe564f6777e7cb64ab38ad0ce70ee8b277
-  thunderbird-31.1.1.source.tar.bz2.asc: 9f2c5a0fbbb719d8f13a554553255d5a5ac089d7
-  thunderbird-31.1.1.source.tar.bz2: 494c8725c02f36d16839d3e11e928caa8f5267f4
+  thunderbird-31.1.2.source.tar.bz2: a3983e7d29bd70e8117ca26f5b9873c68675caa9
+  thunderbird-31.1.2.source.tar.bz2.asc: 258489ff3a3bf605efbd2039836b744a48e87c0e
   thunderbird-icons.tar.gz: e6eb5edbe72c579cdaec9fdc29c2fc81535d609c
