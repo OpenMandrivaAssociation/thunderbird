@@ -20,6 +20,8 @@
 %define tbdir %{_libdir}/%{oname}-%{version}
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
 
+%define objdir objdir
+
 %define xpi 0
 %define enigmail_version 1.7.2
 %define enigmail_short_version 1.7
@@ -68,6 +70,10 @@ Source303:	thunderbird.desktop
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 # Build patches
 Patch2:         mozilla-firefox-1.0-prdtoa.patch
+#
+# Fedora patches (Patch100+)
+#
+Patch100:	 thunderbird-objdir.patch
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
@@ -290,6 +296,7 @@ Calendar extension for Thunderbird.
 
 %patch2 -p0
 
+%patch100 -p2 -b .objdir
 %patch201 -p2 -b .default_mail
 
 %patch300 -p0 -b .progname
@@ -325,7 +332,6 @@ cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
 #mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/objdir
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
 ac_add_options --sysconfdir="%{_sysconfdir}"
@@ -399,7 +405,6 @@ MOZ_SMP_FLAGS=-j1
 %endif
 
 export LDFLAGS="%{ldflags}"
-mkdir -p mozilla/objdir
 make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_PKG_FATAL_WARNINGS=0
 
 #===============================================================================
@@ -511,7 +516,7 @@ popd
 
 #===============================================================================
 # lightning ext here
-pushd objdir/mozilla/dist/xpi-stage/
+pushd %{objdir}/mozilla/dist/xpi-stage/
   for ext in {gdata-provider,lightning}; do
     hash="$(sed -n '/^    <em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' $ext/install.rdf)"
     mkdir -p %buildroot%{tbextdir}/$hash
@@ -521,7 +526,7 @@ popd
 
 #===============================================================================
 
-cp -aL objdir/mozilla/dist/bin/nsinstall %{buildroot}%{_bindir}
+cp -aL %{objdir}/mozilla/dist/bin/nsinstall %{buildroot}%{_bindir}
 
 #==============================================================================
 #exclude devel files
