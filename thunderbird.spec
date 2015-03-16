@@ -327,6 +327,7 @@ Calendar extension for Thunderbird.
 # (tpg) clang works, just export it to be sure it is used
 export CXX=clang++
 export CC=clang
+%global optflags %optflags -Wno-null-conversion
 
 export MOZCONFIG=`pwd`/.mozconfig
 cat > $MOZCONFIG << EOF
@@ -411,7 +412,7 @@ make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_PK
 #===============================================================================
 
 pushd mozilla/extensions/enigmail
-%configure2_5x
+%configure
 make PYTHON=python2
 popd
 
