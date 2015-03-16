@@ -327,7 +327,7 @@ Calendar extension for Thunderbird.
 # (tpg) clang works, just export it to be sure it is used
 export CXX=clang++
 export CC=clang
-%global optflags %optflags -Wno-null-conversion
+%global optflags %optflags -Wno-error -Wno-null-conversion
 
 export MOZCONFIG=`pwd`/.mozconfig
 cat > $MOZCONFIG << EOF
