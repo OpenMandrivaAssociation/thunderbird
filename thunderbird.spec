@@ -52,7 +52,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	31.5.0
-Release:	1
+Release:	2
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -324,8 +324,9 @@ Calendar extension for Thunderbird.
 
 %build
 # (crisb) use gcc for now
-export CXX=g++
-export CC=gcc
+# (tpg) clang works, just export it to be sure it is used
+export CXX=clang++
+export CC=clang
 
 export MOZCONFIG=`pwd`/.mozconfig
 cat > $MOZCONFIG << EOF
