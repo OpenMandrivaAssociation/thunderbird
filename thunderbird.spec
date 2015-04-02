@@ -397,7 +397,7 @@ makes emailing safer, faster and easier than ever before.
 # --- Danger line ---
 
 # All langs
-#{expand:%%define em_langlist %(for lang in %em_l10n_langlist; do echo "$lang"; done | sort -u | sed ':a;$!N;s/\n/ /;ta')}
+%{expand:%%define em_langlist %(for lang in %em_l10n_langlist; do echo "$lang"; done | sort -u | sed ':a;$!N;s/\n/ /;ta')}
 
 # Expand all languages packages.
 %{expand:%(\
