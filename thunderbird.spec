@@ -543,7 +543,7 @@ export CC=gcc
 # (tpg) clang works, just export it to be sure it is used
 export CXX=clang++
 export CC=clang
-%global optflags %optflags -Wno-error -Wno-null-conversion
+%global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
 %endif 
 %endif
 
