@@ -399,6 +399,9 @@ makes emailing safer, faster and easier than ever before.
 # All langs
 %{expand:%%define em_langlist %(for lang in %em_l10n_langlist; do echo "$lang"; done | sort -u | sed ':a;$!N;s/\n/ /;ta')}
 
+# Locales
+%{expand:%(for lang in %em_l10n_langlist; do echo "%%define em_locale_$lang `echo $lang | cut -d _ -f 1` "; done)}
+
 # Expand all languages packages.
 %{expand:%(\
 	for lang in %em_langlist; do\
