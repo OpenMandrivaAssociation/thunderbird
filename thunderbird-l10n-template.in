@@ -1,0 +1,47 @@
+%if %{with___LANG__}
+%package -n %{name}-__LANG__
+Summary: %{langname___LANG__} interface for Thunderbird
+BuildArch: noarch
+License: GPL
+Group: Networking/WWW
+Url: http://www.mozilla.org/products/thunderbird/
+Requires: %{name} = %{version}
+Requires: locales-%{locale___LANG__}
+%if %{with_dict___LANG__}
+ %if "__LANG__" == "de"
+Requires: myspell-de_DE
+ %else # DE
+  %if "__LANG__" == "fr"
+Requires: myspell-fr_FR
+  %else # FR
+Requires: myspell-__LANG__
+  %endif # FR
+ %endif # DE
+%endif # LANG
+Obsoletes: %{name}-__LANG__ < %{version}-%{release}
+%if "__LANG__" == "br_FR"
+Obsoletes: %{name}-br <= 2.0.0.6
+%endif
+%if "__LANG__" == "es_ES"
+Obsoletes: %{name}-es <= 2.0.0.6
+%endif
+%if "__LANG__" == "et_EE"
+Obsoletes: %{name}-et <= 2.0.0.6
+%endif
+%if "__LANG__" == "pt_PT"
+Obsoletes: %{name}-pt <= 2.0.0.6
+%endif
+%if "__LANG__" == "nb_NO"
+Obsoletes: %{name}-nb <= 2.0.0.6
+%endif
+%if "__LANG__" == "sv_SE"
+Obsoletes: %{name}-sv <= 2.0.0.6
+%endif
+
+%description -n %{name}-__LANG__
+%{langname___LANG__} localization for Thunderbird
+
+%files -n %{name}-__LANG__
+%defattr(644,root,root,755)
+%{tblangdir}/langpack-%{language___LANG__}@thunderbird.mozilla.org
+%endif

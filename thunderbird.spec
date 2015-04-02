@@ -5,8 +5,8 @@
 
 %if %mdkversion >= 201200
 # rpmlint just sucks!!!
-%define _build_pkgcheck_set %{nil}
-%define _build_pkgcheck_srpm %{nil}
+#define _build_pkgcheck_set %{nil}
+#define _build_pkgcheck_srpm %{nil}
 %endif
 
 %if %{official_branding}
@@ -16,9 +16,11 @@
 %endif
 
 %define oname thunderbird
+%define thunderbird_package thunderbird
 %define tb_appid \{3550f703-e582-4d05-9a08-453d09bdfdc6\}
 %define tbdir %{_libdir}/%{oname}-%{version}
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
+%define tblangdir %{_datadir}/mozilla/extensions/%{tb_appid}
 
 %define objdir objdir
 
@@ -44,14 +46,170 @@
 %endif # ix86
 
 # this seems fragile, so require the exact version or later (#58754)
+%define sqlite3_libname %{mklibname sqlite3_ 0}
 %define sqlite3_version %(pkg-config --modversion sqlite3 &>/dev/null && pkg-config --modversion sqlite3 2>/dev/null || echo 0)
 # this one as well (#59759)
 %define nss_libname %mklibname nss 3
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
+%define xpidir http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/linux-i686/xpi/
+
+# Supported l10n language lists
+%define langlist  ar ast be bg bn_BD br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pa_IN pl pt_BR pt_PT ro ru si sk sl sq sr sv_SE ta_LK tr uk vi zh_CN zh_TW
+
+# Disabled l10n languages, for any reason
+%define disabled_langlist gu_IN mk sr af rm
+
+# Disabled myspell dicts, for any reason
+%define disabled_dict_langlist	ar be br_FR es_AR eu fi fy ga gu_IN he ja ko mk pa_IN rm tr zh_CN zh_TW
+
+%define use_dict 0
+
+# Language descriptions
+%define language_af af
+%define langname_af Afrikaans
+%define language_ar ar
+%define langname_ar Arabic
+%define language_ast ast
+%define langname_ast Asturian
+%define language_be be
+%define langname_be Belarusian
+%define language_bg bg
+%define langname_bg Bulgarian
+%define language_bn_BD bn-BD
+%define langname_bn_BD Bengali (Bangla)
+%define language_br br
+%define langname_br Breton
+%define language_ca ca
+%define langname_ca Catalan
+%define language_cs cs
+%define langname_cs Czech
+%define language_da da
+%define langname_da Dansk
+%define language_de de
+%define langname_de German
+%define language_el el
+%define langname_el Greek
+%define language_en_GB en-GB
+%define langname_en_GB British English
+%define language_en_US en-US
+%define langname_en_US American English
+%define language_es_AR es-AR
+%define langname_es_AR Spanish (Argentina)
+%define language_es_ES es-ES
+%define langname_es_ES Spanish
+%define language_et_EE et-EE
+%define langname_et_EE Estonian (Magento)
+%define language_et et
+%define langname_et Estonian
+%define language_eu eu
+%define langname_eu Basque
+%define language_fi fi
+%define langname_fi Finnish
+%define language_fr fr
+%define langname_fr French
+%define language_fy fy-NL
+%define langname_fy Frisian
+%define language_ga ga-IE
+%define langname_ga Irish
+%define language_gd gd
+%define langname_gd Scottish Gaelic
+%define language_gl gl
+%define langname_gl Galician
+%define language_gu_IN gu-IN
+%define langname_gu_IN Gujarati
+%define language_he he
+%define langname_he Hebrew
+%define language_hr hr
+%define langname_hr Croatian
+%define language_hu hu
+%define langname_hu Hungarian
+%define language_hy hy-AM
+%define langname_hy Armenian
+%define language_id id
+%define langname_id Indonesian
+%define language_is is
+%define langname_is Icelandic
+%define language_it it
+%define langname_it Italian
+%define language_ja ja
+%define langname_ja Japanese
+%define language_ka ka
+%define langname_ka Georgian
+%define language_ko ko
+%define langname_ko Korean
+%define language_lt lt
+%define langname_lt Lithuanian
+%define language_mk mk
+%define langname_mk Macedonian
+%define language_nb_NO nb-NO
+%define langname_nb_NO Norwegian Bokmaal
+%define language_nl nl
+%define langname_nl Dutch
+%define language_nn_NO nn-NO
+%define langname_nn_NO Norwegian Nynorsk
+%define language_pa_IN pa-IN
+%define langname_pa_IN Punjabi (gurmukhi)
+%define language_pl pl
+%define langname_pl Polish
+%define language_pt_BR pt-BR
+%define langname_pt_BR Brazilian portuguese
+%define language_pt_PT pt-PT
+%define langname_pt_PT Portuguese
+%define language_rm rm
+%define langname_rm Romansh
+%define language_ro ro
+%define langname_ro Romanian
+%define language_ru ru
+%define langname_ru Russian
+%define language_si si
+%define langname_si Sinhala
+%define language_sk sk
+%define langname_sk Slovak
+%define language_sl sl
+%define langname_sl Slovenian
+%define language_sq sq
+%define langname_sq Albanian
+%define language_sr sr
+%define langname_sr Serbian
+%define language_sv_SE sv-SE
+%define langname_sv_SE Swedish
+%define language_ta_LK ta-LK
+%define langname_ta_LK Tamil (Sri-Lanka)
+%define language_tr tr
+%define langname_tr Turkish
+%define language_uk uk
+%define langname_uk Ukrainian
+%define language_vi vi
+%define langname_vi Vietnamese
+%define language_zh_CN zh-CN
+%define langname_zh_CN Simplified Chinese
+%define language_zh_TW zh-TW
+%define langname_zh_TW Traditional Chinese
+
+# --- Danger line ---
+
+# Defaults (all languages enabled by default)
+# l10n
+%{expand:%(for lang in %langlist; do echo "%%define with_$lang 1"; done)}
+%{expand:%(for lang in %disabled_langlist; do echo "%%define with_$lang 0"; done)}
+# dicts
+%{expand:%(for lang in %langlist; do echo "%%define with_dict_$lang %{use_dict}"; done)}
+%{expand:%(for lang in %disabled_dict_langlist; do echo "%%define with_dict_$lang 0"; done)}
+
+# Locales
+%{expand:%(for lang in %langlist; do echo "%%define locale_$lang `echo $lang | cut -d _ -f 1` "; done)}
+
+%if %use_dict
+# myspell dicts, allows setting preferences between several providers.
+%{expand:%(for lang in %langlist; do echo "%%define myspell_$lang myspell-$lang"; done)}
+%define myspell_de myspell-de_DE
+%define myspell_fr myspell-fr_FR
+%endif
+
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	31.5.0
+Version:	31.6.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -61,6 +219,7 @@ Source1:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{ve
 Source12:       mozilla-thunderbird-mandriva-default-prefs.js
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
+Source100:	thunderbird.rpmlintrc
 # Mandriva sources (Source300+)
 Source300:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz
 Source301:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz.asc
@@ -68,6 +227,26 @@ Source302:      %{name}-icons.tar.gz
 Source303:	thunderbird.desktop
 # Language package template
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
+Source401:	thunderbird-l10n-template.in
+# l10n sources
+%{expand:%(\
+	i=500;\
+	for lang in %langlist; do\
+		echo "%%{expand:Source$i: %{xpidir}/%%{language_$lang}.xpi}";\
+		i=$[i+1];\
+	done\
+	)
+}
+%if %use_dict
+%{expand:%(\
+	disabled="%{disabled_dict_langlist}";\
+	for lang in %langlist; do\
+		echo "$disabled" | grep -q "\<$lang\>" || \
+			echo "BuildRequires: %%{myspell_$lang}";\
+	done\
+	)
+}
+%endif
 # Build patches
 Patch2:         mozilla-firefox-1.0-prdtoa.patch
 #
@@ -127,7 +306,7 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
 %endif
 
-Requires:	%{mklibname sqlite3_ 0} >= %{sqlite3_version}
+Requires:	%{sqlite3_libname} >= %{sqlite3_version}
 Requires:	%{nss_libname} >= 2:%{nss_version}
 Requires(post,postun):	desktop-file-utils
 Requires(post):	mktemp
@@ -143,92 +322,95 @@ makes emailing safer, faster and easier than ever before.
 #===============================================================================
 # enigmail-l10n
 # Supported l10n language lists
-%define l10n_langlist	ar ca cs de el es fi fr it ja ko nb nl pl pt pt_BR ru sl sv tr vi zh_CN zh_TW
+%define em_l10n_langlist	ar ca cs de el es fi fr it ja ko nb nl pl pt pt_BR ru sl sv tr vi zh_CN zh_TW
 
 # Disabled l10n languages, for any reason
 # nl sk es_AR do not support 0.95.0 yet
-%define disabled_l10n_langlist	hu
+%define em_disabled_l10n_langlist	hu
 # define disabled_l10n_langlist %{nil}
 
 # Language descriptions
-%define language_ar ar
-%define langname_ar Arabic
-%define language_ca ca
-%define langname_ca Catalan
-%define language_cs cs-CZ
-%define langname_cs Czech
-%define language_de de
-%define langname_de German
-%define language_el el
-%define langname_el Greek
-%define language_es_AR es-AR
-%define langname_es_AR Spanish (Argentina)
-%define language_es es-ES
-%define langname_es Spanish
-%define language_fi fi-FI
-%define langname_fi Finnish
-%define language_fr fr
-%define langname_fr French
-%define language_hu hu-HU
-%define langname_hu Hungarian
-%define language_it it-IT
-%define langname_it Italian
-%define language_ja ja-JP
-%define langname_ja Japanese
-%define language_ko ko-KR
-%define langname_ko Korean
-%define language_nb nb-NO
-%define langname_nb Norwegian Bokmaal
-%define langname_nl Dutch
-%define language_nl nl
-%define language_pl pl
-%define langname_pl Polish
-%define langname_pt Portuguese
-%define language_pt pt-PT
-%define language_pt_BR pt-BR
-%define langname_pt_BR Brazilian portuguese
-%define language_ro ro-RO
-%define langname_ro Romanian
-%define language_ru ru-RU
-%define langname_ru Russian
-%define language_sk sk
-%define langname_sk Slovak
-%define language_sl sl-SI
-%define langname_sl Slovenian
-%define language_sv sv-SE
-%define langname_sv Swedish
-%define language_tr tr
-%define langname_tr Turkish
-%define language_vi vi
-%define langname_vi Vietnamese
-%define language_zh_CN zh-CN
-%define langname_zh_CN Simplified Chinese
-%define language_zh_TW zh-TW
-%define langname_zh_TW Traditional Chinese
+%define em_language_ar ar
+%define em_langname_ar Arabic
+%define em_language_ca ca
+%define em_langname_ca Catalan
+%define em_language_cs cs-CZ
+%define em_langname_cs Czech
+%define em_language_de de
+%define em_langname_de German
+%define em_language_el el
+%define em_langname_el Greek
+%define em_language_es_AR es-AR
+%define em_langname_es_AR Spanish (Argentina)
+%define em_language_es es-ES
+%define em_langname_es Spanish
+%define em_language_fi fi-FI
+%define em_langname_fi Finnish
+%define em_language_fr fr
+%define em_langname_fr French
+%define em_language_hu hu-HU
+%define em_langname_hu Hungarian
+%define em_language_it it-IT
+%define em_langname_it Italian
+%define em_language_ja ja-JP
+%define em_langname_ja Japanese
+%define em_language_ko ko-KR
+%define em_langname_ko Korean
+%define em_language_nb nb-NO
+%define em_langname_nb Norwegian Bokmaal
+%define em_langname_nl Dutch
+%define em_language_nl nl
+%define em_language_pl pl
+%define em_langname_pl Polish
+%define em_langname_pt Portuguese
+%define em_language_pt pt-PT
+%define em_language_pt_BR pt-BR
+%define em_langname_pt_BR Brazilian portuguese
+%define em_language_ro ro-RO
+%define em_langname_ro Romanian
+%define em_language_ru ru-RU
+%define em_langname_ru Russian
+%define em_language_sk sk
+%define em_langname_sk Slovak
+%define em_language_sl sl-SI
+%define em_langname_sl Slovenian
+%define em_language_sv sv-SE
+%define em_langname_sv Swedish
+%define em_language_tr tr
+%define em_langname_tr Turkish
+%define em_language_vi vi
+%define em_langname_vi Vietnamese
+%define em_language_zh_CN zh-CN
+%define em_langname_zh_CN Simplified Chinese
+%define em_language_zh_TW zh-TW
+%define em_langname_zh_TW Traditional Chinese
+
+# Expand all languages packages.
+%{expand:%(\
+        for lang in %langlist; do\
+
+                echo "%%{expand:%%(sed "s!__LANG__!$lang!g" %{SOURCE401} 2> /dev/null)}";\
+        done\
+        )
+}
 
 # --- Danger line ---
 
 # All langs
-%{expand:%%define langlist %(for lang in %l10n_langlist; do echo "$lang"; done | sort -u | sed ':a;$!N;s/\n/ /;ta')}
-
-# Defaults (all languages enabled by default)
-# l10n
-%{expand:%(for lang in %l10n_langlist; do echo "%%define l10n_$lang 1"; done)}
-%{expand:%(for lang in %disabled_l10n_langlist; do echo "%%define l10n_$lang 0"; done)}
-
-# Params
-%{expand:%(for lang in %langlist; do echo "%%bcond_without $lang"; done)}
+%{expand:%%define em_langlist %(for lang in %em_l10n_langlist; do echo "$lang"; done | sort -u | sed ':a;$!N;s/\n/ /;ta')}
 
 # Locales
-%{expand:%(for lang in %l10n_langlist; do echo "%%define locale_$lang `echo $lang | cut -d _ -f 1` "; done)}
+%{expand:%(for lang in %em_l10n_langlist; do echo "%%define em_locale_$lang `echo $lang | cut -d _ -f 1` "; done)}
 
 # Expand all languages packages.
 %{expand:%(\
-	for lang in %langlist; do\
-		echo "%%{expand:%%(sed "s!__LANG__!$lang!g" %{_sourcedir}/mozilla-thunderbird-enigmail-l10n-template.in 2> /dev/null)}";\
+	for lang in %em_langlist; do\
+		echo "%%{expand:%%(sed "s!__LANG__!$lang!g" %{SOURCE400} 2> /dev/null)}";\
 	done\
 	)
 }
+
+
 
 #===============================================================================
 
@@ -243,7 +425,7 @@ Requires(post,postun):	mktemp
 Suggests:	pinentry-gtk2
 Obsoletes:	mozilla-thunderbird-enigmail < %{version}-%{release}
 Provides:	mozilla-thunderbird-enigmail = %{version}-%{release}
-%(for lang in %l10n_langlist %disabled_l10n_langlist; do
+%(for lang in %em_l10n_langlist %em_disabled_l10n_langlist; do
     echo "Obsoletes: mozilla-thunderbird-enigmail-$lang < %{version}-%{release}"
     echo "Obsoletes: mozilla-thunderbird-enigmail-l10n-$lang < %{version}-%{release}"
 done)
@@ -288,6 +470,7 @@ Calendar extension for Thunderbird.
 #===============================================================================
 
 %prep
+
 %setup -q -c -n %{name}-%{version}
 
 #===================
@@ -321,11 +504,51 @@ Calendar extension for Thunderbird.
 %setup -q -T -D -n %{name}-%{version}/comm-esr31
 
 #===============================================================================
+# l10n
+# Convert rpm macros to bash variables
+%{expand:%(for lang in %langlist; do echo "language_$lang=%%{language_$lang}"; done)}
+%{expand:%(for lang in %langlist; do echo "locale_$lang=%%{locale_$lang}"; done)}
+%{expand:%(for lang in %langlist; do echo "with_$lang=%%{with_$lang}"; done)}
+%{expand:%(for lang in %langlist; do echo "dict_$lang=%%{with_dict_$lang}"; done)}
+
+# Unpack all languages
+for lang in %langlist; do
+	with="with_$lang"
+	with=${!with}
+	[ $with -eq 0 ] && continue
+
+	language="language_$lang"
+	language=${!language}
+
+	locale="locale_$lang"
+	locale=${!locale}
+
+	# l10n
+	mkdir ${language}
+	cd ${language}
+	unzip -qq %{_sourcedir}/${language}.xpi
+	cd ..
+
+	# dict
+	dict="dict_$lang"
+	dict=${!dict}
+	[ $dict -eq 0 ] && continue
+
+done
 
 %build
-# (crisb) use gcc for now
+%if %mdvver >= 201500
+%ifarch %arm
+# arm still requires gcc
 export CXX=g++
 export CC=gcc
+%else
+# (tpg) clang works, just export it to be sure it is used
+export CXX=clang++
+export CC=clang
+%global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
+%endif 
+%endif
 
 export MOZCONFIG=`pwd`/.mozconfig
 cat > $MOZCONFIG << EOF
@@ -410,7 +633,7 @@ make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_PK
 #===============================================================================
 
 pushd mozilla/extensions/enigmail
-%configure2_5x
+%configure
 make PYTHON=python2
 popd
 
@@ -502,11 +725,9 @@ cp -aL mozilla/extensions/enigmail/build/enigmail-%{enigmail_short_version}*.xpi
 #==============================================================================
 #enigmail lang package
 # Convert rpm macros to bash variables
-%{expand:%(for lang in %langlist; do echo "language_$lang=%%{language_$lang}"; done)}
-%{expand:%(for lang in %langlist; do echo "with_$lang=%%{with $lang}"; done)}
-%{expand:%(for lang in %l10n_langlist; do echo "l10n_$lang=%%{l10n_$lang}"; done)}
+%{expand:%(for lang in %em_langlist; do echo "language_$lang=%%{em_language_$lang}"; done)}
 pushd mozilla/extensions/enigmail/lang
- for lang in %langlist; do
+ for lang in %em_langlist; do
     mkdir -p %{buildroot}%{_datadir}/mozilla/extensions/%{tb_appid}/enigmail-$lang@enigmail.mozdev.org
     language="language_$lang"
     language=${!language}
@@ -535,6 +756,33 @@ rm -rf %{buildroot}%{_includedir}/%{oname}-%{version}
 rm -rf %{buildroot}%{_libdir}/%{oname}-devel-%{version}
 
 #===============================================================================
+
+# Convert rpm macros to bash variables
+%{expand:%(for lang in %langlist; do echo "language_$lang=%%{language_$lang}"; done)}
+%{expand:%(for lang in %langlist; do echo "with_$lang=%%{with_$lang}"; done)}
+%{expand:%(for lang in %langlist; do echo "dict_$lang=%%{with_dict_$lang}"; done)}
+
+# Create dicts dir
+%if %use_dict
+mkdir -p %{buildroot}%{mozillalibdir}/dictionaries
+%endif
+
+# Install all languages
+for lang in %langlist; do
+	with="with_$lang"
+	with=${!with}
+	[ $with -eq 0 ] && continue
+
+	language="language_$lang"
+	language=${!language}
+
+	# l10n
+	cd $language
+	mkdir -p %{buildroot}%{tblangdir}/langpack-${language}@thunderbird.mozilla.org/
+	cp -f -r * %{buildroot}%{tblangdir}/langpack-${language}@thunderbird.mozilla.org/
+	cd ..
+
+done
 
 %pre
 if [ $1 == 2 ]; then
