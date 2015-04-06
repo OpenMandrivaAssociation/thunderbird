@@ -397,7 +397,10 @@ makes emailing safer, faster and easier than ever before.
 # --- Danger line ---
 
 # All langs
-#{expand:%%define em_langlist %(for lang in %em_l10n_langlist; do echo "$lang"; done | sort -u | sed ':a;$!N;s/\n/ /;ta')}
+%{expand:%%define em_langlist %(for lang in %em_l10n_langlist; do echo "$lang"; done | sort -u | sed ':a;$!N;s/\n/ /;ta')}
+
+# Locales
+%{expand:%(for lang in %em_l10n_langlist; do echo "%%define em_locale_$lang `echo $lang | cut -d _ -f 1` "; done)}
 
 # Expand all languages packages.
 %{expand:%(\
@@ -543,7 +546,7 @@ export CC=gcc
 # (tpg) clang works, just export it to be sure it is used
 export CXX=clang++
 export CC=clang
-%global optflags %optflags -Wno-error -Wno-null-conversion
+%global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
 %endif 
 %endif
 

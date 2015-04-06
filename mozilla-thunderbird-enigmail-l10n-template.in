@@ -4,13 +4,13 @@ License:	GPL
 Group:		Networking/Mail
 Url:		http://www.mozilla.org/products/thunderbird/
 Requires:	mozilla-thunderbird-enigmail = %{version}
-Requires:	locales-%{locale___LANG__}
+Requires:	locales-%{em_locale___LANG__}
 BuildArch:	noarch
 Obsoletes:	mozilla-thunderbird-enigmail-l10n-__LANG__
 Obsoletes:	mozilla-thunderbird-enigmail-__LANG__ < %{version}-%{release}
 
 %description -n mozilla-thunderbird-enigmail-__LANG__
-%{langname___LANG__} localization for Enigmail
+%{em_langname___LANG__} localization for Enigmail
 
 %files -n mozilla-thunderbird-enigmail-__LANG__
 %defattr(644,root,root,755)
