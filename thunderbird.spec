@@ -477,6 +477,9 @@ Calendar extension for Thunderbird.
 # Thunderbird itself
 %setup -q -T -D -n %{name}-%{version}/comm-esr31
 
+# fix use of deprecated macro in vpx code
+sed -i 's/IMG_FMT_I420/VPX_IMG_FMT_I420/' mozilla/media/webrtc/trunk/webrtc/modules/video_coding/codecs/vp8/vp8_impl.cc
+
 %patch2 -p0
 
 %patch100 -p2 -b .objdir
