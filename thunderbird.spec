@@ -479,6 +479,7 @@ Calendar extension for Thunderbird.
 
 # fix use of deprecated macro in vpx code
 sed -i 's/IMG_FMT_I420/VPX_IMG_FMT_I420/' mozilla/media/webrtc/trunk/webrtc/modules/video_coding/codecs/vp8/vp8_impl.cc
+sed -i 's/\[PLANE_/[VPX_PLANE_/' mozilla/media/webrtc/trunk/webrtc/modules/video_coding/codecs/vp8/vp8_impl.cc
 
 %patch2 -p0
 
