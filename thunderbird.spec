@@ -209,7 +209,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	31.6.0
+Version:	31.7.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -476,6 +476,10 @@ Calendar extension for Thunderbird.
 #===================
 # Thunderbird itself
 %setup -q -T -D -n %{name}-%{version}/comm-esr31
+
+# fix use of deprecated macro in vpx code
+sed -i 's/IMG_FMT_I420/VPX_IMG_FMT_I420/' mozilla/media/webrtc/trunk/webrtc/modules/video_coding/codecs/vp8/vp8_impl.cc
+sed -i 's/\[PLANE_/[VPX_PLANE_/' mozilla/media/webrtc/trunk/webrtc/modules/video_coding/codecs/vp8/vp8_impl.cc
 
 %patch2 -p0
 
