@@ -14,8 +14,8 @@ sources:
   el.xpi: 54c1dc4e7eb0a2c9dc70c4e0b361b410c2294c30
   en-GB.xpi: c431c2a82b8c1b7439d3d99fce0a6a4ac4b49ab5
   en-US.xpi: 40c67cf2a60e7a05158504cc0d658715d8d1f4ba
-  enigmail-1.7.2.tar.gz: e72eeff5a47491267981090129b0b2594b5dc96f
-  enigmail-1.7.2.tar.gz.asc: 1b01b5fe564f6777e7cb64ab38ad0ce70ee8b277
+  enigmail-1.8.2.tar.gz: 484158091985bb06ffa175348bafccea0250a348
+  enigmail-1.8.2.tar.gz.asc: 7be5b86a9153d3d5bef3b6d0f62d81174b6c966f
   es-AR.xpi: 1c55dab22f43670a2d2c1750ab8d830dd0cdd010
   es-ES.xpi: 50974116d42e4f602042c65e219f2dbd9111f45b
   et.xpi: e19785e041d72e4778f275fb3b1cb3df1d8514e7
@@ -52,10 +52,7 @@ sources:
   sr.xpi: 47fe776dd2e238c39bc80ab5e2ae4889240fbe5e
   sv-SE.xpi: b27db6acd8c26dff91d881fd09f14f53f5a197fd
   ta-LK.xpi: 3b2d6d0df2905b2ef0aad85385b467dfc833d367
-  thunderbird-31.6.0.source.tar.bz2: 147ba0f3c7da29a7814ee9ce4265fb107744559e
-  thunderbird-31.6.0.source.tar.bz2.asc: 13c520ef9f26182a803bda59a9f8c5400b4d84e3
-  thunderbird-31.7.0.source.tar.bz2: 90e18f8ecccdaf1ee39493223a7e3ad8b3b7bede
-  thunderbird-31.7.0.source.tar.bz2.asc: 8943deade179806c05e2ddc8308ac4384e9ec86e
+  thunderbird-38.0.1.source.tar.bz2: 81226df796de098648d70d398aa1160531706cd5
   thunderbird-icons.tar.gz: e6eb5edbe72c579cdaec9fdc29c2fc81535d609c
   tr.xpi: b0d41c659a2e2d08860503aedd3f7f335b382f12
   uk.xpi: f05dd3fc21aa033bdef3b4714a5ba9b5b8550831
