@@ -206,7 +206,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	38.0.1
-Release:	0.1
+Release:	0.2
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
