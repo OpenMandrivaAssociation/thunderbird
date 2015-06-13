@@ -3,12 +3,6 @@
 
 %define official_branding 1
 
-%if %mdkversion >= 201200
-# rpmlint just sucks!!!
-#define _build_pkgcheck_set %{nil}
-#define _build_pkgcheck_srpm %{nil}
-%endif
-
 %if %{official_branding}
 %define title Mozilla Thunderbird
 %else
@@ -21,12 +15,14 @@
 %define tbdir %{_libdir}/%{oname}-%{version}
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
 %define tblangdir %{_datadir}/mozilla/extensions/%{tb_appid}
+%define esr_ver %(echo %{version}|cut -d. -f1)
+
 
 %define objdir objdir
 
 %define xpi 0
-%define enigmail_version 1.7.2
-%define enigmail_short_version 1.7
+%define enigmail_version 1.8.2
+%define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
 %define _provides_exceptions libgtkembedmoz.so\\|libxpcom.so
@@ -209,13 +205,12 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	31.7.0
+Version:	38.0.1
 Release:	0.1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
 Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.bz2
-Source1:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.bz2.asc
 Source12:       mozilla-thunderbird-mandriva-default-prefs.js
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
@@ -263,7 +258,6 @@ Patch215:	mozilla-thunderbird-enigmail-visibility.patch
 Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
-Patch305:	thunderbird-24.5.0-nss_detect.patch
 # OpenSuse patches (Patch400+)
 Patch400:	thunderbird-appname.patch
 
@@ -334,7 +328,7 @@ makes emailing safer, faster and easier than ever before.
 %define em_langname_ar Arabic
 %define em_language_ca ca
 %define em_langname_ca Catalan
-%define em_language_cs cs-CZ
+%define em_language_cs cs
 %define em_langname_cs Czech
 %define em_language_de de
 %define em_langname_de German
@@ -344,17 +338,17 @@ makes emailing safer, faster and easier than ever before.
 %define em_langname_es_AR Spanish (Argentina)
 %define em_language_es es-ES
 %define em_langname_es Spanish
-%define em_language_fi fi-FI
+%define em_language_fi fi
 %define em_langname_fi Finnish
 %define em_language_fr fr
 %define em_langname_fr French
-%define em_language_hu hu-HU
+%define em_language_hu hu
 %define em_langname_hu Hungarian
-%define em_language_it it-IT
+%define em_language_it it
 %define em_langname_it Italian
-%define em_language_ja ja-JP
+%define em_language_ja ja
 %define em_langname_ja Japanese
-%define em_language_ko ko-KR
+%define em_language_ko ko
 %define em_langname_ko Korean
 %define em_language_nb nb-NO
 %define em_langname_nb Norwegian Bokmaal
@@ -366,13 +360,11 @@ makes emailing safer, faster and easier than ever before.
 %define em_language_pt pt-PT
 %define em_language_pt_BR pt-BR
 %define em_langname_pt_BR Brazilian portuguese
-%define em_language_ro ro-RO
-%define em_langname_ro Romanian
-%define em_language_ru ru-RU
+%define em_language_ru ru
 %define em_langname_ru Russian
 %define em_language_sk sk
 %define em_langname_sk Slovak
-%define em_language_sl sl-SI
+%define em_language_sl sl
 %define em_langname_sl Slovenian
 %define em_language_sv sv-SE
 %define em_langname_sv Swedish
@@ -475,11 +467,7 @@ Calendar extension for Thunderbird.
 
 #===================
 # Thunderbird itself
-%setup -q -T -D -n %{name}-%{version}/comm-esr31
-
-# fix use of deprecated macro in vpx code
-sed -i 's/IMG_FMT_I420/VPX_IMG_FMT_I420/' mozilla/media/webrtc/trunk/webrtc/modules/video_coding/codecs/vp8/vp8_impl.cc
-sed -i 's/\[PLANE_/[VPX_PLANE_/' mozilla/media/webrtc/trunk/webrtc/modules/video_coding/codecs/vp8/vp8_impl.cc
+%setup -q -T -D -n %{name}-%{version}/comm-esr%{esr_ver}
 
 %patch2 -p0
 
@@ -489,23 +477,22 @@ sed -i 's/\[PLANE_/[VPX_PLANE_/' mozilla/media/webrtc/trunk/webrtc/modules/video
 %patch300 -p0 -b .progname
 %patch301 -p1 -b .enigmailpackage
 %patch304 -p0 -b .run-mozilla
-%patch305 -p1 -b .nss
 
 %patch400 -p1 -b .appname
 
 #===============================================================================
 # Enigmail
-%setup -q -T -D -n %{name}-%{version}/comm-esr31/mozilla/extensions -a300
+%setup -q -T -D -n %{name}-%{version}/comm-esr%{esr_ver}/mozilla/extensions -a300
 %if 0
 %patch212 -p2 -b .enigmail-ui-content-contents-rdf
 %patch213 -p2 -b .enigmail-build-package-contents-rdf
 %endif
 
 %if !%{official_branding}
-%setup -q -T -D -n %{name}-%{version}/comm-esr31 -a302
+%setup -q -T -D -n %{name}-%{version}/comm-esr%{esr_ver} -a302
 %endif
 
-%setup -q -T -D -n %{name}-%{version}/comm-esr31
+%setup -q -T -D -n %{name}-%{version}/comm-esr%{esr_ver}
 
 #===============================================================================
 # l10n
@@ -741,7 +728,7 @@ popd
 
 #===============================================================================
 # lightning ext here
-pushd %{objdir}/mozilla/dist/xpi-stage/
+pushd %{objdir}/dist/xpi-stage/
   for ext in {gdata-provider,lightning}; do
     hash="$(sed -n '/^    <em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' $ext/install.rdf)"
     mkdir -p %buildroot%{tbextdir}/$hash
@@ -751,7 +738,7 @@ popd
 
 #===============================================================================
 
-cp -aL %{objdir}/mozilla/dist/bin/nsinstall %{buildroot}%{_bindir}
+cp -aL %{objdir}/dist/bin/nsinstall %{buildroot}%{_bindir}
 
 #==============================================================================
 #exclude devel files
