@@ -535,8 +535,8 @@ export CXX=g++
 export CC=gcc
 %else
 # (tpg) clang works, just export it to be sure it is used
-export CXX=clang++
-export CC=clang
+export CXX=g++
+export CC=gcc
 %global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
 %endif 
 %endif
