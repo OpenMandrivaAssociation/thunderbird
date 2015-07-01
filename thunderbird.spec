@@ -529,6 +529,10 @@ done
 
 %build
 %if %mdvver >= 201500
+
+# fix build with freetype 2.6
+sed -i '/^ftglyph.h/ i ftfntfmt.h' mozilla/config/system-headers
+
 %ifarch %arm
 # arm still requires gcc
 export CXX=g++
