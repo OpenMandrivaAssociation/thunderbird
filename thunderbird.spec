@@ -205,8 +205,8 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	38.0.1
-Release:	0.2
+Version:	38.1.0
+Release:	0.1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -529,14 +529,18 @@ done
 
 %build
 %if %mdvver >= 201500
+
+# fix build with freetype 2.6
+sed -i '/^ftglyph.h/ i ftfntfmt.h' mozilla/config/system-headers
+
 %ifarch %arm
 # arm still requires gcc
 export CXX=g++
 export CC=gcc
 %else
 # (tpg) clang works, just export it to be sure it is used
-export CXX=clang++
-export CC=clang
+export CXX=g++
+export CC=gcc
 %global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
 %endif 
 %endif
