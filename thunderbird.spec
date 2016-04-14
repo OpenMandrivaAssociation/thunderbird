@@ -585,6 +585,7 @@ ac_add_options --enable-canvas
 ac_add_options --enable-crypto
 ac_add_options --enable-mathml
 ac_add_options --enable-gstreamer=1.0
+ac_add_options --disable-gconf
 ac_add_options --disable-gnomevfs
 ac_add_options --enable-gio
 ac_add_options --enable-calendar
