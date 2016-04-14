@@ -15,7 +15,6 @@
 %define tbdir %{_libdir}/%{oname}-%{version}
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
 %define tblangdir %{_datadir}/mozilla/extensions/%{tb_appid}
-%define esr_ver %(echo %{version}|cut -d. -f1)
 
 
 %define objdir objdir
@@ -205,12 +204,12 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	38.7.0
+Version:	45.0
 Release:	0.1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
-Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.bz2
+Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
 Source12:       mozilla-thunderbird-mandriva-default-prefs.js
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
@@ -463,11 +462,7 @@ Calendar extension for Thunderbird.
 
 %prep
 
-%setup -q -c -n %{name}-%{version}
-
-#===================
-# Thunderbird itself
-%setup -q -T -D -n %{name}-%{version}/comm-esr%{esr_ver}
+%setup -q -n %{name}-%{version}
 
 %patch2 -p0
 
@@ -482,17 +477,17 @@ Calendar extension for Thunderbird.
 
 #===============================================================================
 # Enigmail
-%setup -q -T -D -n %{name}-%{version}/comm-esr%{esr_ver}/mozilla/extensions -a300
+%setup -q -T -D -n %{name}-%{version}/mozilla/extensions -a300
 %if 0
 %patch212 -p2 -b .enigmail-ui-content-contents-rdf
 %patch213 -p2 -b .enigmail-build-package-contents-rdf
 %endif
 
 %if !%{official_branding}
-%setup -q -T -D -n %{name}-%{version}/comm-esr%{esr_ver} -a302
+%setup -q -T -D -n %{name}-%{version} -a302
 %endif
 
-%setup -q -T -D -n %{name}-%{version}/comm-esr%{esr_ver}
+%setup -q -T -D -n %{name}-%{version}
 
 #===============================================================================
 # l10n
@@ -561,12 +556,12 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
-ac_add_options --with-system-icu
 ac_add_options --with-system-libevent
+%if %mdvver >= 201500
 ac_add_options --with-system-libvpx
-%if %mdkversion >= 201500
 ac_add_options --with-system-png
 ac_add_options --enable-system-sqlite
+ac_add_options --with-system-icu
 %else
 ac_add_options --disable-system-png
 %endif
