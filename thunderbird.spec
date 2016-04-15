@@ -1,3 +1,5 @@
+%define _disable_lto 1
+
 %define __libtoolize /bin/true
 %define __cputoolize /bin/true
 
