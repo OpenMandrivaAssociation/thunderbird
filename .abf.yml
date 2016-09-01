@@ -51,6 +51,7 @@ sources:
   sv-SE.xpi: d75b8b4474357d746f8f631273ecaeddd04f1825
   ta-LK.xpi: 10474edf481ece5d2829dd3d77f8f92c7177b642
   thunderbird-45.3.0.source.tar.xz: 5a07598c45fadb354d9f47fde1fbcb75799e26db
+  thunderbird-icons.tar.gz: e6eb5edbe72c579cdaec9fdc29c2fc81535d609c
   tr.xpi: 70a57a369c77c15217aa8efbff97f925babdc089
   uk.xpi: d299ea25f464d1984c1910fffba4e7438095172f
   vi.xpi: c6d89b9a273219eb3eeb2da5e4ab5dff718979ac
