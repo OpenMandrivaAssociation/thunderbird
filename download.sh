@@ -2,4 +2,4 @@ langlist="ar ast be bg bn-BD br ca cs da de el en-GB en-US es-AR es-ES et eu fi 
 
 tversion=`grep ^Version: thunderbird.spec  | awk '{print $2}'`
 
-for i in $langlist;do wget http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/$tversion/linux-i686/xpi/$i.xpi;done
+wget `for i in $langlist;do echo http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/$tversion/linux-i686/xpi/$i.xpi;done | xargs`
