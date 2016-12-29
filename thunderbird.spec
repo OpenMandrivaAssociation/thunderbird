@@ -206,7 +206,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	45.5.1
+Version:	45.6.0
 Release:	0.1
 License:	MPL
 Group:		Networking/Mail
@@ -261,6 +261,7 @@ Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 Patch400:	thunderbird-appname.patch
+Patch401:	firefox-gcc-6.0.patch
 
 %if %{official_branding}
 BuildRequires:	imagemagick
@@ -476,7 +477,7 @@ Calendar extension for Thunderbird.
 %patch304 -p0 -b .run-mozilla
 
 %patch400 -p1 -b .appname
-
+%patch401 -p1 -b .gcc6
 #===============================================================================
 # Enigmail
 %setup -q -T -D -n %{name}-%{version}/mozilla/extensions -a300
