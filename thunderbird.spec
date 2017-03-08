@@ -206,7 +206,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	45.7.0
+Version:	45.8.0
 Release:	0.1
 License:	MPL
 Group:		Networking/Mail
