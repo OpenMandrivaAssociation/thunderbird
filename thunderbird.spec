@@ -207,7 +207,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	45.8.0
-Release:	1
+Release:	2
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -605,9 +605,11 @@ EOF
 #
 # Disable C++ exceptions since Mozilla code is not exception-safe
 #
+# -fno-schedule-insns2 - fix crashing when built with gcc 6
+# as per https://bugzilla.mozilla.org/show_bug.cgi?id=1245783
 MOZ_OPT_FLAGS=$(echo "$RPM_OPT_FLAGS" | sed -e 's/-Wall//' -e 's/-fexceptions/-fno-exceptions/g')
-export CFLAGS="$MOZ_OPT_FLAGS"
-export CXXFLAGS="$MOZ_OPT_FLAGS"
+export CFLAGS="$MOZ_OPT_FLAGS -fno-schedule-insns2"
+export CXXFLAGS="$MOZ_OPT_FLAGS -fno-schedule-insns2"
 export PREFIX="%{_prefix}"
 export LIBDIR="%{_libdir}"
 
