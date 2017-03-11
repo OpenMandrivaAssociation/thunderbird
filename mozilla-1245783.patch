@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<title>mozilla-1245783.patch - rpms/thunderbird.git - thunderbird</title>
+<meta name='generator' content='cgit v1.1'/>
+<meta name='robots' content='index, nofollow'/>
+<link rel='stylesheet' type='text/css' href='/cgit-data/cgit.css'/>
+<link rel='shortcut icon' href='/favicon.ico'/>
+<link rel='alternate' title='Atom feed' href='http://pkgs.fedoraproject.org/cgit/rpms/thunderbird.git/atom/mozilla-1245783.patch?h=master' type='application/atom+xml'/>
+<link rel='vcs-git' href='https://src.fedoraproject.org/git/rpms/thunderbird.git' title='rpms/thunderbird.git Git repository'/>
+</head>
+<body>
+<script src="https://apps.fedoraproject.org/fedmenu/js/jquery-1.11.2.min.js"></script>
+<script src="https://apps.fedoraproject.org/fedmenu/js/fedmenu.js"></script>
+
+<script>
+    var base = 'https://apps.fedoraproject.org/';
+    var tokens = window.location.href.split('/');
+  var repo = null;
+  if (tokens.length > 5 && tokens[4] == 'rpms' && tokens[5] != '') {
+    repo = tokens[5].split('.')[0];
+  }
+  fedmenu({
+      'url': base + 'js/data.js',
+      'mimeType': 'application/javascript',
+      'position': 'bottom-right',
+      'package': repo,
+  });
+</script>
+<div id='cgit'><table id='header'>
+<tr>
+<td class='logo' rowspan='2'><a href='/cgit/'><img src='/cgit-data/cgit.png' alt='cgit logo'/></a></td>
+<td class='main'><a href='/cgit/'>index</a> : <a title='rpms/thunderbird.git' href='/cgit/rpms/thunderbird.git/'>rpms/thunderbird.git</a></td><td class='form'><form method='get'>
+<select name='h' onchange='this.form.submit();'>
+<option value='epel7'>epel7</option>
+<option value='f10'>f10</option>
+<option value='f11'>f11</option>
+<option value='f12'>f12</option>
+<option value='f13'>f13</option>
+<option value='f14'>f14</option>
+<option value='f15'>f15</option>
+<option value='f16'>f16</option>
+<option value='f17'>f17</option>
+<option value='f18'>f18</option>
+<option value='f19'>f19</option>
+<option value='f20'>f20</option>
+<option value='f21'>f21</option>
+<option value='f22'>f22</option>
+<option value='f23'>f23</option>
+<option value='f24'>f24</option>
+<option value='f25'>f25</option>
+<option value='f26'>f26</option>
+<option value='f7'>f7</option>
+<option value='f8'>f8</option>
+<option value='f9'>f9</option>
+<option value='master' selected='selected'>master</option>
+</select> <input type='submit' value='switch'/></form></td></tr>
+<tr><td class='sub'>thunderbird</td><td class='sub right'>Jesse Keating</td></tr></table>
+<table class='tabs'><tr><td>
+<a href='/cgit/rpms/thunderbird.git/'>summary</a><a href='/cgit/rpms/thunderbird.git/refs/'>refs</a><a href='/cgit/rpms/thunderbird.git/log/mozilla-1245783.patch'>log</a><a class='active' href='/cgit/rpms/thunderbird.git/tree/mozilla-1245783.patch'>tree</a><a href='/cgit/rpms/thunderbird.git/commit/mozilla-1245783.patch'>commit</a><a href='/cgit/rpms/thunderbird.git/diff/mozilla-1245783.patch'>diff</a><a href='/cgit/rpms/thunderbird.git/stats/mozilla-1245783.patch'>stats</a></td><td class='form'><form class='right' method='get' action='/cgit/rpms/thunderbird.git/log/mozilla-1245783.patch'>
+<select name='qt'>
+<option value='grep'>log msg</option>
+<option value='author'>author</option>
+<option value='committer'>committer</option>
+<option value='range'>range</option>
+</select>
+<input class='txt' type='text' size='10' name='q' value=''/>
+<input type='submit' value='search'/>
+</form>
+</td></tr></table>
+<div class='path'>path: <a href='/cgit/rpms/thunderbird.git/tree/'>root</a>/<a href='/cgit/rpms/thunderbird.git/tree/mozilla-1245783.patch'>mozilla-1245783.patch</a></div><div class='content'>blob: 3452616197bdac0ddd74367aeef4541919f32925 (<a href='/cgit/rpms/thunderbird.git/plain/mozilla-1245783.patch'>plain</a>)
+<table summary='blob content' class='blob'>
+<tr><td class='linenumbers'><pre><a id='n1' href='#n1'>1</a>
+<a id='n2' href='#n2'>2</a>
+<a id='n3' href='#n3'>3</a>
+<a id='n4' href='#n4'>4</a>
+<a id='n5' href='#n5'>5</a>
+<a id='n6' href='#n6'>6</a>
+<a id='n7' href='#n7'>7</a>
+<a id='n8' href='#n8'>8</a>
+<a id='n9' href='#n9'>9</a>
+<a id='n10' href='#n10'>10</a>
+<a id='n11' href='#n11'>11</a>
+<a id='n12' href='#n12'>12</a>
+<a id='n13' href='#n13'>13</a>
+<a id='n14' href='#n14'>14</a>
+<a id='n15' href='#n15'>15</a>
+<a id='n16' href='#n16'>16</a>
+<a id='n17' href='#n17'>17</a>
+</pre></td>
+<td class='lines'><pre><code># Remove when mozbz#1269319 lands
+
+--- firefox-45.0.1-orig/mozilla/js/src/Makefile.in	2016-05-17 14:53:58.753178403 +0200
++++ firefox-45.0.1/mozilla/js/src/Makefile.in	2016-05-17 14:53:28.432817862 +0200
+@@ -144,6 +144,11 @@ distclean::
+ 
+ CFLAGS += $(MOZ_ZLIB_CFLAGS)
+ 
++# Avoid GNU gcc bug #70526
++# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70526#c14
++CFLAGS += -fno-schedule-insns2
++CXXFLAGS += -fno-schedule-insns2
++
+ # Silence warnings on AIX/HP-UX from non-GNU compilers
+ ifndef GNU_CC
+ ifeq ($(OS_ARCH),AIX)
+
+</code></pre></td></tr></table>
+</div> <!-- class=content -->
+<div class='footer'>generated by <a href='https://git.zx2c4.com/cgit/about/'>cgit v1.1</a> at 2017-03-10 21:07:43 +0000</div>
+</div> <!-- id=cgit -->
+</body>
+</html>
