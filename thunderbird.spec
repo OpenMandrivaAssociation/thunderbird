@@ -207,7 +207,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	45.8.0
-Release:	2
+Release:	3
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -262,6 +262,7 @@ Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 Patch400:	thunderbird-appname.patch
 Patch401:	firefox-gcc-6.0.patch
+Patch402:	mozilla-1245783.patch
 
 %if %{official_branding}
 BuildRequires:	imagemagick
@@ -478,6 +479,7 @@ Calendar extension for Thunderbird.
 
 %patch400 -p1 -b .appname
 %patch401 -p1 -b .gcc6
+%patch402 -p1
 #===============================================================================
 # Enigmail
 %setup -q -T -D -n %{name}-%{version}/mozilla/extensions -a300
@@ -594,22 +596,17 @@ ac_add_options --enable-gio
 ac_add_options --enable-calendar
 ac_add_options --enable-strip
 ac_add_options --enable-official-branding
-ac_add_options --with-distribution-id=com.mandriva
 ac_add_options --enable-optimize
 ac_add_options --enable-startup-notification
-ac_add_options --disable-cpp-exceptions
 EOF
 
 # Mozilla builds with -Wall with exception of a few warnings which show up
 # everywhere in the code; so, don't override that.
 #
-# Disable C++ exceptions since Mozilla code is not exception-safe
-#
-# -fno-schedule-insns2 - fix crashing when built with gcc 6
-# as per https://bugzilla.mozilla.org/show_bug.cgi?id=1245783
-MOZ_OPT_FLAGS=$(echo "$RPM_OPT_FLAGS" | sed -e 's/-Wall//' -e 's/-fexceptions/-fno-exceptions/g')
-export CFLAGS="$MOZ_OPT_FLAGS -fno-schedule-insns2"
-export CXXFLAGS="$MOZ_OPT_FLAGS -fno-schedule-insns2"
+MOZ_OPT_FLAGS=$(echo "$RPM_OPT_FLAGS" | sed -e 's/-Wall//')
+MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -fno-delete-null-pointer-checks"
+export CFLAGS="$MOZ_OPT_FLAGS"
+export CXXFLAGS="$MOZ_OPT_FLAGS"
 export PREFIX="%{_prefix}"
 export LIBDIR="%{_libdir}"
 
