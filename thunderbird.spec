@@ -206,8 +206,8 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	45.8.0
-Release:	3
+Version:	52.0
+Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -261,8 +261,6 @@ Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 Patch400:	thunderbird-appname.patch
-Patch401:	firefox-gcc-6.0.patch
-Patch402:	mozilla-1245783.patch
 
 %if %{official_branding}
 BuildRequires:	imagemagick
@@ -286,6 +284,9 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(gl)
 BuildRequires:  pkgconfig(gstreamer-plugins-base-1.0)
 BuildRequires:	pkgconfig(gtk+-2.0)
+%if %mdvver >= 201500
+BuildRequires:  pkgconfig(gtk+-3.0)
+%endif
 BuildRequires:	pkgconfig(hunspell)
 BuildRequires:	pkgconfig(libevent) >= 1.4.7
 BuildRequires:	pkgconfig(libIDL-2.0)
@@ -309,6 +310,9 @@ Requires(post,postun):	desktop-file-utils
 Requires(post):	mktemp
 Requires(post,postun): rpm-helper
 Requires: xdg-utils
+%if %mdvver >= 201500
+Requires:       gtk3-modules
+%endif
 Obsoletes: mozilla-thunderbird < %{version}-%{release}
 Provides: mozilla-thunderbird = %{version}-%{release}
 
@@ -478,8 +482,6 @@ Calendar extension for Thunderbird.
 %patch304 -p0 -b .run-mozilla
 
 %patch400 -p1 -b .appname
-%patch401 -p1 -b .gcc6
-%patch402 -p1
 #===============================================================================
 # Enigmail
 %setup -q -T -D -n %{name}-%{version}/mozilla/extensions -a300
@@ -552,21 +554,19 @@ mk_add_options BUILD_OFFICIAL=1
 #mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
-ac_add_options --sysconfdir="%{_sysconfdir}"
-ac_add_options --mandir="%{_mandir}"
-ac_add_options --includedir="%{_includedir}"
-ac_add_options --datadir="%{_datadir}"
 ac_add_options --enable-application=mail
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
 ac_add_options --with-system-libevent
+%if %mdvver > 3000000
+ac_add_options --with-system-icu
+%endif
 %if %mdvver >= 201500
 ac_add_options --with-system-libvpx
 ac_add_options --with-system-png
 ac_add_options --enable-system-sqlite
-ac_add_options --with-system-icu
 %else
 ac_add_options --disable-system-png
 %endif
@@ -576,22 +576,16 @@ ac_add_options --enable-system-hunspell
 ac_add_options --with-pthreads
 ac_add_options --disable-tests
 ac_add_options --disable-debug
-ac_add_options --disable-installer
 ac_add_options --disable-updater
-ac_add_options --enable-xinerama
 ac_add_options --disable-crashreporter
+%if %mdvver >= 201500
+ac_add_options --enable-default-toolkit=cairo-gtk3
+%else
 ac_add_options --enable-default-toolkit=cairo-gtk2
-ac_add_options --disable-xprint
+%endif
 ac_add_options --disable-strip
-ac_add_options --enable-pango
 ac_add_options --enable-startup-notification
-ac_add_options --enable-svg
-ac_add_options --enable-canvas
-ac_add_options --enable-crypto
-ac_add_options --enable-mathml
-ac_add_options --enable-gstreamer=1.0
 ac_add_options --disable-gconf
-ac_add_options --disable-gnomevfs
 ac_add_options --enable-gio
 ac_add_options --enable-calendar
 ac_add_options --enable-strip
