@@ -3,13 +3,7 @@
 %define __libtoolize /bin/true
 %define __cputoolize /bin/true
 
-%define official_branding 1
-
-%if %{official_branding}
 %define title Mozilla Thunderbird
-%else
-%define title Mail/News
-%endif
 
 %define oname thunderbird
 %define thunderbird_package thunderbird
@@ -262,9 +256,7 @@ Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 Patch400:	thunderbird-appname.patch
 
-%if %{official_branding}
 BuildRequires:	imagemagick
-%endif
 BuildRequires:	autoconf2.1
 BuildRequires:	gzip
 BuildRequires:	python
@@ -490,10 +482,6 @@ Calendar extension for Thunderbird.
 %patch213 -p2 -b .enigmail-build-package-contents-rdf
 %endif
 
-%if !%{official_branding}
-%setup -q -T -D -n %{name}-%{version} -a302
-%endif
-
 %setup -q -T -D -n %{name}-%{version}
 
 #===============================================================================
@@ -648,11 +636,7 @@ rm -f extensions/spellcheck/locales/en-US/hunspell/en-US.{dic,aff}
 rm -rf %buildroot%tbdir/dictionaries
 ln -s /usr/share/dict/mozilla %buildroot%tbdir/dictionaries
 
-%if %{official_branding}
 install -p -D %{buildroot}/%{tbdir}/chrome/icons/default/default256.png %{buildroot}%{_datadir}/pixmaps/%{name}.png
-%else
-install -p -D %{SOURCE302} %{buildroot}%{_datadir}/pixmaps/%{name}.png
-%endif
 
 %{__install} -p -D %{SOURCE303} %{buildroot}/%{_datadir}/applications/mandriva-%{name}.desktop
 
@@ -672,7 +656,6 @@ rm -f %{buildroot}/mdv-default-prefs
 
 # icons
 mkdir -p %{buildroot}{%{_liconsdir},%{_iconsdir},%{_miconsdir}}
-%if %{official_branding}
 mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{16x16,22x22,24x24,32x32,48x48,256x256}/apps
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default48.png %{buildroot}%{_liconsdir}/%{name}.png
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default32.png %{buildroot}%{_iconsdir}/%{name}.png
@@ -683,21 +666,6 @@ install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default24.png %{buildr
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default32.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default48.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default256.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/%{name}.png
-%else
-#mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{64x64,128x128}/apps
-mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{16x16,22x22,24x24,32x32,48x48,64x64,128x128}/apps
-install -m 644 %{name}-48.png %{buildroot}%{_liconsdir}/%{name}.png
-install -m 644 %{name}-32.png %{buildroot}%{_iconsdir}/%{name}.png
-install -m 644 %{name}-16.png %{buildroot}%{_miconsdir}/%{name}.png
-# Converting up, but not a big issue now that we have official branding
-install -m 644 %{name}-16.png %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/%{name}.png
-install -m 644 %{name}-22.png %{buildroot}%{_datadir}/icons/hicolor/22x22/apps/%{name}.png
-install -m 644 %{name}-24.png %{buildroot}%{_datadir}/icons/hicolor/24x24/apps/%{name}.png
-install -m 644 %{name}-32.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
-install -m 644 %{name}-48.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
-install -m 644 %{name}-64.png %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/%{name}.png
-install -m 644 %{name}-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/%{name}.png
-%endif
 
 #===============================================================================
 
@@ -859,22 +827,12 @@ fi
 %{_iconsdir}/%{name}.png
 %{_liconsdir}/%{name}.png
 # other icons
-%if %{official_branding}
 %{_datadir}/icons/hicolor/16x16/apps/%{name}.png
 %{_datadir}/icons/hicolor/22x22/apps/%{name}.png
 %{_datadir}/icons/hicolor/24x24/apps/%{name}.png
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 %{_datadir}/icons/hicolor/48x48/apps/%{name}.png
 %{_datadir}/icons/hicolor/256x256/apps/%{name}.png
-%else
-%{_datadir}/icons/hicolor/16x16/apps/%{name}.png
-%{_datadir}/icons/hicolor/22x22/apps/%{name}.png
-%{_datadir}/icons/hicolor/24x24/apps/%{name}.png
-%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
-%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
-%{_datadir}/icons/hicolor/64x64/apps/%{name}.png
-%{_datadir}/icons/hicolor/128x128/apps/%{name}.png
-%endif
 # enigmail
 %exclude %{tbextdir}/%{enigmail_id}
 
