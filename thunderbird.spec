@@ -201,7 +201,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	52.0
-Release:	1
+Release:	0.1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -213,7 +213,6 @@ Source100:	thunderbird.rpmlintrc
 # Mandriva sources (Source300+)
 Source300:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz
 Source301:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz.asc
-Source302:      %{name}-icons.tar.gz
 Source303:	thunderbird.desktop
 # Language package template
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
