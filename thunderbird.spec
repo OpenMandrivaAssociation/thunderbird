@@ -213,7 +213,6 @@ Source100:	thunderbird.rpmlintrc
 # Mandriva sources (Source300+)
 Source300:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz
 Source301:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz.asc
-Source302:      %{name}-icons.tar.gz
 Source303:	thunderbird.desktop
 # Language package template
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
