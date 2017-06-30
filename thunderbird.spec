@@ -16,7 +16,7 @@
 %define objdir objdir
 
 %define xpi 0
-%define enigmail_version 1.9.6.1
+%define enigmail_version 1.9.8
 %define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
@@ -200,7 +200,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	52.1.0
+Version:	52.2.1
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -211,8 +211,8 @@ Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
 Source100:	thunderbird.rpmlintrc
 # Mandriva sources (Source300+)
-Source300:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz
-Source301:      http://www.mozilla-enigmail.org/download/source/enigmail-%{enigmail_version}.tar.gz.asc
+Source300:      http://enigmail.net/download/source/enigmail-%{enigmail_version}.tar.gz
+Source301:      http://enigmail.net/download/source/enigmail-%{enigmail_version}.tar.gz.asc
 Source303:	thunderbird.desktop
 # Language package template
 Source400:	mozilla-thunderbird-enigmail-l10n-template.in
