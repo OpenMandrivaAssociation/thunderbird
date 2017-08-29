@@ -16,7 +16,7 @@
 %define objdir objdir
 
 %define xpi 0
-%define enigmail_version 1.9.8
+%define enigmail_version 1.9.8.2
 %define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
@@ -200,7 +200,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	52.2.1
+Version:	52.3.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
