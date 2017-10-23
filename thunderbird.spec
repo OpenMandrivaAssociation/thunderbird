@@ -16,7 +16,7 @@
 %define objdir objdir
 
 %define xpi 0
-%define enigmail_version 1.9.8.2
+%define enigmail_version 1.9.8.3
 %define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
@@ -200,7 +200,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	52.3.0
+Version:	52.4.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -577,14 +577,15 @@ ac_add_options --enable-gio
 ac_add_options --enable-calendar
 ac_add_options --enable-strip
 ac_add_options --enable-official-branding
-ac_add_options --enable-optimize
+ac_add_options --enable-optimize="-O2"
 ac_add_options --enable-startup-notification
 EOF
 
 # Mozilla builds with -Wall with exception of a few warnings which show up
 # everywhere in the code; so, don't override that.
 #
-MOZ_OPT_FLAGS=$(echo "$RPM_OPT_FLAGS" | sed -e 's/-Wall//')
+# cb 23/10/2017 - remove Os as causes problems on gcc7 (missing UI)
+MOZ_OPT_FLAGS=$(echo "$RPM_OPT_FLAGS" | sed -e 's/-Wall//' | sed -e 's/-Os//g')
 MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -fno-delete-null-pointer-checks"
 export CFLAGS="$MOZ_OPT_FLAGS"
 export CXXFLAGS="$MOZ_OPT_FLAGS"
