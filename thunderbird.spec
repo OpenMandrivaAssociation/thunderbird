@@ -288,6 +288,8 @@ BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(vpx) >= 0.9.7
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
+BuildRequires:  rust >= 1.24.0
+BuildRequires:  cargo >= 0.25.0
 
 Requires:	%{sqlite3_libname} >= %{sqlite3_version}
 Requires:	%{nss_libname} >= 2:%{nss_version}
@@ -522,6 +524,7 @@ cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
 #mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
+ac_add_options --enable-application=comm/mail
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
 ac_add_options --with-system-nspr
@@ -551,6 +554,10 @@ ac_add_options --enable-strip
 ac_add_options --enable-official-branding
 ac_add_options --enable-optimize="-O2"
 ac_add_options --enable-startup-notification
+ac_add_options --enable-pie
+%ifarch x86_64 aarch64
+ac_add_options --enable-rust-simd
+%endif
 EOF
 
 export LDFLAGS="%{ldflags}"
