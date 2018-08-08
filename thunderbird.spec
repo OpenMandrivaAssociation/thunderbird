@@ -16,7 +16,7 @@
 %define objdir objdir
 
 %define xpi 0
-%define enigmail_version 2.0.7
+%define enigmail_version 2.0.8
 %define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
@@ -46,7 +46,7 @@
 %define xpidir http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/linux-i686/xpi/
 
 # Supported l10n language lists
-%define langlist  ar ast be bg bn_BD br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pa_IN pl pt_BR pt_PT ro ru si sk sl sq sr sv_SE ta_LK tr uk vi zh_CN zh_TW
+%define langlist  ar ast be bg br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pl pt_BR pt_PT ro ru si sk sl sq sr sv_SE tr uk vi zh_CN zh_TW
 
 # Disabled l10n languages, for any reason
 %define disabled_langlist gu_IN mk sr af rm
@@ -200,7 +200,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	52.9.0
+Version:	60.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -237,11 +237,9 @@ Source401:	thunderbird-l10n-template.in
 }
 %endif
 # Build patches
-Patch2:         mozilla-firefox-1.0-prdtoa.patch
 #
 # Fedora patches (Patch100+)
 #
-Patch100:	 thunderbird-objdir.patch
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
@@ -275,9 +273,7 @@ BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(gl)
 BuildRequires:  pkgconfig(gstreamer-plugins-base-1.0)
 BuildRequires:	pkgconfig(gtk+-2.0)
-%if %mdvver >= 201500
 BuildRequires:  pkgconfig(gtk+-3.0)
-%endif
 BuildRequires:	pkgconfig(hunspell)
 BuildRequires:	pkgconfig(libevent) >= 1.4.7
 BuildRequires:	pkgconfig(libIDL-2.0)
@@ -291,9 +287,7 @@ BuildRequires:	pkgconfig(xft)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(vpx) >= 0.9.7
 BuildRequires:	pkgconfig(zlib)
-%if %mdkversion >= 201500
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
-%endif
 
 Requires:	%{sqlite3_libname} >= %{sqlite3_version}
 Requires:	%{nss_libname} >= 2:%{nss_version}
@@ -301,9 +295,7 @@ Requires(post,postun):	desktop-file-utils
 Requires(post):	mktemp
 Requires(post,postun): rpm-helper
 Requires: xdg-utils
-%if %mdvver >= 201500
 Requires:       gtk3-modules
-%endif
 Obsoletes: mozilla-thunderbird < %{version}-%{release}
 Provides: mozilla-thunderbird = %{version}-%{release}
 
@@ -463,19 +455,15 @@ Calendar extension for Thunderbird.
 
 %setup -q -n %{name}-%{version}
 
-%patch2 -p0
+%patch201 -p1 -b .default_mail
 
-%patch100 -p2 -b .objdir
-%patch201 -p2 -b .default_mail
-
-%patch300 -p0 -b .progname
+%patch300 -p1 -b .progname
 %patch301 -p1 -b .enigmailpackage
-%patch304 -p0 -b .run-mozilla
+%patch304 -p1 -b .run-mozilla
 
-%patch400 -p1 -b .appname
 #===============================================================================
 # Enigmail
-%setup -q -T -D -n %{name}-%{version}/mozilla/extensions -a300
+%setup -q -T -D -n %{name}-%{version}/extensions -a300
 %if 0
 %patch212 -p2 -b .enigmail-ui-content-contents-rdf
 %patch213 -p2 -b .enigmail-build-package-contents-rdf
@@ -517,10 +505,6 @@ for lang in %langlist; do
 done
 
 %build
-%if %mdvver >= 201500
-
-# fix build with freetype 2.6
-sed -i '/^ftglyph.h/ i ftfntfmt.h' mozilla/config/system-headers
 
 %ifarch %arm
 # arm still requires gcc
@@ -532,7 +516,6 @@ export CXX=g++
 export CC=gcc
 %global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
 %endif 
-%endif
 
 export MOZCONFIG=`pwd`/.mozconfig
 cat > $MOZCONFIG << EOF
@@ -541,79 +524,47 @@ mk_add_options BUILD_OFFICIAL=1
 #mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
-ac_add_options --enable-application=mail
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
-ac_add_options --with-system-libevent
 %if %mdvver > 3000000
+ac_add_options --with-system-libevent
 ac_add_options --with-system-icu
+ac_add_options --enable-system-hunspell
 %endif
-%if %mdvver >= 201500
 ac_add_options --with-system-libvpx
 ac_add_options --with-system-png
 ac_add_options --enable-system-sqlite
-%else
-ac_add_options --disable-system-png
-%endif
 ac_add_options --disable-system-cairo
 ac_add_options --with-system-bz2
-ac_add_options --enable-system-hunspell
 ac_add_options --with-pthreads
 ac_add_options --disable-tests
 ac_add_options --disable-debug
 ac_add_options --disable-updater
 ac_add_options --disable-crashreporter
-%if %mdvver >= 201500
 ac_add_options --enable-default-toolkit=cairo-gtk3
-%else
-ac_add_options --enable-default-toolkit=cairo-gtk2
-%endif
 ac_add_options --disable-strip
 ac_add_options --enable-startup-notification
 ac_add_options --disable-gconf
-ac_add_options --enable-gio
-ac_add_options --enable-calendar
 ac_add_options --enable-strip
 ac_add_options --enable-official-branding
 ac_add_options --enable-optimize="-O2"
 ac_add_options --enable-startup-notification
 EOF
 
-# Mozilla builds with -Wall with exception of a few warnings which show up
-# everywhere in the code; so, don't override that.
-#
-# cb 23/10/2017 - remove Os as causes problems on gcc7 (missing UI)
-MOZ_OPT_FLAGS=$(echo "$RPM_OPT_FLAGS" | sed -e 's/-Wall//' | sed -e 's/-Os//g')
-MOZ_OPT_FLAGS="$MOZ_OPT_FLAGS -fno-delete-null-pointer-checks"
-export CFLAGS="$MOZ_OPT_FLAGS"
-export CXXFLAGS="$MOZ_OPT_FLAGS"
-export PREFIX="%{_prefix}"
-export LIBDIR="%{_libdir}"
-
-MOZ_SMP_FLAGS=-j1
-# On x86 architectures, Mozilla can build up to 4 jobs at once in parallel,
-# however builds tend to fail on other arches when building in parallel.
-%ifarch %{ix86} x86_64
-[ -z "$RPM_BUILD_NCPUS" ] && \
-     RPM_BUILD_NCPUS="`/usr/bin/getconf _NPROCESSORS_ONLN`"
-[ "$RPM_BUILD_NCPUS" -ge 2 ] && MOZ_SMP_FLAGS=-j2
-[ "$RPM_BUILD_NCPUS" -ge 4 ] && MOZ_SMP_FLAGS=-j4
-%endif
-
 export LDFLAGS="%{ldflags}"
-make -f client.mk build STRIP="/bin/true" MOZ_MAKE_FLAGS="$MOZ_SMP_FLAGS" MOZ_PKG_FATAL_WARNINGS=0
+./mach build
 
 #===============================================================================
 
-pushd mozilla/extensions/enigmail
+pushd extensions/enigmail
 %configure
 make PYTHON=python2
 popd
 
 
-pushd mozilla/extensions/enigmail
+pushd extensions/enigmail
 (cd lang
  chmod 0755 ./make-lang.sh
  for i in `cat current-languages.txt`; do
@@ -631,7 +582,7 @@ mkdir -p %buildroot%tbdir
 
 rm -f extensions/spellcheck/locales/en-US/hunspell/en-US.{dic,aff}
 
-%makeinstall_std -f client.mk STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0
+DESTDIR=%buildroot STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0 ./mach install
 
 rm -rf %buildroot%tbdir/dictionaries
 ln -s /usr/share/dict/mozilla %buildroot%tbdir/dictionaries
@@ -671,17 +622,17 @@ install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default256.png %{build
 
 mkdir -p %{buildroot}%{tbextdir}/%{enigmail_id}
 %if !%{xpi}
-%{_bindir}/unzip -q mozilla/extensions/enigmail/build/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
+%{_bindir}/unzip -q extensions/enigmail/build/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
 %{__chmod} 644 %{buildroot}%{tbextdir}/%{enigmail_id}/chrome.manifest
 %else
-cp -aL mozilla/extensions/enigmail/build/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
+cp -aL extensions/enigmail/build/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
 %endif
 
 #==============================================================================
 #enigmail lang package
 # Convert rpm macros to bash variables
 %{expand:%(for lang in %em_langlist; do echo "language_$lang=%%{em_language_$lang}"; done)}
-pushd mozilla/extensions/enigmail/lang
+pushd extensions/enigmail/lang
  for lang in %em_langlist; do
     mkdir -p %{buildroot}%{_datadir}/mozilla/extensions/%{tb_appid}/enigmail-$lang@enigmail.mozdev.org
     language="language_$lang"
