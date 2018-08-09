@@ -8,12 +8,13 @@
 %define oname thunderbird
 %define thunderbird_package thunderbird
 %define tb_appid \{3550f703-e582-4d05-9a08-453d09bdfdc6\}
-%define tbdir %{_libdir}/%{oname}-%{version}
+%define tbdir %{_libdir}/%{oname}
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
+%define tbdistextdir %{tbdir}/distribution/extensions
 %define tblangdir %{_datadir}/mozilla/extensions/%{tb_appid}
 
 
-%define objdir objdir
+%define objdir obj
 
 %define xpi 0
 %define enigmail_version 2.0.8
@@ -246,6 +247,7 @@ Patch201:       mozilla-thunderbird-default-mailer.patch
 Patch212:       mozilla-thunderbird-enigmail-ui-content-contents-rdf.patch
 Patch213:       mozilla-thunderbird-enigmail-build-package-contents-rdf.patch
 Patch215:	mozilla-thunderbird-enigmail-visibility.patch
+Patch216:	Build-also-gdata-provider-as-xpi-file.patch
 # Mandriva patches (Patch300+)
 Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch301:       mozilla-thunderbird-enigmail-package.patch
@@ -431,14 +433,6 @@ Main Features
 
 #===============================================================================
 
-%package -n nsinstall
-Summary:        Netscape portable install command
-Group:          Development/Other
-
-%description -n nsinstall
-Netscape portable install command.
-
-#===============================================================================
 %package lightning
 Summary:	Calendar extension for Thunderbird
 Group:		Networking/Mail
@@ -458,7 +452,7 @@ Calendar extension for Thunderbird.
 %setup -q -n %{name}-%{version}
 
 %patch201 -p1 -b .default_mail
-
+%patch216 -p1 -b .gdata
 %patch300 -p1 -b .progname
 %patch301 -p1 -b .enigmailpackage
 %patch304 -p1 -b .run-mozilla
@@ -524,7 +518,9 @@ cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
 #mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
+mk_add_options MOZ_OBJDIR=`pwd`/%{objdir}
 ac_add_options --enable-application=comm/mail
+ac_add_options --enable-calendar
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
 ac_add_options --with-system-nspr
@@ -587,14 +583,12 @@ popd
 mkdir -p %{buildroot}{%{_libdir},%{_bindir},%{_datadir}/applications}
 mkdir -p %buildroot%tbdir
 
-rm -f extensions/spellcheck/locales/en-US/hunspell/en-US.{dic,aff}
+#rm -f extensions/spellcheck/locales/en-US/hunspell/en-US.{dic,aff}
 
 DESTDIR=%buildroot STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0 ./mach install
 
 rm -rf %buildroot%tbdir/dictionaries
 ln -s /usr/share/dict/mozilla %buildroot%tbdir/dictionaries
-
-install -p -D %{buildroot}/%{tbdir}/chrome/icons/default/default256.png %{buildroot}%{_datadir}/pixmaps/%{name}.png
 
 %{__install} -p -D %{SOURCE303} %{buildroot}/%{_datadir}/applications/mandriva-%{name}.desktop
 
@@ -614,7 +608,7 @@ rm -f %{buildroot}/mdv-default-prefs
 
 # icons
 mkdir -p %{buildroot}{%{_liconsdir},%{_iconsdir},%{_miconsdir}}
-mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{16x16,22x22,24x24,32x32,48x48,256x256}/apps
+mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{16x16,22x22,24x24,32x32,48x48,128x128}/apps
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default48.png %{buildroot}%{_liconsdir}/%{name}.png
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default32.png %{buildroot}%{_iconsdir}/%{name}.png
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default16.png %{buildroot}%{_miconsdir}/%{name}.png
@@ -623,7 +617,7 @@ install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default22.png %{buildr
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default24.png %{buildroot}%{_datadir}/icons/hicolor/24x24/apps/%{name}.png
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default32.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default48.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
-install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default256.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/%{name}.png
 
 #===============================================================================
 
@@ -651,16 +645,12 @@ popd
 #===============================================================================
 # lightning ext here
 pushd %{objdir}/dist/xpi-stage/
-  for ext in {gdata-provider,lightning}; do
+  for ext in {gdata-provider,}; do
     hash="$(sed -n '/^    <em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' $ext/install.rdf)"
     mkdir -p %buildroot%{tbextdir}/$hash
     %{_bindir}/unzip -q $ext-*.xpi -d %buildroot%{tbextdir}/$hash/
   done
 popd
-
-#===============================================================================
-
-cp -aL %{objdir}/dist/bin/nsinstall %{buildroot}%{_bindir}
 
 #==============================================================================
 #exclude devel files
@@ -772,10 +762,9 @@ fi
 #===============================================================================
 
 %files
-%doc mozilla/LEGAL
+%doc LEGAL
 %attr(755,root,root) %{_bindir}/thunderbird
 %attr(644,root,root) %{_datadir}/applications/*.desktop
-%attr(644,root,root) %{_datadir}/pixmaps/%{name}.png
 %{tbdir}
 %if %{xpi}
 %dir %{tbextdir}
@@ -790,16 +779,16 @@ fi
 %{_datadir}/icons/hicolor/24x24/apps/%{name}.png
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 %{_datadir}/icons/hicolor/48x48/apps/%{name}.png
-%{_datadir}/icons/hicolor/256x256/apps/%{name}.png
+%{_datadir}/icons/hicolor/128x128/apps/%{name}.png
 # enigmail
 %exclude %{tbextdir}/%{enigmail_id}
+%exclude %{tbdistextdir}/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi
 
 %files enigmail
 %{tbextdir}/%{enigmail_id}
 
-%files -n nsinstall
-%{_bindir}/nsinstall
-
 %files lightning
 %{tbextdir}/{a62ef8ec-5fdc-40c2-873c-223b8a6925cc}
-%{tbextdir}/{e2fda1a4-762b-4020-b5ad-a41df1933103}
+%{tbdistextdir}/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi
+
+
