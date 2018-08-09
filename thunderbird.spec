@@ -216,7 +216,6 @@ Source300:      http://enigmail.net/download/source/enigmail-%{enigmail_version}
 Source301:      http://enigmail.net/download/source/enigmail-%{enigmail_version}.tar.gz.asc
 Source303:	thunderbird.desktop
 # Language package template
-Source400:	mozilla-thunderbird-enigmail-l10n-template.in
 Source401:	thunderbird-l10n-template.in
 # l10n sources
 %{expand:%(\
@@ -308,68 +307,7 @@ Provides: mozilla-thunderbird = %{version}-%{release}
 makes emailing safer, faster and easier than ever before.
 
 #===============================================================================
-# enigmail-l10n
-# Supported l10n language lists
-%define em_l10n_langlist	ar ca cs de el es fi fr it ja ko nb nl pl pt pt_BR ru sl sv tr vi zh_CN zh_TW
-
-# Disabled l10n languages, for any reason
-# nl sk es_AR do not support 0.95.0 yet
-%define em_disabled_l10n_langlist	hu
-# define disabled_l10n_langlist %{nil}
-
-# Language descriptions
-%define em_language_ar ar
-%define em_langname_ar Arabic
-%define em_language_ca ca
-%define em_langname_ca Catalan
-%define em_language_cs cs
-%define em_langname_cs Czech
-%define em_language_de de
-%define em_langname_de German
-%define em_language_el el
-%define em_langname_el Greek
-%define em_language_es_AR es-AR
-%define em_langname_es_AR Spanish (Argentina)
-%define em_language_es es-ES
-%define em_langname_es Spanish
-%define em_language_fi fi
-%define em_langname_fi Finnish
-%define em_language_fr fr
-%define em_langname_fr French
-%define em_language_hu hu
-%define em_langname_hu Hungarian
-%define em_language_it it
-%define em_langname_it Italian
-%define em_language_ja ja
-%define em_langname_ja Japanese
-%define em_language_ko ko
-%define em_langname_ko Korean
-%define em_language_nb nb-NO
-%define em_langname_nb Norwegian Bokmaal
-%define em_langname_nl Dutch
-%define em_language_nl nl
-%define em_language_pl pl
-%define em_langname_pl Polish
-%define em_langname_pt Portuguese
-%define em_language_pt pt-PT
-%define em_language_pt_BR pt-BR
-%define em_langname_pt_BR Brazilian portuguese
-%define em_language_ru ru
-%define em_langname_ru Russian
-%define em_language_sk sk
-%define em_langname_sk Slovak
-%define em_language_sl sl
-%define em_langname_sl Slovenian
-%define em_language_sv sv-SE
-%define em_langname_sv Swedish
-%define em_language_tr tr
-%define em_langname_tr Turkish
-%define em_language_vi vi
-%define em_langname_vi Vietnamese
-%define em_language_zh_CN zh-CN
-%define em_langname_zh_CN Simplified Chinese
-%define em_language_zh_TW zh-TW
-%define em_langname_zh_TW Traditional Chinese
+# l10n
 
 # Expand all languages packages.
 %{expand:%(\
@@ -380,23 +318,10 @@ makes emailing safer, faster and easier than ever before.
         )
 }
 
-# --- Danger line ---
-
-# All langs
-%{expand:%%define em_langlist %(for lang in %em_l10n_langlist; do echo "$lang"; done | sort -u | sed ':a;$!N;s/\n/ /;ta')}
-
-# Locales
-%{expand:%(for lang in %em_l10n_langlist; do echo "%%define em_locale_$lang `echo $lang | cut -d _ -f 1` "; done)}
-
-# Expand all languages packages.
-%{expand:%(\
-	for lang in %em_langlist; do\
-		echo "%%{expand:%%(sed "s!__LANG__!$lang!g" %{SOURCE400} 2> /dev/null)}";\
-	done\
-	)
-}
-
-
+#===============================================================================
+# enigmail-l10n
+# Supported l10n language lists
+%define em_l10n_langlist	ar ca cs de el es fi fr hu it ja ko nb nl pl pt pt_BR ru sl sv tr vi zh_CN zh_TW
 
 #===============================================================================
 
@@ -411,9 +336,9 @@ Requires(post,postun):	mktemp
 Suggests:	pinentry-gtk2
 Obsoletes:	mozilla-thunderbird-enigmail < %{version}-%{release}
 Provides:	mozilla-thunderbird-enigmail = %{version}-%{release}
-%(for lang in %em_l10n_langlist %em_disabled_l10n_langlist; do
-    echo "Obsoletes: mozilla-thunderbird-enigmail-$lang < %{version}-%{release}"
-    echo "Obsoletes: mozilla-thunderbird-enigmail-l10n-$lang < %{version}-%{release}"
+%(for lang in %em_l10n_langlist; do
+    echo "Obsoletes: mozilla-thunderbird-enigmail-$lang"
+    echo "Obsoletes: mozilla-thunderbird-enigmail-l10n-$lang"
 done)
 
 %description enigmail
@@ -567,16 +492,6 @@ make PYTHON=python2
 popd
 
 
-pushd extensions/enigmail
-(cd lang
- chmod 0755 ./make-lang.sh
- for i in `cat current-languages.txt`; do
-   ./make-lang.sh $i %{enigmail_short_version}
- done
-)
-
-popd
-
 #===============================================================================
 
 %install
@@ -628,19 +543,6 @@ mkdir -p %{buildroot}%{tbextdir}/%{enigmail_id}
 %else
 cp -aL extensions/enigmail/build/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
 %endif
-
-#==============================================================================
-#enigmail lang package
-# Convert rpm macros to bash variables
-%{expand:%(for lang in %em_langlist; do echo "language_$lang=%%{em_language_$lang}"; done)}
-pushd extensions/enigmail/lang
- for lang in %em_langlist; do
-    mkdir -p %{buildroot}%{_datadir}/mozilla/extensions/%{tb_appid}/enigmail-$lang@enigmail.mozdev.org
-    language="language_$lang"
-    language=${!language}
-    %{_bindir}/unzip -q enigmail-${language}-%{enigmail_short_version}.xpi -d %{buildroot}%{_datadir}/mozilla/extensions/%{tb_appid}/enigmail-$lang@enigmail.mozdev.org/
- done
-popd
 
 #===============================================================================
 # lightning ext here
