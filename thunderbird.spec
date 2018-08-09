@@ -291,6 +291,8 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
 BuildRequires:  rust >= 1.24.0
 BuildRequires:  cargo >= 0.25.0
+BuildRequires:	clang-devel
+BuildRequires:	llvm-devel
 
 Requires:	%{sqlite3_libname} >= %{sqlite3_version}
 Requires:	%{nss_libname} >= 2:%{nss_version}
