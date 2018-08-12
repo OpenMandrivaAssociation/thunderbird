@@ -263,7 +263,7 @@ BuildRequires:	yasm >= 1.0.1
 BuildRequires:	zip
 BuildRequires:	jpeg-devel
 BuildRequires:	libiw-devel
-BuildRequires:	nss-static-devel >= 2:3.13.2
+BuildRequires:	nss-static-devel
 BuildRequires:	icu-devel
 BuildRequires:	python-devel
 BuildRequires:	python-virtualenv
