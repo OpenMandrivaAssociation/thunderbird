@@ -295,7 +295,7 @@ BuildRequires:	clang-devel
 BuildRequires:	llvm-devel
 
 Requires:	%{sqlite3_libname} >= %{sqlite3_version}
-Requires:	%{nss_libname} >= 2:%{nss_version}
+Requires:	%{nss_libname} >= %{nss_version}
 Requires(post,postun):	desktop-file-utils
 Requires(post):	mktemp
 Requires(post,postun): rpm-helper
