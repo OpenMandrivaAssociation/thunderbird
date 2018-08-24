@@ -1,9 +1,9 @@
-pref("general.useragent.vendor", "Mandriva");
+pref("general.useragent.vendor", "OpenMandriva");
 pref("general.useragent.vendorSub", "THUNDERBIRD_RPM_VR");
 pref("general.useragent.vendorComment", "THUNDERBIRD_VENDOR_COMMENT");
 
 # Follow system locale
-pref("intl.locale.matchOS", true);
+pref("intl.locale.requested", "");
 
 # extensions.autoDisableScopes is a new preference added in firefox 8
 # it defines "scopes" where newly installed addons are disabled by default

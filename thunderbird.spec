@@ -202,12 +202,12 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	60.0
-Release:	1
+Release:	2
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
 Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
-Source12:       mozilla-thunderbird-mandriva-default-prefs.js
+Source12:       mozilla-thunderbird-omv-default-prefs.js
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
 Source100:	thunderbird.rpmlintrc
@@ -518,7 +518,7 @@ install -m 755 %{SOURCE31} %{buildroot}%{tbdir}/open-browser.sh
 %{__cat} %{SOURCE12} | %{__perl} -p -e 's,THUNDERBIRD_RPM_VR,%{version}-%{release},g;' \
                                     -e 's,THUNDERBIRD_VENDOR_COMMENT,%{mandriva_release},g;' \
   > %{buildroot}/mdv-default-prefs
-cp -a %{buildroot}/mdv-default-prefs %{buildroot}%{tbdir}/defaults/pref/all-mandriva.js
+cp -a %{buildroot}/mdv-default-prefs %{buildroot}%{tbdir}/defaults/pref/all-omv.js
 rm -f %{buildroot}/mdv-default-prefs
 
 #===============================================================================
