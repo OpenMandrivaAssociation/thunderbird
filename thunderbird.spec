@@ -257,7 +257,7 @@ Patch400:	thunderbird-appname.patch
 BuildRequires:	imagemagick
 BuildRequires:	autoconf2.1
 BuildRequires:	gzip
-BuildRequires:	python
+BuildRequires:	python2
 BuildRequires:	unzip
 BuildRequires:	yasm >= 1.0.1
 BuildRequires:	zip
@@ -265,8 +265,7 @@ BuildRequires:	jpeg-devel
 BuildRequires:	libiw-devel
 BuildRequires:	nss-static-devel
 BuildRequires:	icu-devel
-BuildRequires:	python-devel
-BuildRequires:	python-virtualenv
+BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
