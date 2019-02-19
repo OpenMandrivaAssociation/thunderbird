@@ -458,7 +458,9 @@ ac_add_options --with-system-libevent
 ac_add_options --with-system-icu
 ac_add_options --enable-system-hunspell
 %endif
+%if %mdvver <= 3000000
 ac_add_options --with-system-libvpx
+%endif
 ac_add_options --with-system-png
 ac_add_options --enable-system-sqlite
 ac_add_options --disable-system-cairo
