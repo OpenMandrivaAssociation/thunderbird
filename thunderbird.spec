@@ -480,7 +480,9 @@ ac_add_options --enable-optimize="-O2"
 ac_add_options --enable-startup-notification
 ac_add_options --enable-pie
 %ifarch x86_64 aarch64
-ac_add_options --enable-rust-simd
+# ERROR: --enable-rust-simd does not work with Rust 1.33 or later. 
+# See https://bugzilla.mozilla.org/show_bug.cgi?id=1521249 .
+# ac_add_options --enable-rust-simd
 %endif
 EOF
 
@@ -695,5 +697,3 @@ fi
 %files lightning
 %{tbextdir}/{a62ef8ec-5fdc-40c2-873c-223b8a6925cc}
 %{tbdistextdir}/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi
-
-
