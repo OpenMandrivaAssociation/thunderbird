@@ -240,6 +240,7 @@ Source401:	thunderbird-l10n-template.in
 #
 # Fedora patches (Patch100+)
 #
+Patch101:	rust-1.33-build.patch
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
@@ -377,6 +378,7 @@ Calendar extension for Thunderbird.
 
 %setup -q -n %{name}-%{version}
 
+%patch101 -p1 -b .rust133
 %patch201 -p1 -b .default_mail
 %patch216 -p1 -b .gdata
 %patch300 -p1 -b .progname
