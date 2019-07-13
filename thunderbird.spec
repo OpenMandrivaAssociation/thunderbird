@@ -17,7 +17,7 @@
 %define objdir obj
 
 %define xpi 0
-%define enigmail_version 2.0.11
+%define enigmail_version 2.0.12
 %define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	60.7.2
+Version:	60.8.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -241,6 +241,7 @@ Source401:	thunderbird-l10n-template.in
 # Fedora patches (Patch100+)
 #
 Patch101:	rust-1.33-build.patch
+#
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
