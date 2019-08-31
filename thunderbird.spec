@@ -480,7 +480,6 @@ ac_add_options --with-system-zlib
 %if %mdvver > 3000000
 ac_add_options --with-system-libevent
 ac_add_options --with-system-icu
-ac_add_options --enable-system-hunspell
 %endif
 %if %mdvver <= 3000000
 ac_add_options --with-system-libvpx
