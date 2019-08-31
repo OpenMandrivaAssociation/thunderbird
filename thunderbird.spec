@@ -294,8 +294,9 @@ BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(vpx) >= 0.9.7
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
-BuildRequires:  rust >= 1.24.0
-BuildRequires:  cargo >= 0.25.0
+BuildRequires:  rust >= 1.34.0
+BuildRequires:  cargo >= 0.35.0
+BuildRequires:  nodejs >= 8.12
 BuildRequires:	clang-devel
 BuildRequires:	llvm-devel
 
