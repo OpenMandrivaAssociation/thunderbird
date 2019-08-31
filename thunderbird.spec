@@ -242,6 +242,7 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
+Patch1:	bz1554949.patch
 # Fedora patches (Patch100+)
 #
 #Patch101:	rust-1.33-build.patch
@@ -384,6 +385,8 @@ Calendar extension for Thunderbird.
 %prep
 
 %setup -q -n %{name}-%{version}
+
+%patch1 -p1 -b .1554949
 
 #patch101 -p1 -b .rust133
 %patch201 -p1 -b .default_mail
