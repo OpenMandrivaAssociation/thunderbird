@@ -266,6 +266,7 @@ BuildRequires:	gzip
 BuildRequires:	python2
 BuildRequires:	unzip
 BuildRequires:	yasm >= 1.0.1
+BuildRequires:	nasm
 BuildRequires:	zip
 BuildRequires:	jpeg-devel
 BuildRequires:	libiw-devel
