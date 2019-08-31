@@ -17,9 +17,12 @@
 %define objdir obj
 
 %define xpi 0
-%define enigmail_version 2.0.12
+%define enigmail_version 2.1.2
 %define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
+
+%define lightning_id \{e2fda1a4-762b-4020-b5ad-a41df1933103\}
+%define gdata_id  \{a62ef8ec-5fdc-40c2-873c-223b8a6925cc\}
 
 %define _provides_exceptions libgtkembedmoz.so\\|libxpcom.so
 %define _requires_exceptions libgtkembedmoz.so\\|libxpcom.so
@@ -201,13 +204,14 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	60.8.0
+Version:	68.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
 Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
 Source12:       mozilla-thunderbird-omv-default-prefs.js
+Source22:       cbindgen-vendor.tar.xz
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
 Source100:	thunderbird.rpmlintrc
@@ -240,7 +244,7 @@ Source401:	thunderbird-l10n-template.in
 #
 # Fedora patches (Patch100+)
 #
-Patch101:	rust-1.33-build.patch
+#Patch101:	rust-1.33-build.patch
 #
 # Debian patches (Patch200+)
 #
@@ -379,12 +383,26 @@ Calendar extension for Thunderbird.
 
 %setup -q -n %{name}-%{version}
 
-%patch101 -p1 -b .rust133
+#patch101 -p1 -b .rust133
 %patch201 -p1 -b .default_mail
-%patch216 -p1 -b .gdata
+#patch216 -p1 -b .gdata
 %patch300 -p1 -b .progname
 %patch301 -p1 -b .enigmailpackage
 %patch304 -p1 -b .run-mozilla
+
+mkdir -p my_rust_vendor
+cd my_rust_vendor
+tar xf %{SOURCE22}
+cd -
+mkdir -p .cargo
+cat > .cargo/config <<EOL
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "$(pwd)/my_rust_vendor"
+EOL
+env CARGO_HOME=.cargo cargo install cbindgen
 
 #===============================================================================
 # Enigmail
@@ -442,6 +460,9 @@ export CC=gcc
 %global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
 %endif 
 
+export PATH=$(pwd)/.cargo/bin:$PATH
+
+
 export MOZCONFIG=`pwd`/.mozconfig
 cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
@@ -465,10 +486,11 @@ ac_add_options --enable-system-hunspell
 ac_add_options --with-system-libvpx
 %endif
 ac_add_options --with-system-png
+%if %mdvver > 3000000
 ac_add_options --enable-system-sqlite
+%endif
 ac_add_options --disable-system-cairo
 ac_add_options --with-system-bz2
-ac_add_options --with-pthreads
 ac_add_options --disable-tests
 ac_add_options --disable-debug
 ac_add_options --disable-updater
@@ -481,7 +503,6 @@ ac_add_options --enable-strip
 ac_add_options --enable-official-branding
 ac_add_options --enable-optimize="-O2"
 ac_add_options --enable-startup-notification
-ac_add_options --enable-pie
 %ifarch x86_64 aarch64
 # ERROR: --enable-rust-simd does not work with Rust 1.33 or later. 
 # See https://bugzilla.mozilla.org/show_bug.cgi?id=1521249 .
@@ -557,9 +578,8 @@ cp -aL extensions/enigmail/build/enigmail-%{enigmail_short_version}*.xpi %{build
 # lightning ext here
 pushd %{objdir}/dist/xpi-stage/
   for ext in {gdata-provider,}; do
-    hash="$(sed -n '/^    <em:id>\(.*\)<\/em:id>.*/{s//\1/p;q}' $ext/install.rdf)"
-    mkdir -p %buildroot%{tbextdir}/$hash
-    %{_bindir}/unzip -q $ext-*.xpi -d %buildroot%{tbextdir}/$hash/
+    mkdir -p %buildroot%{tbextdir}/%{gdata_id}
+    %{_bindir}/unzip -q ${ext}.xpi -d %buildroot%{tbextdir}/%{gdata_id}/
   done
 popd
 
@@ -693,11 +713,11 @@ fi
 %{_datadir}/icons/hicolor/128x128/apps/%{name}.png
 # enigmail
 %exclude %{tbextdir}/%{enigmail_id}
-%exclude %{tbdistextdir}/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi
+%exclude %{tbdistextdir}/%{lightning_id}.xpi
 
 %files enigmail
 %{tbextdir}/%{enigmail_id}
 
 %files lightning
-%{tbextdir}/{a62ef8ec-5fdc-40c2-873c-223b8a6925cc}
-%{tbdistextdir}/{e2fda1a4-762b-4020-b5ad-a41df1933103}.xpi
+%{tbextdir}/%{gdata_id}
+%{tbdistextdir}/%{lightning_id}.xpi
