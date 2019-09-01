@@ -462,11 +462,11 @@ export CC=gcc
 # (tpg) clang works, just export it to be sure it is used
 export CXX=g++
 export CC=gcc
-%global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
+%global optflags %optflags -Wno-error -Wno-format-security
 %endif 
 
 %ifarch %ix86
-%global optflags %{optflags} -g0 -fno-exceptions -Wno-format-security
+%global optflags %{optflags} -g0 -fno-exceptions
 %global ldflags %{ldflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 # avoid oom with rust
 export RUSTFLAGS="-Cdebuginfo=0"
