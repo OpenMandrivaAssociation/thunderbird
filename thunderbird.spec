@@ -472,6 +472,8 @@ export CC=gcc
 export RUSTFLAGS="-Cdebuginfo=0"
 %endif
 
+%setup_compile_flags
+
 export PATH=$(pwd)/.cargo/bin:$PATH
 
 
@@ -528,7 +530,6 @@ ac_add_options --enable-startup-notification
 %endif
 EOF
 
-export LDFLAGS="%{ldflags}"
 ./mach build
 
 #===============================================================================
