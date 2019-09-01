@@ -465,6 +465,13 @@ export CC=gcc
 %global optflags %optflags -Wno-error -Wno-null-conversion -Wno-inconsistent-missing-override
 %endif 
 
+%ifarch %ix86
+%global optflags %{optflags} -g0 -fno-exceptions -Wno-format-security
+%global ldflags %{ldflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
+# avoid oom with rust
+export RUSTFLAGS="-Cdebuginfo=0"
+%endif
+
 export PATH=$(pwd)/.cargo/bin:$PATH
 
 
@@ -506,7 +513,12 @@ ac_add_options --disable-gconf
 ac_add_options --enable-strip
 ac_add_options --enable-update-channel=release
 ac_add_options --enable-official-branding
+%ifarch %{ix86}
+ac_add_options --enable-linker=bfd
+ac_add_options --disable-optimize
+%else
 ac_add_options --enable-optimize="-O2"
+%endif
 ac_add_options --enable-startup-notification
 %ifarch x86_64 aarch64
 # ERROR: --enable-rust-simd does not work with Rust 1.33 or later. 
