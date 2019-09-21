@@ -204,7 +204,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	68.0
+Version:	68.1.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -242,7 +242,6 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
-Patch1:	bz1554949.patch
 # Fedora patches (Patch100+)
 #
 #Patch101:	rust-1.33-build.patch
