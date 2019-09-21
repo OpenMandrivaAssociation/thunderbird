@@ -204,7 +204,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	68.0
+Version:	68.1.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -242,24 +242,17 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
-Patch1:	bz1554949.patch
 # Fedora patches (Patch100+)
 #
-#Patch101:	rust-1.33-build.patch
 #
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
-Patch212:       mozilla-thunderbird-enigmail-ui-content-contents-rdf.patch
-Patch213:       mozilla-thunderbird-enigmail-build-package-contents-rdf.patch
-Patch215:	mozilla-thunderbird-enigmail-visibility.patch
-Patch216:	Build-also-gdata-provider-as-xpi-file.patch
 # Mandriva patches (Patch300+)
 Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
-Patch400:	thunderbird-appname.patch
 
 BuildRequires:	imagemagick
 BuildRequires:	autoconf2.1
@@ -386,14 +379,7 @@ Calendar extension for Thunderbird.
 
 %setup -q -n %{name}-%{version}
 
-%patch1 -p1 -b .1554949
-
-#patch101 -p1 -b .rust133
-%patch201 -p1 -b .default_mail
-#patch216 -p1 -b .gdata
-%patch300 -p1 -b .progname
-%patch301 -p1 -b .enigmailpackage
-%patch304 -p1 -b .run-mozilla
+%apply_patches
 
 mkdir -p my_rust_vendor
 cd my_rust_vendor
@@ -412,10 +398,6 @@ env CARGO_HOME=.cargo cargo install cbindgen
 #===============================================================================
 # Enigmail
 %setup -q -T -D -n %{name}-%{version}/extensions -a300
-%if 0
-%patch212 -p2 -b .enigmail-ui-content-contents-rdf
-%patch213 -p2 -b .enigmail-build-package-contents-rdf
-%endif
 
 %setup -q -T -D -n %{name}-%{version}
 
