@@ -248,15 +248,11 @@ Source401:	thunderbird-l10n-template.in
 # Debian patches (Patch200+)
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
-Patch212:       mozilla-thunderbird-enigmail-ui-content-contents-rdf.patch
-Patch213:       mozilla-thunderbird-enigmail-build-package-contents-rdf.patch
-Patch215:	mozilla-thunderbird-enigmail-visibility.patch
 # Mandriva patches (Patch300+)
 Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
-Patch400:	thunderbird-appname.patch
 
 BuildRequires:	imagemagick
 BuildRequires:	autoconf2.1
@@ -402,10 +398,6 @@ env CARGO_HOME=.cargo cargo install cbindgen
 #===============================================================================
 # Enigmail
 %setup -q -T -D -n %{name}-%{version}/extensions -a300
-%if 0
-%patch212 -p2 -b .enigmail-ui-content-contents-rdf
-%patch213 -p2 -b .enigmail-build-package-contents-rdf
-%endif
 
 %setup -q -T -D -n %{name}-%{version}
 
