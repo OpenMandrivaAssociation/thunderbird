@@ -204,7 +204,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	68.1.1
+Version:	68.1.2
 Release:	1
 License:	MPL
 Group:		Networking/Mail
