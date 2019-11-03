@@ -568,10 +568,10 @@ install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default128.png %{build
 
 mkdir -p %{buildroot}%{tbextdir}/%{enigmail_id}
 %if !%{xpi}
-%{_bindir}/unzip -q extensions/enigmail/build/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
+%{_bindir}/unzip -q extensions/enigmail/build-tb/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
 %{__chmod} 644 %{buildroot}%{tbextdir}/%{enigmail_id}/chrome.manifest
 %else
-cp -aL extensions/enigmail/build/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
+cp -aL extensions/enigmail/build-tb/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
 %endif
 
 #===============================================================================
