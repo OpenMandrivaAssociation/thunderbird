@@ -22,7 +22,6 @@
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
 %define lightning_id \{e2fda1a4-762b-4020-b5ad-a41df1933103\}
-%define gdata_id  \{a62ef8ec-5fdc-40c2-873c-223b8a6925cc\}
 
 %define _provides_exceptions libgtkembedmoz.so\\|libxpcom.so
 %define _requires_exceptions libgtkembedmoz.so\\|libxpcom.so
@@ -574,15 +573,6 @@ mkdir -p %{buildroot}%{tbextdir}/%{enigmail_id}
 cp -aL extensions/enigmail/build-tb/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
 %endif
 
-#===============================================================================
-# lightning ext here
-pushd %{objdir}/dist/xpi-stage/
-  for ext in {gdata-provider,}; do
-    mkdir -p %buildroot%{tbextdir}/%{gdata_id}
-    %{_bindir}/unzip -q ${ext}.xpi -d %buildroot%{tbextdir}/%{gdata_id}/
-  done
-popd
-
 #==============================================================================
 #exclude devel files
 rm -rf %{buildroot}%{_datadir}/idl/%{oname}-%{version}
@@ -719,5 +709,4 @@ fi
 %{tbextdir}/%{enigmail_id}
 
 %files lightning
-%{tbextdir}/%{gdata_id}
 %{tbdistextdir}/%{lightning_id}.xpi
