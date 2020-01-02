@@ -542,11 +542,9 @@ install -m 755 %{SOURCE31} %{buildroot}%{tbdir}/open-browser.sh
 # For new profiles
 %define COMMAND /usr/bin/xdg-open
 
-%{__cat} %{SOURCE12} | %{__perl} -p -e 's,THUNDERBIRD_RPM_VR,%{version}-%{release},g;' \
-                                    -e 's,THUNDERBIRD_VENDOR_COMMENT,%{mandriva_release},g;' \
-  > %{buildroot}/mdv-default-prefs
-cp -a %{buildroot}/mdv-default-prefs %{buildroot}%{tbdir}/defaults/pref/all-omv.js
-rm -f %{buildroot}/mdv-default-prefs
+sed -e 's,THUNDERBIRD_RPM_VR,%{version}-%{release},g;' \
+    -e 's,THUNDERBIRD_VENDOR_COMMENT,%{mandriva_release},g;' \
+  %{SOURCE12} > %{buildroot}%{tbdir}/defaults/pref/all-omv.js
 
 #===============================================================================
 
