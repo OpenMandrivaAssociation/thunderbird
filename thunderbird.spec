@@ -378,7 +378,7 @@ Calendar extension for Thunderbird.
 
 %setup -q -n %{name}-%{version}
 
-%apply_patches
+%autopatch -p1
 
 mkdir -p my_rust_vendor
 cd my_rust_vendor
