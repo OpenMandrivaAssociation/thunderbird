@@ -256,7 +256,7 @@ Patch304:       mozilla-thunderbird-run-mozilla.patch
 BuildRequires:	imagemagick
 BuildRequires:	autoconf2.1
 BuildRequires:	gzip
-BuildRequires:	python2
+BuildRequires:	python
 BuildRequires:	unzip
 BuildRequires:	yasm >= 1.0.1
 BuildRequires:	nasm
@@ -265,7 +265,7 @@ BuildRequires:	jpeg-devel
 BuildRequires:	libiw-devel
 BuildRequires:	nss-static-devel
 BuildRequires:	icu-devel
-BuildRequires:	pkgconfig(python2)
+BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
@@ -517,7 +517,7 @@ EOF
 
 pushd extensions/enigmail
 %configure
-make PYTHON=python2
+make
 popd
 
 
