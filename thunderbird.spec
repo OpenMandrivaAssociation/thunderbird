@@ -243,6 +243,7 @@ Source401:	thunderbird-l10n-template.in
 #
 # Fedora patches (Patch100+)
 #
+Patch101:	bindgen-d0dfc52706f23db9dc9d74642eeebd89d73cb8d0.patch
 #
 # Debian patches (Patch200+)
 #
