@@ -32,8 +32,8 @@
 %ifarch %{ix86}
 %define tbarch x86
 %else # ix86
-%ifarch x86_64
-%define tbarch %{_arch}
+%ifarch %{x86_64}
+%define tbarch x86_64
 %else # x86_64
 %define tbarch %{_arch}
 %endif # x86_64
@@ -203,7 +203,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	68.3.1
+Version:	68.4.1
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -240,10 +240,12 @@ Source401:	thunderbird-l10n-template.in
 }
 %endif
 # Build patches
+Patch0:		thunderbird-68.4.1-sqlite-3.31.patch
 #
 # Fedora patches (Patch100+)
 #
-Patch101:	bindgen-d0dfc52706f23db9dc9d74642eeebd89d73cb8d0.patch
+# (currently none required)
+
 #
 # Debian patches (Patch200+)
 #
@@ -378,9 +380,7 @@ Calendar extension for Thunderbird.
 
 %prep
 
-%setup -q -n %{name}-%{version}
-
-%autopatch -p1
+%autosetup -p1
 
 mkdir -p my_rust_vendor
 cd my_rust_vendor
