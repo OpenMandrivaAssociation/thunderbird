@@ -203,8 +203,8 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	68.4.2
-Release:	2
+Version:	68.6.0
+Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -240,7 +240,6 @@ Source401:	thunderbird-l10n-template.in
 }
 %endif
 # Build patches
-Patch0:		thunderbird-68.4.1-sqlite-3.31.patch
 #
 # Fedora patches (Patch100+)
 #
