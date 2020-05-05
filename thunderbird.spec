@@ -436,22 +436,16 @@ done
 
 %build
 
-%ifarch %arm
-# arm still requires gcc
-export CXX=g++
-export CC=gcc
-%else
-# (tpg) clang works, just export it to be sure it is used
-export CXX=g++
-export CC=gcc
-%global optflags %optflags -Wno-error -Wno-format-security
-%endif 
-
 %ifarch %ix86
-%global optflags %{optflags} -g0 -fno-exceptions
+%global optflags %{optflags} -g0 -fno-exceptions -Wno-format-security
 %global ldflags %{ldflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
+# still requires gcc
+export CXX=g++
+export CC=gcc
 # avoid oom with rust
 export RUSTFLAGS="-Cdebuginfo=0"
+%else
+%global optflags %{optflags} -Qunused-arguments
 %endif
 
 %setup_compile_flags
