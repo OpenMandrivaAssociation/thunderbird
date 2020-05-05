@@ -254,6 +254,7 @@ Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
+Patch305:	rust-1.43.patch
 
 BuildRequires:	imagemagick
 BuildRequires:	autoconf2.1
