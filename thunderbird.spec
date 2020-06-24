@@ -488,6 +488,7 @@ ac_add_options --enable-default-toolkit=cairo-gtk3
 ac_add_options --disable-strip
 ac_add_options --enable-startup-notification
 ac_add_options --disable-gconf
+ac_add_options --disable-elf-hack
 ac_add_options --enable-strip
 ac_add_options --enable-update-channel=release
 ac_add_options --enable-official-branding
