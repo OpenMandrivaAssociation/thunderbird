@@ -17,7 +17,7 @@
 %define objdir obj
 
 %define xpi 0
-%define enigmail_version 2.1.6
+%define enigmail_version 2.1.7
 %define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
 %define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
 
@@ -46,7 +46,7 @@
 %define nss_libname %mklibname nss 3
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
-%define xpidir http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/linux-i686/xpi/
+%define xpidir http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/linux-x86_64/xpi/
 
 # Supported l10n language lists
 %define langlist  ar ast be bg br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pl pt_BR pt_PT ro ru si sk sl sq sr sv_SE tr uk vi zh_CN zh_TW
@@ -203,7 +203,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	68.9.0
+Version:	78.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -469,25 +469,19 @@ ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
 %if %mdvver > 3000000
 ac_add_options --with-system-libevent
-ac_add_options --with-system-icu
+#ac_add_options --with-system-icu
 %endif
 %if %mdvver <= 3000000
 ac_add_options --with-system-libvpx
 %endif
 ac_add_options --with-system-png
-%if %mdvver > 3000000
-ac_add_options --enable-system-sqlite
-%endif
 ac_add_options --disable-system-cairo
-ac_add_options --with-system-bz2
 ac_add_options --disable-tests
 ac_add_options --disable-debug
 ac_add_options --disable-updater
 ac_add_options --disable-crashreporter
 ac_add_options --enable-default-toolkit=cairo-gtk3
 ac_add_options --disable-strip
-ac_add_options --enable-startup-notification
-ac_add_options --disable-gconf
 %ifnarch aarch64
 ac_add_options --disable-elf-hack
 %endif
@@ -500,7 +494,6 @@ ac_add_options --disable-optimize
 %else
 ac_add_options --enable-optimize="-O2"
 %endif
-ac_add_options --enable-startup-notification
 %ifarch x86_64 aarch64
 # ERROR: --enable-rust-simd does not work with Rust 1.33 or later. 
 # See https://bugzilla.mozilla.org/show_bug.cgi?id=1521249 .
