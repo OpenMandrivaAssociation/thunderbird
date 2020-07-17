@@ -267,7 +267,6 @@ BuildRequires:	jpeg-devel
 BuildRequires:	libiw-devel
 BuildRequires:	nss-static-devel
 BuildRequires:	icu-devel
-BuildRequires:	pkgconfig(python2)
 BuildRequires:	pkgconfig(python3)
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(dbus-glib-1)
