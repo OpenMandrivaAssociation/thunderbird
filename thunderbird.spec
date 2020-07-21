@@ -41,6 +41,9 @@
 %define nss_libname %mklibname nss 3
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
 
+%define _enable_debug_packages %{nil}
+%define debug_package %{nil}
+
 %define xpidir http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/linux-x86_64/xpi/
 
 # Supported l10n language lists
