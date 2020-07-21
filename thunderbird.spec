@@ -337,9 +337,6 @@ EOL
 env CARGO_HOME=.cargo cargo install cbindgen
 
 #===============================================================================
-# Enigmail
-%setup -q -T -D -n %{name}-%{version}/extensions -a300
-
 %setup -q -T -D -n %{name}-%{version}
 
 #===============================================================================
