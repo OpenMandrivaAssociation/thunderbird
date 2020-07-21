@@ -12,8 +12,6 @@ sources:
   el.xpi: bd5b269f127b6768f8b9e043cd5f6f929b7ffa73
   en-GB.xpi: dc7b370963bcff30ced50d34b1ce9fd8a38f1b51
   en-US.xpi: 13e4a9cee6cb0840846125db08543e1a0e46bab3
-  enigmail-2.1.7.tar.gz: 79eb08b1088e85ad374bc410ac31cc2a6fa3ee2a
-  enigmail-2.1.7.tar.gz.asc: d9968d30cb2a4d948306177519db55df38db19ce
   es-AR.xpi: 6022261b7db0e910f3412f3f513ba7c8687b953a
   es-ES.xpi: 4eab9d371c07d55f8e22454849c40cdab57e549c
   et.xpi: 24349a7c13c4cdeec817770e6578d084504d9b2f

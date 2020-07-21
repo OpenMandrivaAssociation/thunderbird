@@ -17,11 +17,6 @@
 %define objdir obj
 
 %define xpi 0
-%define enigmail_version 2.1.7
-%define enigmail_short_version %(echo %{version}| cut -d. -f1,2)
-%define enigmail_id \{847b3a00-7ab1-11d4-8f02-006008948af5\}
-
-%define lightning_id \{e2fda1a4-762b-4020-b5ad-a41df1933103\}
 
 %define _provides_exceptions libgtkembedmoz.so\\|libxpcom.so
 %define _requires_exceptions libgtkembedmoz.so\\|libxpcom.so
@@ -214,9 +209,6 @@ Source22:       cbindgen-vendor.tar.xz
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
 Source100:	thunderbird.rpmlintrc
-# Mandriva sources (Source300+)
-Source300:      http://enigmail.net/download/source/enigmail-%{enigmail_version}.tar.gz
-Source301:      http://enigmail.net/download/source/enigmail-%{enigmail_version}.tar.gz.asc
 Source303:	thunderbird.desktop
 # Language package template
 Source401:	thunderbird-l10n-template.in
@@ -251,7 +243,6 @@ Source401:	thunderbird-l10n-template.in
 Patch201:       mozilla-thunderbird-default-mailer.patch
 # Mandriva patches (Patch300+)
 Patch300:       mozilla-thunderbird-0.8-progname.patch
-Patch301:       mozilla-thunderbird-enigmail-package.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 
@@ -304,6 +295,9 @@ Requires(post,postun): rpm-helper
 Requires: xdg-utils
 Requires:       gtk3-modules
 Obsoletes: mozilla-thunderbird < %{version}-%{release}
+Obsoletes: thunderbird-lightning < %{version}-%{release}
+Obsoletes: thunderbird-enigmail < %{version}-%{release}
+
 Provides: mozilla-thunderbird = %{version}-%{release}
 
 %description
@@ -321,58 +315,6 @@ makes emailing safer, faster and easier than ever before.
         done\
         )
 }
-
-#===============================================================================
-# enigmail-l10n
-# Supported l10n language lists
-%define em_l10n_langlist	ar ca cs de el es fi fr hu it ja ko nb nl pl pt pt_BR ru sl sv tr vi zh_CN zh_TW
-
-#===============================================================================
-
-%package enigmail
-Summary:        Access the authentication and encryption features provided by GnuPG
-Group:          Networking/Mail
-Requires:       %{name} >= %{version}
-Requires:       gnupg
-Requires(post,preun): %{name} >= %{version}
-Requires(post,postun):	mktemp
-# Bug #35180
-Suggests:	pinentry-gtk2
-Obsoletes:	mozilla-thunderbird-enigmail < %{version}-%{release}
-Provides:	mozilla-thunderbird-enigmail = %{version}-%{release}
-%(for lang in %em_l10n_langlist; do
-    echo "Obsoletes: mozilla-thunderbird-enigmail-$lang"
-    echo "Obsoletes: mozilla-thunderbird-enigmail-l10n-$lang"
-done)
-
-%description enigmail
-Enigmail is an extension to the mail client of %{title}
-which allows users to access the authentication and encryption
-features provided by GnuPG.
-
-Main Features
-
-    * Encrypt/sign mail when sending, decrypt/authenticate received
-      mail
-    * Support for inline-PGP (RFC 2440) and PGP/MIME (RFC 3156)
-    * Per-Account based encryption and signing defaults
-    * Per-Recipient rules for automated key selection, and
-      enabling/disabling encryption and signing
-    * OpenPGP key management interface
-
-#===============================================================================
-
-%package lightning
-Summary:	Calendar extension for Thunderbird
-Group:		Networking/Mail
-URL:		http://www.mozilla.org/projects/calendar/lightning/
-Requires:	%{name} >= %{version}
-Obsoletes:	mozilla-thunderbird-lightning < %{version}-%{release}
-Provides:	mozilla-thunderbird-lightning = %{version}-%{release}
-
-%description lightning
-Calendar extension for Thunderbird.
-
 
 #===============================================================================
 
@@ -505,14 +447,6 @@ EOF
 
 #===============================================================================
 
-pushd extensions/enigmail
-%configure
-make
-popd
-
-
-#===============================================================================
-
 %install
 mkdir -p %{buildroot}{%{_libdir},%{_bindir},%{_datadir}/applications}
 mkdir -p %buildroot%tbdir
@@ -553,15 +487,6 @@ install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default128.png %{build
 
 #===============================================================================
 
-mkdir -p %{buildroot}%{tbextdir}/%{enigmail_id}
-%if !%{xpi}
-%{_bindir}/unzip -q extensions/enigmail/build-tb/enigmail-*.xpi -d %{buildroot}%{tbextdir}/%{enigmail_id}
-%{__chmod} 644 %{buildroot}%{tbextdir}/%{enigmail_id}/chrome.manifest
-%else
-cp -aL extensions/enigmail/build-tb/enigmail-%{enigmail_short_version}*.xpi %{buildroot}%{tbextdir}/%{enigmail_id}/%{enigmail_id}.xpi
-%endif
-
-#==============================================================================
 #exclude devel files
 rm -rf %{buildroot}%{_datadir}/idl/%{oname}-%{version}
 rm -rf %{buildroot}%{_includedir}/%{oname}-%{version}
@@ -628,48 +553,6 @@ fi
 
 #===============================================================================
 
-%post enigmail
-if [ -f %{tbdir}/components/compreg.dat ]; then
-    rm -f %{tbdir}/components/compreg.dat
-fi
-
-if [ -f %{tbdir}/components/xpti.dat ]; then
-    rm -f %{tbdir}/components/xpti.dat
-fi
-
-mktemp="/bin/mktemp -d -q -p /tmp -t %{name}.XXXXXXXXXX"
-
-TMPDIR= TB_TMPDIR=`$mktemp` && {
-%if %{xpi}
-    HOME="$TB_TMPDIR" LD_LIBRARY_PATH="%{tbdir}" %{tbdir}/thunderbird-bin -nox -install-global-extension %{tbextdir}/enigmail-%{enigmail_version}-linux-*.xpi
-%endif
-    HOME="$TB_TMPDIR" LD_LIBRARY_PATH="%{tbdir}" %{tbdir}/thunderbird-bin -nox -register
-    test -d "$TB_TMPDIR" && rm -rf -- "$TB_TMPDIR"
-}
-
-%preun enigmail
-if [ -f %{tbdir}/components/compreg.dat ]; then
-    rm -f %{tbdir}/components/compreg.dat
-fi
-
-if [ -f %{tbdir}/components/xpti.dat ]; then
-    rm -f %{tbdir}/components/xpti.dat
-fi
-
-if [ -x %{tbdir}/thunderbird-bin ]; then 
-mktemp="/bin/mktemp -d -q -p /tmp -t %{name}.XXXXXXXXXX"
-
-  TMPDIR= TB_TMPDIR=`$mktemp` && {
-  %if %{xpi}
-      HOME="$TB_TMPDIR" LD_LIBRARY_PATH="%{tbdir}" %{tbdir}/thunderbird-bin -nox -install-global-extension %{tbextdir}/enigmail-%{enigmail_version}-linux-*.xpi
-  %endif
-      HOME="$TB_TMPDIR" LD_LIBRARY_PATH="%{tbdir}" %{tbdir}/thunderbird-bin -nox -register
-      test -d "$TB_TMPDIR" && rm -rf -- "$TB_TMPDIR"
-  }
-fi
-
-#===============================================================================
-
 %files
 %doc LEGAL
 %attr(755,root,root) %{_bindir}/thunderbird
@@ -689,12 +572,3 @@ fi
 %{_datadir}/icons/hicolor/32x32/apps/%{name}.png
 %{_datadir}/icons/hicolor/48x48/apps/%{name}.png
 %{_datadir}/icons/hicolor/128x128/apps/%{name}.png
-# enigmail
-%exclude %{tbextdir}/%{enigmail_id}
-%exclude %{tbdistextdir}/%{lightning_id}.xpi
-
-%files enigmail
-%{tbextdir}/%{enigmail_id}
-
-%files lightning
-%{tbdistextdir}/%{lightning_id}.xpi
