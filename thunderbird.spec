@@ -249,7 +249,6 @@ Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 
-BuildRequires:	imagemagick
 BuildRequires:	autoconf2.1
 BuildRequires:	gzip
 BuildRequires:	python
