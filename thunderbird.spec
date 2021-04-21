@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	78.9.1
+Version:	78.10.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -248,8 +248,6 @@ Patch201:       mozilla-thunderbird-default-mailer.patch
 Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
-
-Patch500:	mozilla-thunderbird-rlbox.patch
 
 BuildRequires:	autoconf2.1
 BuildRequires:	gzip
