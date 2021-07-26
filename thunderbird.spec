@@ -201,14 +201,13 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	78.11.0
+Version:	78.12.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
 Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
 Source12:       mozilla-thunderbird-omv-default-prefs.js
-Source22:       cbindgen-vendor.tar.xz
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
 Source100:	thunderbird.rpmlintrc
@@ -285,6 +284,7 @@ BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
 BuildRequires:  rust >= 1.34.0
 BuildRequires:  cargo >= 0.35.0
+BuildRequires:  cbindgen >= 0.19.0
 BuildRequires:  nodejs >= 8.12
 BuildRequires:	clang-devel
 BuildRequires:	llvm-devel
@@ -323,20 +323,6 @@ makes emailing safer, faster and easier than ever before.
 %prep
 
 %autosetup -p1
-
-mkdir -p my_rust_vendor
-cd my_rust_vendor
-tar xf %{SOURCE22}
-cd -
-mkdir -p .cargo
-cat > .cargo/config <<EOL
-[source.crates-io]
-replace-with = "vendored-sources"
-
-[source.vendored-sources]
-directory = "$(pwd)/my_rust_vendor"
-EOL
-env CARGO_HOME=.cargo cargo install cbindgen
 
 #===============================================================================
 %setup -q -T -D -n %{name}-%{version}
