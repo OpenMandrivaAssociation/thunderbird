@@ -47,7 +47,7 @@
 %define xpidir http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/linux-x86_64/xpi/
 
 # Supported l10n language lists
-%define langlist  ar ast be bg br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pl pt_BR pt_PT ro ru si sk sl sq sr sv_SE tr uk vi zh_CN zh_TW
+%define langlist  ar ast be bg br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pl pt_BR pt_PT ro ru sk sl sq sr sv_SE tr uk vi zh_CN zh_TW
 
 # Disabled l10n languages, for any reason
 %define disabled_langlist gu_IN mk sr af rm
@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	78.12.0
+Version:	91.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
