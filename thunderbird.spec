@@ -428,6 +428,9 @@ ac_add_options --enable-optimize="-O2"
 %endif
 EOF
 
+export MACH_USE_SYSTEM_PYTHON=1
+export MACH_NO_WRITE_TIMES=1
+
 ./mach build
 
 #===============================================================================
