@@ -386,7 +386,6 @@ mk_add_options BUILD_OFFICIAL=1
 #mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
 mk_add_options MOZ_OBJDIR=`pwd`/%{objdir}
 ac_add_options --enable-application=comm/mail
-ac_add_options --enable-calendar
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
 ac_add_options --with-system-nspr
