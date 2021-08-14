@@ -435,6 +435,9 @@ export MACH_NO_WRITE_TIMES=1
 #===============================================================================
 
 %install
+
+export MACH_USE_SYSTEM_PYTHON=1
+
 mkdir -p %{buildroot}{%{_libdir},%{_bindir},%{_datadir}/applications}
 mkdir -p %buildroot%tbdir
 
