@@ -546,9 +546,8 @@ fi
 #===============================================================================
 
 %files
-%doc LEGAL
-%attr(755,root,root) %{_bindir}/thunderbird
-%attr(644,root,root) %{_datadir}/applications/*.desktop
+%{_bindir}/thunderbird
+%{_datadir}/applications/*.desktop
 %{tbdir}
 %if %{xpi}
 %dir %{tbextdir}
