@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	91.0.3
+Version:	91.1.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -248,7 +248,6 @@ Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 
-BuildRequires:	autoconf2.1
 BuildRequires:	gzip
 BuildRequires:	python
 BuildRequires:	unzip
@@ -265,7 +264,6 @@ BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(gl)
-BuildRequires:  pkgconfig(gstreamer-plugins-base-1.0)
 BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(hunspell)
 BuildRequires:	pkgconfig(libevent) >= 1.4.7
