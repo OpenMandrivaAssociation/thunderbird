@@ -235,6 +235,7 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
+Patch10:	firefox-98.0-python-3.11.patch
 # Fedora patches (Patch100+)
 #
 # (currently none required)
