@@ -34,6 +34,12 @@
 %endif # x86_64
 %endif # ix86
 
+%if %omvver > 4050000
+%define build_py python3.9
+%else
+%define build_py python3
+%endif
+
 # this seems fragile, so require the exact version or later (#58754)
 %define sqlite3_libname %{mklibname sqlite3_ 0}
 %define sqlite3_version %(pkg-config --modversion sqlite3 &>/dev/null && pkg-config --modversion sqlite3 2>/dev/null || echo 0)
@@ -250,7 +256,6 @@ Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 
 BuildRequires:	gzip
-BuildRequires:	python
 BuildRequires:	unzip
 BuildRequires:	yasm >= 1.0.1
 BuildRequires:	nasm
@@ -259,7 +264,11 @@ BuildRequires:	jpeg-devel
 BuildRequires:	libiw-devel
 BuildRequires:	nss-static-devel
 BuildRequires:	icu-devel
-BuildRequires:	pkgconfig(python3)
+%if %omvver <= 4050000
+BuildRequires:  pkgconfig(python3)
+%else
+BuildRequires:  pkgconfig(python-3.9)
+%endif
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
@@ -428,7 +437,7 @@ EOF
 export MACH_USE_SYSTEM_PYTHON=1
 export MACH_NO_WRITE_TIMES=1
 
-./mach build
+%build_py ./mach build
 
 #===============================================================================
 
@@ -441,7 +450,7 @@ mkdir -p %buildroot%tbdir
 
 #rm -f extensions/spellcheck/locales/en-US/hunspell/en-US.{dic,aff}
 
-DESTDIR=%buildroot STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0 ./mach install
+DESTDIR=%buildroot STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0 %build_py ./mach install
 
 rm -rf %buildroot%tbdir/dictionaries
 ln -s /usr/share/dict/mozilla %buildroot%tbdir/dictionaries
