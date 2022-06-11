@@ -261,7 +261,6 @@ BuildRequires:	yasm >= 1.0.1
 BuildRequires:	nasm
 BuildRequires:	zip
 BuildRequires:	jpeg-devel
-BuildRequires:	libiw-devel
 BuildRequires:	nss-static-devel
 BuildRequires:	icu-devel
 %if %omvver <= 4050000
