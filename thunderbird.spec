@@ -262,6 +262,7 @@ BuildRequires:	nasm
 BuildRequires:	zip
 BuildRequires:	jpeg-devel
 BuildRequires:	nss-static-devel
+BuildRequires:	glibc-static-devel
 BuildRequires:	icu-devel
 %if %omvver <= 4050000
 BuildRequires:  pkgconfig(python3)
