@@ -34,6 +34,10 @@
 %endif # x86_64
 %endif # ix86
 
+# use bundled cbindgen
+# currently enabled as updating all rust deps would take eons
+%global use_bundled_cbindgen  1
+
 %if %omvver > 4050000
 %define build_py python3.9
 %else
@@ -207,12 +211,15 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	91.10.0
-Release:	2
+Version:	102.0
+Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
 Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
+%if 0%{?use_bundled_cbindgen}
+Source2:        cbindgen-vendor.tar.xz
+%endif
 Source12:       mozilla-thunderbird-omv-default-prefs.js
 Source30:       mozilla-thunderbird-open-browser.sh
 Source31:       mozilla-thunderbird-open-browser-xdg.sh
@@ -251,7 +258,6 @@ Patch10:	firefox-98.0-python-3.11.patch
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
 # Mandriva patches (Patch300+)
-Patch300:       mozilla-thunderbird-0.8-progname.patch
 Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
 
@@ -289,10 +295,12 @@ BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(vpx) >= 0.9.7
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
-BuildRequires:  rust >= 1.34.0
-BuildRequires:  cargo >= 0.35.0
-BuildRequires:  cbindgen >= 0.19.0
-BuildRequires:  nodejs >= 8.12
+BuildRequires:  rust >= 1.59.0
+BuildRequires:  cargo >= 1.59.0
+%if !0%{?use_bundled_cbindgen}
+BuildRequires:  cbindgen >= 0.23.0
+%endif
+BuildRequires:  nodejs >= 10.19
 BuildRequires:	clang-devel
 BuildRequires:	llvm-devel
 
@@ -385,6 +393,24 @@ export RUSTFLAGS="-Cdebuginfo=0"
 
 export PATH=$(pwd)/.cargo/bin:$PATH
 
+%if 0%{?use_bundled_cbindgen}
+mkdir -p my_rust_vendor
+cd my_rust_vendor
+%{__tar} xf %{SOURCE2}
+mkdir -p .cargo
+cat > .cargo/config <<EOL
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "`pwd`"
+EOL
+
+env CARGO_HOME=.cargo cargo install cbindgen
+export PATH=`pwd`/.cargo/bin:$PATH
+cd -
+%endif
+
 
 export MOZCONFIG=`pwd`/.mozconfig
 cat > $MOZCONFIG << EOF
@@ -407,7 +433,6 @@ ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
 %endif
 ac_add_options --with-system-png
-ac_add_options --disable-system-cairo
 ac_add_options --disable-tests
 ac_add_options --disable-debug
 ac_add_options --disable-updater
@@ -432,6 +457,7 @@ ac_add_options --enable-optimize="-O2"
 # ac_add_options --enable-rust-simd
 
 %endif
+ac_add_options --without-wasm-sandboxed-libraries
 EOF
 
 export MACH_USE_SYSTEM_PYTHON=1
