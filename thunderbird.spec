@@ -38,11 +38,7 @@
 # currently enabled as updating all rust deps would take eons
 %global use_bundled_cbindgen  1
 
-%if %omvver > 4050000
-%define build_py python3.9
-%else
 %define build_py python3
-%endif
 
 # this seems fragile, so require the exact version or later (#58754)
 %define sqlite3_libname %{mklibname sqlite3_ 0}
@@ -249,6 +245,7 @@ Source401:	thunderbird-l10n-template.in
 # Build patches
 #
 Patch10:	firefox-98.0-python-3.11.patch
+Patch11:	build-python-3.11.patch
 # Fedora patches (Patch100+)
 #
 # (currently none required)
@@ -270,11 +267,7 @@ BuildRequires:	jpeg-devel
 BuildRequires:	nss-static-devel
 BuildRequires:	glibc-static-devel
 BuildRequires:	icu-devel
-%if %omvver <= 4050000
 BuildRequires:  pkgconfig(python3)
-%else
-BuildRequires:  pkgconfig(python-3.9)
-%endif
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
