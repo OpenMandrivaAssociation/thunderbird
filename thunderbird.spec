@@ -208,7 +208,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	102.3.0
-Release:	1
+Release:	2
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -475,7 +475,7 @@ DESTDIR=%buildroot STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0 %build_py ./mach ins
 rm -rf %buildroot%tbdir/dictionaries
 ln -s /usr/share/dict/mozilla %buildroot%tbdir/dictionaries
 
-%{__install} -p -D %{SOURCE303} %{buildroot}/%{_datadir}/applications/mandriva-%{name}.desktop
+%{__install} -p -D %{SOURCE303} %{buildroot}/%{_datadir}/applications/%{name}.desktop
 
 # set up the thunderbird start script
 # For backwards compatibility with old profiles. Bug #37528
