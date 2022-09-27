@@ -273,6 +273,7 @@ BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(gl)
+BuildRequires:  pkgconfig(libdrm)
 BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(hunspell)
 BuildRequires:	pkgconfig(libevent) >= 1.4.7
