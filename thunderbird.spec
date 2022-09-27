@@ -207,7 +207,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	102.2.0
+Version:	102.3.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -430,7 +430,7 @@ ac_add_options --disable-tests
 ac_add_options --disable-debug
 ac_add_options --disable-updater
 ac_add_options --disable-crashreporter
-ac_add_options --enable-default-toolkit=cairo-gtk3
+ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
 ac_add_options --disable-strip
 %ifnarch aarch64
 ac_add_options --disable-elf-hack
