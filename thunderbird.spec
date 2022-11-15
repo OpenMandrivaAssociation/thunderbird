@@ -50,7 +50,7 @@
 %define _enable_debug_packages %{nil}
 %define debug_package %{nil}
 
-%define xpidir http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/linux-x86_64/xpi/
+%define xpidir http://ftp.mozilla.org/pub/thunderbird/releases/%{version}/linux-x86_64/xpi/
 
 # Supported l10n language lists
 %define langlist  ar ast be bg br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pl pt_BR pt_PT ro ru sk sl sq sr sv_SE tr uk vi zh_CN zh_TW
@@ -207,12 +207,12 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	102.4.0
+Version:	102.4.2
 Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
-Source0:        http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
+Source0:        http://ftp.mozilla.org/pub/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
 %if 0%{?use_bundled_cbindgen}
 Source2:        cbindgen-vendor.tar.xz
 %endif
@@ -227,7 +227,7 @@ Source401:	thunderbird-l10n-template.in
 %{expand:%(\
 	i=500;\
 	for lang in %langlist; do\
-		echo "%%{expand:Source$i: %{xpidir}/%%{language_$lang}.xpi}";\
+		echo "%%{expand:Source$i: %{xpidir}%%{language_$lang}.xpi}";\
 		i=$[i+1];\
 	done\
 	)
