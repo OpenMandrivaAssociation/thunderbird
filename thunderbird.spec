@@ -207,8 +207,8 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	102.8.0
-Release:	2
+Version:	102.10.0
+Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
