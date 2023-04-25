@@ -207,7 +207,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	102.10.0
+Version:	102.10.1
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -368,20 +368,19 @@ for lang in %langlist; do
 done
 
 %build
+%global optflags %{optflags} -g0 -fno-exceptions
 
-%ifarch %ix86
+%ifarch %ix86 %x86_64
 %global optflags %{optflags} -g0 -fno-exceptions -Wno-format-security
 %global ldflags %{ldflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 # still requires gcc
 export CXX=g++
 export CC=gcc
-# avoid oom with rust
-export RUSTFLAGS="-Cdebuginfo=0"
 %else
-%global optflags %{optflags} -Qunused-arguments
+%global optflags %{optflags} -Qunused-arguments -g0 -fno-lto
 %endif
 
-%setup_compile_flags
+%set_build_flags
 
 export PATH=$(pwd)/.cargo/bin:$PATH
 
