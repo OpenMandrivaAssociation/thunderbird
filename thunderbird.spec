@@ -196,7 +196,7 @@
 %{expand:%(for lang in %disabled_dict_langlist; do echo "%%define with_dict_$lang 0"; done)}
 
 # Locales
-%{expand:%(for lang in %langlist; do echo "%%define locale_$lang `echo $lang | cut -d _ -f 1` "; done)}
+%{expand:%(for lang in %langlist; do echo "%%define locale_$lang $(echo $lang | cut -d _ -f 1) "; done)}
 
 %if %use_dict
 # myspell dicts, allows setting preferences between several providers.
@@ -208,7 +208,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	102.10.1
-Release:	1
+Release:	2
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
@@ -394,21 +394,20 @@ cat > .cargo/config <<EOL
 replace-with = "vendored-sources"
 
 [source.vendored-sources]
-directory = "`pwd`"
+directory = "$(pwd)"
 EOL
 
 env CARGO_HOME=.cargo cargo install cbindgen
-export PATH=`pwd`/.cargo/bin:$PATH
+export PATH=$(pwd)/.cargo/bin:$PATH
 cd -
 %endif
 
-
-export MOZCONFIG=`pwd`/.mozconfig
+export MOZCONFIG=$(pwd)/.mozconfig
 cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
 #mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
-mk_add_options MOZ_OBJDIR=`pwd`/%{objdir}
+mk_add_options MOZ_OBJDIR=$(pwd)/%{objdir}
 ac_add_options --enable-application=comm/mail
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
@@ -450,6 +449,12 @@ ac_add_options --enable-optimize="-O2"
 %endif
 ac_add_options --without-wasm-sandboxed-libraries
 EOF
+
+# (tpg) do not create new user profiles on each upgrade, use exsting one
+export MOZ_LEGACY_PROFILES=1
+
+# (tpg) re-use already existing user profile
+export MOZ_ALLOW_DOWNGRADE=1
 
 export MACH_USE_SYSTEM_PYTHON=1
 export MACH_NO_WRITE_TIMES=1
@@ -550,7 +555,7 @@ fi
 
 mktemp="/bin/mktemp -d -q -p /tmp -t %{name}.XXXXXXXXXX"
 
-TMPDIR= TB_TMPDIR=`$mktemp` && {
+TMPDIR= TB_TMPDIR=$(mktemp) && {
     HOME="$TB_TMPDIR" LD_LIBRARY_PATH="%{tbdir}" %{tbdir}/thunderbird-bin -nox -register
     test -d "$TB_TMPDIR" && rm -rf -- "$TB_TMPDIR"
 }
@@ -558,7 +563,6 @@ TMPDIR= TB_TMPDIR=`$mktemp` && {
 if [ -x %{_bindir}/gtk-update-icon-cache ]; then
  %{_bindir}/gtk-update-icon-cache --force --quiet %{_datadir}/icons/hicolor
 fi
-
 
 %postun
 %{_bindir}/update-desktop-database %{_datadir}/applications
