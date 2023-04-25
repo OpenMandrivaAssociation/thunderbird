@@ -430,7 +430,7 @@ ac_add_options --disable-updater
 ac_add_options --disable-crashreporter
 ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
 ac_add_options --disable-strip
-%ifnarch aarch64
+%ifnarch %aarch64
 ac_add_options --disable-elf-hack
 %endif
 ac_add_options --enable-strip
@@ -442,7 +442,7 @@ ac_add_options --disable-optimize
 %else
 ac_add_options --enable-optimize="-O2"
 %endif
-%ifarch x86_64 aarch64
+%ifarch %x86_64 %aarch64
 # ERROR: --enable-rust-simd does not work with Rust 1.33 or later. 
 # See https://bugzilla.mozilla.org/show_bug.cgi?id=1521249 .
 # ac_add_options --enable-rust-simd
