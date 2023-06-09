@@ -248,6 +248,7 @@ Source401:	thunderbird-l10n-template.in
 #
 Patch101:	rust-bindgen-2319-2339.patch
 Patch102:	mp4parse-rust-8b5b652d38e007e736bb442ccd5aa5ed699db100.patch
+Patch103:	gcc13-header-dependencies.patch
 # (currently none required)
 
 #
