@@ -244,6 +244,8 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
+Patch10: 	mozilla-1807652.patch
+
 # Fedora patches (Patch100+)
 #
 Patch101:	rust-bindgen-2319-2339.patch
