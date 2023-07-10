@@ -207,7 +207,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	102.12.0
+Version:	102.13.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -248,8 +248,6 @@ Patch10: 	mozilla-1807652.patch
 
 # Fedora patches (Patch100+)
 #
-Patch101:	rust-bindgen-2319-2339.patch
-Patch102:	mp4parse-rust-8b5b652d38e007e736bb442ccd5aa5ed699db100.patch
 Patch103:	gcc13-header-dependencies.patch
 # (currently none required)
 
