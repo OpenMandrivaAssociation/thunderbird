@@ -207,7 +207,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	102.13.0
+Version:	115.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -244,11 +244,9 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
-Patch10: 	mozilla-1807652.patch
 
 # Fedora patches (Patch100+)
 #
-Patch103:	gcc13-header-dependencies.patch
 # (currently none required)
 
 #
