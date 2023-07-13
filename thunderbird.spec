@@ -448,8 +448,8 @@ ac_add_options --enable-optimize="-O2"
 # ac_add_options --enable-rust-simd
 %endif
 ac_add_options --without-wasm-sandboxed-libraries
-EOF
 ac_add_options --disable-lto
+EOF
 
 
 # (tpg) do not create new user profiles on each upgrade, use exsting one
