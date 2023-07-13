@@ -446,10 +446,11 @@ ac_add_options --enable-optimize="-O2"
 # ERROR: --enable-rust-simd does not work with Rust 1.33 or later. 
 # See https://bugzilla.mozilla.org/show_bug.cgi?id=1521249 .
 # ac_add_options --enable-rust-simd
-
 %endif
 ac_add_options --without-wasm-sandboxed-libraries
 EOF
+ac_add_options --disable-lto
+
 
 # (tpg) do not create new user profiles on each upgrade, use exsting one
 export MOZ_LEGACY_PROFILES=1
