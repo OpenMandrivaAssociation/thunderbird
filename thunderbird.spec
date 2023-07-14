@@ -417,13 +417,7 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-zlib
-%if %mdvver > 3000000
 ac_add_options --with-system-libevent
-#ac_add_options --with-system-icu
-%endif
-%if %mdvver <= 3000000
-ac_add_options --with-system-libvpx
-%endif
 ac_add_options --with-system-png
 ac_add_options --disable-tests
 ac_add_options --disable-debug
@@ -431,19 +425,12 @@ ac_add_options --disable-updater
 ac_add_options --disable-crashreporter
 ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
 ac_add_options --disable-strip
-%ifarch %arm
 ac_add_options --disable-elf-hack
-%endif
 ac_add_options --enable-strip
 ac_add_options --enable-update-channel=release
 ac_add_options --enable-official-branding
-%ifarch %{ix86}
-ac_add_options --enable-linker=bfd
-ac_add_options --disable-optimize
-%else
 ac_add_options --enable-optimize="-O2"
-%endif
-%ifarch %x86_64 %aarch64
+%ifarch %{x86_64} %{aarch64}
 # ERROR: --enable-rust-simd does not work with Rust 1.33 or later. 
 # See https://bugzilla.mozilla.org/show_bug.cgi?id=1521249 .
 # ac_add_options --enable-rust-simd
