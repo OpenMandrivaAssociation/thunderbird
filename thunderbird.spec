@@ -431,7 +431,7 @@ ac_add_options --disable-updater
 ac_add_options --disable-crashreporter
 ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
 ac_add_options --disable-strip
-%ifnarch %aarch64
+%ifarch %arm
 ac_add_options --disable-elf-hack
 %endif
 ac_add_options --enable-strip
