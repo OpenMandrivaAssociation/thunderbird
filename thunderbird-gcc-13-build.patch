@@ -1,0 +1,10 @@
+--- thunderbird-115.0.orig/comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h	2023-07-14 11:33:30.817580550 +0100
++++ thunderbird-115.0/comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h	2023-07-14 11:34:07.325540135 +0100
+@@ -29,6 +29,7 @@
+ 
+ #pragma once
+ 
++#include <cstdint>
+ #include <exception>
+ #include <iostream>
+ #include <string>

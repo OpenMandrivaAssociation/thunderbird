@@ -244,6 +244,7 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
+Patch10:	thunderbird-gcc-13-build.patch
 
 # Fedora patches (Patch100+)
 #
