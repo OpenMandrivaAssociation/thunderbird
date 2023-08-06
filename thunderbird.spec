@@ -36,7 +36,7 @@
 
 # use bundled cbindgen
 # currently enabled as updating all rust deps would take eons
-%global use_bundled_cbindgen  1
+#global use_bundled_cbindgen  1
 
 %define build_py python3
 
@@ -207,7 +207,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	115.0.1
+Version:	115.1.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -244,7 +244,6 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
-Patch10:	thunderbird-gcc-13-build.patch
 
 # Fedora patches (Patch100+)
 #
@@ -292,7 +291,7 @@ BuildRequires:	pkgconfig(libpng) >= 1.4.8
 BuildRequires:  rust >= 1.59.0
 BuildRequires:  cargo >= 1.59.0
 %if !0%{?use_bundled_cbindgen}
-BuildRequires:  cbindgen >= 0.23.0
+BuildRequires:  cbindgen >= 0.24.3
 %endif
 BuildRequires:  nodejs >= 10.19
 BuildRequires:	clang-devel
