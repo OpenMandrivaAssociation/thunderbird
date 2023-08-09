@@ -244,6 +244,7 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
+Patch1:	pkgconf-2.0.patch
 
 # Fedora patches (Patch100+)
 #
