@@ -369,6 +369,9 @@ for lang in %langlist; do
 
 done
 
+# because of patch
+sed -i 's/\("files":{\)[^}]*/\1/' third_party/rust/pkg-config/.cargo-checksum.json
+
 %build
 %global optflags %{optflags} -g0 -fno-exceptions
 
