@@ -246,6 +246,9 @@ Source401:	thunderbird-l10n-template.in
 #
 Patch1:	pkgconf-2.0.patch
 
+# fixes build with binutils 2.41
+Patch2: ffmpeg.git-effadce6c756247ea8bae32dc13bb3e6f464f0eb.patch
+
 # Fedora patches (Patch100+)
 #
 # (currently none required)
