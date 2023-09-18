@@ -244,7 +244,6 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
-Patch1:	pkgconf-2.0.patch
 
 # fixes build with binutils 2.41
 Patch2: ffmpeg.git-effadce6c756247ea8bae32dc13bb3e6f464f0eb.patch
@@ -371,9 +370,6 @@ for lang in %langlist; do
 	[ $dict -eq 0 ] && continue
 
 done
-
-# because of patch
-sed -i 's/\("files":{\)[^}]*/\1/' third_party/rust/pkg-config/.cargo-checksum.json
 
 %build
 %global optflags %{optflags} -g0 -fno-exceptions
