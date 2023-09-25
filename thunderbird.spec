@@ -207,7 +207,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	115.2.2
+Version:	115.2.3
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -283,8 +283,6 @@ BuildRequires:	pkgconfig(libIDL-2.0)
 BuildRequires:	pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libstartup-notification-1.0)
-# Workaround for missing libssh lib on znver build with Rust
-BuildRequires:  pkgconfig(libssh2)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
 BuildRequires:	pkgconfig(sqlite3) >= 3.7.1.1
