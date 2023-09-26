@@ -40,9 +40,6 @@
 
 %define build_py python3
 
-# this seems fragile, so require the exact version or later (#58754)
-%define sqlite3_libname %{mklibname sqlite3_ 0}
-%define sqlite3_version %(pkg-config --modversion sqlite3 &>/dev/null && pkg-config --modversion sqlite3 2>/dev/null || echo 0)
 # this one as well (#59759)
 %define nss_libname %mklibname nss 3
 %define nss_version %(pkg-config --modversion nss &>/dev/null && pkg-config --modversion nss 2>/dev/null || echo 0)
@@ -285,7 +282,6 @@ BuildRequires:  pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libstartup-notification-1.0)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss)
-BuildRequires:	pkgconfig(sqlite3) >= 3.7.1.1
 BuildRequires:	pkgconfig(xft)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(vpx) >= 0.9.7
@@ -300,7 +296,6 @@ BuildRequires:  nodejs >= 10.19
 BuildRequires:	clang-devel
 BuildRequires:	llvm-devel
 
-Requires:	%{sqlite3_libname} >= %{sqlite3_version}
 Requires:	%{nss_libname} >= %{nss_version}
 Requires(post,postun):	desktop-file-utils
 Requires(post):	mktemp
