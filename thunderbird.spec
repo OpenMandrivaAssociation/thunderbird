@@ -204,7 +204,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	115.3.1
+Version:	115.3.2
 Release:	1
 License:	MPL
 Group:		Networking/Mail
