@@ -1,11 +1,12 @@
 sources:
+  cbindgen-vendor.tar.xz: 8faf49463f1705b8604b2d121dc844aad7e37eae
+  thunderbird-115.4.0.source.tar.xz: 3adc59f127173e297c5f942389b58e453532e213
   ar.xpi: a285fee6609f84d86e461110f5b95c146168e00f
   ast.xpi: e1a36aeb4126307fd1f3da495dfbdb48dad86b11
   be.xpi: 63daf799a67b89a9ea2edfee36a5630530abe041
   bg.xpi: 63a238db7bc04f85bf31d3153fbb3050eb6071cd
   br.xpi: 81c3d877f4a8aca61b6af3216e552a572725cb40
   ca.xpi: bf794716e2aeaf240abc2e1af57c92dd53e1bfbd
-  cbindgen-vendor.tar.xz: 8faf49463f1705b8604b2d121dc844aad7e37eae
   cs.xpi: 8feccc773e5130a4a3ddfc227c3c8ed976b86a76
   da.xpi: a7ad214972446600628a0bcd5c4587f3fa82fd89
   de.xpi: aa04384f95f536cdfa2ec4694162127c1a37c18c
@@ -51,4 +52,3 @@ sources:
   vi.xpi: 80cd110575cc9dee4908a28d0cf3a0e766661a79
   zh-CN.xpi: 7f5f3a9784a859b391b5c4cdcdf7c16e7b9d7987
   zh-TW.xpi: 4e6c4d1d45f1648a4afebf127e5f4ca578e6f0f3
-  thunderbird-115.3.3.source.tar.xz: 6429729025280f549597612a7f4250eae787d68b
