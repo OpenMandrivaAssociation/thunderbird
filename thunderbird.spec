@@ -252,6 +252,7 @@ Source401:	thunderbird-l10n-template.in
 Patch201:       mozilla-thunderbird-default-mailer.patch
 # Mandriva patches (Patch300+)
 Patch304:       mozilla-thunderbird-run-mozilla.patch
+Patch305:	rustflags-commasplit.patch
 # OpenSuse patches (Patch400+)
 
 BuildRequires:	gzip
