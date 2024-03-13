@@ -375,6 +375,9 @@ export CC=gcc
 %else
 %global optflags %{optflags} -Wno-error=c++11-narrowing-const-reference
 %global optflags %{optflags} -Qunused-arguments -g0 -fno-lto
+# botan cant detect clang with cc/c++
+export CXX=clang++
+export CC=clang
 %endif
 
 %set_build_flags
