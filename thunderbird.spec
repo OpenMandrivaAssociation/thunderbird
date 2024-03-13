@@ -366,13 +366,14 @@ done
 %build
 %global optflags %{optflags} -g0 -fno-exceptions
 
-%ifarch %ix86 %x86_64
+%ifarch %ix86
 %global optflags %{optflags} -g0 -fno-exceptions -Wno-format-security
 %global ldflags %{ldflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
 # still requires gcc
 export CXX=g++
 export CC=gcc
 %else
+%global optflags %{optflags} -Wno-error=c++11-narrowing-const-reference
 %global optflags %{optflags} -Qunused-arguments -g0 -fno-lto
 %endif
 
