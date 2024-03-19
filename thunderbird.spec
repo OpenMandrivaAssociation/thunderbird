@@ -448,6 +448,23 @@ export MOZ_ALLOW_DOWNGRADE=1
 export MACH_USE_SYSTEM_PYTHON=1
 export MACH_NO_WRITE_TIMES=1
 
+#
+# fix build with llvm 18
+#
+sed -e "/match cursor.kind()/a                                    \
+        CXCursor_LinkageSpec => return Err(ParseError::Recurse)," \
+    -i third_party/rust/bindgen/ir/item.rs                        &&
+
+cat >> Cargo.toml << EOF &&
+[patch.crates-io.bindgen_0_64_0]
+package = "bindgen"
+version = "0.64.0"
+path = "third_party/rust/bindgen"
+EOF
+
+sed -r '/name = "bindgen"/,+5 s/^source|^checksum/#&/' \
+    -i Cargo.lock
+
 %build_py ./mach build
 
 #===============================================================================
