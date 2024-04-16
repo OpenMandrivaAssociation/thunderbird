@@ -24,15 +24,11 @@
 # FIXME: Bug in nsExtensionManager.js prevents using x86_64 as arch
 # FIXME: I tried to modify nsExtensionManager.js.in, but it
 # FIXME: complained that I had modified it
-%ifarch %{ix86}
-%define tbarch x86
-%else # ix86
 %ifarch %{x86_64}
 %define tbarch x86_64
 %else # x86_64
 %define tbarch %{_arch}
 %endif # x86_64
-%endif # ix86
 
 # use bundled cbindgen
 # currently enabled as updating all rust deps would take eons
@@ -367,19 +363,11 @@ done
 %build
 %global optflags %{optflags} -g0 -fno-exceptions
 
-%ifarch %ix86
-%global optflags %{optflags} -g0 -fno-exceptions -Wno-format-security
-%global ldflags %{ldflags} -Wl,--no-keep-memory -Wl,--reduce-memory-overheads
-# still requires gcc
-export CXX=g++
-export CC=gcc
-%else
 %global optflags %{optflags} -Wno-error=c++11-narrowing-const-reference
 %global optflags %{optflags} -Qunused-arguments -g0 -fno-lto
 # botan cant detect clang with cc/c++
 export CXX=clang++
 export CC=clang
-%endif
 
 %set_build_flags
 
