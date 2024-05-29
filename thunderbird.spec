@@ -237,6 +237,7 @@ Source401:	thunderbird-l10n-template.in
 %endif
 # Build patches
 #
+Patch1:		rust1.78-qcms-stdsimd.patch
 
 # Fedora patches (Patch100+)
 #
