@@ -200,7 +200,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	115.11.1
+Version:	115.12.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
