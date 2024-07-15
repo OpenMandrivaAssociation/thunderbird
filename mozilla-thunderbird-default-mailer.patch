@@ -8,4 +8,4 @@
 +pref("mail.shell.checkDefaultClient", false);
  pref("mail.spellcheck.inline", true);
  
- pref("mail.folder.views.version", 0);
+ // Force the unit shown for the size of all folders. If empty, the unit

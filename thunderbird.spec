@@ -43,7 +43,7 @@
 %define _enable_debug_packages %{nil}
 %define debug_package %{nil}
 
-%define xpidir http://ftp.mozilla.org/pub/thunderbird/releases/%{version}/linux-x86_64/xpi/
+%define xpidir http://ftp.mozilla.org/pub/thunderbird/releases/%{version}esr/linux-x86_64/xpi/
 
 # Supported l10n language lists
 %define langlist  ar ast be bg br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pl pt_BR pt_PT ro ru sk sl sq sr sv_SE tr uk vi zh_CN zh_TW
@@ -200,12 +200,12 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	115.12.2
+Version:	128.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		http://www.mozillamessaging.com/
-Source0:        http://ftp.mozilla.org/pub/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
+Source0:        http://ftp.mozilla.org/pub/thunderbird/releases/%{version}esr/source/thunderbird-%{version}esr.source.tar.xz
 %if 0%{?use_bundled_cbindgen}
 Source2:        cbindgen-vendor.tar.xz
 %endif
@@ -247,7 +247,7 @@ Source401:	thunderbird-l10n-template.in
 #
 Patch201:       mozilla-thunderbird-default-mailer.patch
 # Mandriva patches (Patch300+)
-Patch304:       mozilla-thunderbird-run-mozilla.patch
+#Patch304:       mozilla-thunderbird-run-mozilla.patch
 Patch305:	rustflags-commasplit.patch
 # OpenSuse patches (Patch400+)
 
@@ -435,23 +435,6 @@ export MOZ_ALLOW_DOWNGRADE=1
 
 export MACH_USE_SYSTEM_PYTHON=1
 export MACH_NO_WRITE_TIMES=1
-
-#
-# fix build with llvm 18
-#
-sed -e "/match cursor.kind()/a                                    \
-        CXCursor_LinkageSpec => return Err(ParseError::Recurse)," \
-    -i third_party/rust/bindgen/ir/item.rs                        &&
-
-cat >> Cargo.toml << EOF &&
-[patch.crates-io.bindgen_0_64_0]
-package = "bindgen"
-version = "0.64.0"
-path = "third_party/rust/bindgen"
-EOF
-
-sed -r '/name = "bindgen"/,+5 s/^source|^checksum/#&/' \
-    -i Cargo.lock
 
 %build_py ./mach build
 
