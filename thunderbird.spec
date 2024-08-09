@@ -200,12 +200,12 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	128.0.1
+Version:	128.1.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
-Url:		http://www.mozillamessaging.com/
-Source0:        http://ftp.mozilla.org/pub/thunderbird/releases/%{version}esr/source/thunderbird-%{version}esr.source.tar.xz
+Url:		https://www.mozillamessaging.com/
+Source0:        https://ftp.mozilla.org/pub/thunderbird/releases/%{version}esr/source/thunderbird-%{version}esr.source.tar.xz
 %if 0%{?use_bundled_cbindgen}
 Source2:        cbindgen-vendor.tar.xz
 %endif
