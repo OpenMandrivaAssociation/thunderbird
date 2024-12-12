@@ -463,7 +463,7 @@ install -m 755 %{SOURCE31} %{buildroot}%{tbdir}/open-browser.sh
 %define COMMAND /usr/bin/xdg-open
 
 sed -e 's,THUNDERBIRD_RPM_VR,%{version}-%{release},g;' \
-    -e 's,THUNDERBIRD_VENDOR_COMMENT,%{mandriva_release},g;' \
+    -e 's,THUNDERBIRD_VENDOR_COMMENT,%{distro_release},g;' \
   %{SOURCE12} > %{buildroot}%{tbdir}/defaults/pref/all-omv.js
 
 #===============================================================================
