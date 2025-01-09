@@ -15,3 +15,4 @@ pref("intl.locale.requested", "");
 # we also need to disable the "disable addon selection dialog"
 pref("extensions.autoDisableScopes", 0);
 pref("extensions.shownSelectionUI", true);
+pref("widget.use-xdg-desktop-portal.file-picker", 1);
