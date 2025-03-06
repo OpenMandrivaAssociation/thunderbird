@@ -43,7 +43,7 @@
 %define _enable_debug_packages %{nil}
 %define debug_package %{nil}
 
-%define xpidir http://ftp.mozilla.org/pub/thunderbird/releases/%{version}esr/linux-x86_64/xpi/
+%define xpidir http://ftp.mozilla.org/pub/thunderbird/releases/%{version}/linux-x86_64/xpi/
 
 # Supported l10n language lists
 %define langlist  ar ast be bg br ca cs da de el en_GB en_US es_AR es_ES et eu fi fr fy ga gd gl he hr hu hy id is it ja ko lt nb_NO nl nn_NO pl pt_BR pt_PT ro ru sk sl sq sr sv_SE tr uk vi zh_CN zh_TW
@@ -200,12 +200,12 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	128.7.1
+Version:	136.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
 Url:		https://www.mozillamessaging.com/
-Source0:        https://ftp.mozilla.org/pub/thunderbird/releases/%{version}esr/source/thunderbird-%{version}esr.source.tar.xz
+Source0:        https://ftp.mozilla.org/pub/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
 %if 0%{?use_bundled_cbindgen}
 Source2:        cbindgen-vendor.tar.xz
 %endif
@@ -248,7 +248,6 @@ Source401:	thunderbird-l10n-template.in
 Patch201:       mozilla-thunderbird-default-mailer.patch
 # Mandriva patches (Patch300+)
 #Patch304:       mozilla-thunderbird-run-mozilla.patch
-Patch305:	rustflags-commasplit.patch
 # OpenSuse patches (Patch400+)
 
 BuildRequires:	gzip
@@ -275,7 +274,7 @@ BuildRequires:	pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libstartup-notification-1.0)
 BuildRequires:	pkgconfig(nspr)
-BuildRequires:	pkgconfig(nss)
+BuildRequires:	pkgconfig(nss) >= 3.108
 BuildRequires:	pkgconfig(xft)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(vpx) >= 0.9.7
