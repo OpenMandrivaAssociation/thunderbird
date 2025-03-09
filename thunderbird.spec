@@ -370,6 +370,12 @@ export CC=clang
 
 %set_build_flags
 
+if [ $(getconf _NPROCESSORS_ONLN) -le 16 ]; then
+    export NINJAFLAGS="-v %{_smp_mflags}"
+else
+    export NINJAFLAGS="-v -j 16"
+fi
+
 export PATH=$(pwd)/.cargo/bin:$PATH
 
 %if 0%{?use_bundled_cbindgen}
@@ -390,11 +396,12 @@ export PATH=$(pwd)/.cargo/bin:$PATH
 cd -
 %endif
 
+
 export MOZCONFIG=$(pwd)/.mozconfig
 cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
-#mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
+mk_add_options MOZ_MAKE_FLAGS="%{_smp_mflags}"
 mk_add_options MOZ_OBJDIR=$(pwd)/%{objdir}
 ac_add_options --enable-application=comm/mail
 ac_add_options --prefix="%{_prefix}"
