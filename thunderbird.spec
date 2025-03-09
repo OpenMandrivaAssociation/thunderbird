@@ -373,7 +373,7 @@ export CC=clang
 if [ $(getconf _NPROCESSORS_ONLN) -le 16 ]; then
     export SMP_FLAGS="%{_smp_mflags}"
 else
-    export SMP_FLAGS="-j 16"
+    export SMP_FLAGS="-j16"
 fi
 
 export PATH=$(pwd)/.cargo/bin:$PATH
