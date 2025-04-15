@@ -200,7 +200,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	136.0.1
+Version:	137.0.2
 Release:	1
 License:	MPL
 Group:		Networking/Mail
