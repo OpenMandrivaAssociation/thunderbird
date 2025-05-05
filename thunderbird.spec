@@ -204,7 +204,7 @@ Version:	138.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
-Url:		https://www.mozillamessaging.com/
+Url:		https://www.thunderbird.net/
 Source0:        https://ftp.mozilla.org/pub/thunderbird/releases/%{version}/source/thunderbird-%{version}.source.tar.xz
 %if 0%{?use_bundled_cbindgen}
 Source2:        cbindgen-vendor.tar.xz
