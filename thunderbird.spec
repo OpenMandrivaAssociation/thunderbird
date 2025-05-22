@@ -1,5 +1,6 @@
 %define _disable_lto 1
 
+
 %define __libtoolize /bin/true
 %define __cputoolize /bin/true
 
@@ -200,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	138.0.1
+Version:	138.0.2
 Release:	1
 License:	MPL
 Group:		Networking/Mail
