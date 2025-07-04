@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	139.0.2
+Version:	140.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
