@@ -361,7 +361,7 @@ for lang in %langlist; do
 done
 
 %build
-%global optflags %{optflags} -g0 -fno-exceptions
+%global optflags %{optflags} -g0
 
 %global optflags %{optflags} -Wno-error=c++11-narrowing-const-reference
 %global optflags %{optflags} -Qunused-arguments -g0 -fno-lto
