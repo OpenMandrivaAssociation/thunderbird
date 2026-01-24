@@ -542,13 +542,6 @@ fi
 %post
 %{_bindir}/update-desktop-database %{_datadir}/applications
 
-mktemp="/bin/mktemp -d -q -p /tmp -t %{name}.XXXXXXXXXX"
-
-TMPDIR= TB_TMPDIR=$(mktemp) && {
-    HOME="$TB_TMPDIR" LD_LIBRARY_PATH="%{tbdir}" %{tbdir}/thunderbird-bin -nox -register
-    test -d "$TB_TMPDIR" && rm -rf -- "$TB_TMPDIR"
-}
-
 if [ -x %{_bindir}/gtk-update-icon-cache ]; then
  %{_bindir}/gtk-update-icon-cache --force --quiet %{_datadir}/icons/hicolor
 fi
