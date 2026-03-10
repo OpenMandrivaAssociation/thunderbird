@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	147.0
+Version:	148.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -254,6 +254,8 @@ Patch201:       mozilla-thunderbird-default-mailer.patch
 # Mandriva patches (Patch300+)
 #Patch304:       mozilla-thunderbird-run-mozilla.patch
 # OpenSuse patches (Patch400+)
+
+# Archlinux patches (Patch500+)
 
 BuildRequires:	gzip
 BuildRequires:	unzip
