@@ -246,7 +246,7 @@ Patch101: build-missing-gitmodules.patch
 Patch102: build-minimal-lexical.patch
 Patch103: build-libcubeb.patch
 Patch104: build-c11-threads-avail.patch
-
+Patch105: build-seccomp.patch
 #
 # Debian patches (Patch200+)
 #
