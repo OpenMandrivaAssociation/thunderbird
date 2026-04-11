@@ -242,9 +242,6 @@ Source401:	thunderbird-l10n-template.in
 # Fedora patches (Patch100+)
 #
 # (currently none required)
-Patch101: build-missing-gitmodules.patch
-Patch102: build-minimal-lexical.patch
-Patch103: build-libcubeb.patch
 Patch104: build-c11-threads-avail.patch
 Patch105: build-seccomp.patch
 #
