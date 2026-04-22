@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	149.0.2
+Version:	150.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -243,7 +243,6 @@ Source401:	thunderbird-l10n-template.in
 #
 # (currently none required)
 Patch104: build-c11-threads-avail.patch
-Patch105: build-seccomp.patch
 #
 # Debian patches (Patch200+)
 #
