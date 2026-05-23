@@ -400,6 +400,9 @@ export PATH=$(pwd)/.cargo/bin:$PATH
 cd -
 %endif
 
+# https://bugzilla.mozilla.org/show_bug.cgi?id=2041134
+sed -i 's/log\.warn(/log.warning(/' \
+    comm/build/moz.configure/gecko_source.configure
 
 export MOZCONFIG=$(pwd)/.mozconfig
 cat > $MOZCONFIG << EOF
