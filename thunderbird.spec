@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	151.0
+Version:	152.0.1
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -242,7 +242,6 @@ Source401:	thunderbird-l10n-template.in
 # Fedora patches (Patch100+)
 #
 # (currently none required)
-Patch104: build-c11-threads-avail.patch
 #
 # Debian patches (Patch200+)
 #
