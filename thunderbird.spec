@@ -201,7 +201,7 @@
 
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
-Version:	152.0.1
+Version:	153.0
 Release:	1
 License:	MPL
 Group:		Networking/Mail
@@ -277,7 +277,7 @@ BuildRequires:	pkgconfig(libnotify)
 BuildRequires:  pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libstartup-notification-1.0)
 BuildRequires:	pkgconfig(nspr)
-BuildRequires:	pkgconfig(nss) >= 3.118
+BuildRequires:	pkgconfig(nss) >= 3.125
 BuildRequires:	pkgconfig(xft)
 BuildRequires:	pkgconfig(xt)
 BuildRequires:	pkgconfig(vpx) >= 0.9.7
@@ -286,7 +286,7 @@ BuildRequires:	pkgconfig(libpng) >= 1.4.8
 BuildRequires:  rust >= 1.59.0
 BuildRequires:  cargo >= 1.59.0
 %if !0%{?use_bundled_cbindgen}
-BuildRequires:  cbindgen >= 0.29.1
+BuildRequires:  cbindgen >= 0.29.4
 %endif
 BuildRequires:  nodejs >= 10.19
 BuildRequires:	clang-devel
