@@ -1,0 +1,537 @@
+From: OpenMandriva
+Subject: [PATCH] Bug 2054387 - Thunderbird: Qt shell service, themes, and mailnews wiring
+
+Port the remaining Thunderbird-specific pieces for cairo-qt:
+- nsQtShellService (default mail/news/rss/calendar client via xdg-*)
+- Stub nsGNOMEShellService_GetGSettingsBoolean for Rust sys_tray DND check
+- Linux theme for Qt (mail + calendar)
+- HAVE_SHELL_SERVICE and nsUserInfoUnix for qt
+- Build/register shell service under MOZ_WIDGET_TOOLKIT=qt
+
+diff --git a/comm/mail/themes/moz.build b/comm/mail/themes/moz.build
+--- a/comm/mail/themes/moz.build
++++ b/comm/mail/themes/moz.build
+@@ -11,7 +11,7 @@
+ with Files("**"):
+     BUG_COMPONENT = ("Thunderbird", "Theme")
+ 
+-if CONFIG["MOZ_WIDGET_TOOLKIT"] == "gtk":
++if CONFIG["MOZ_WIDGET_TOOLKIT"] in ("gtk", "qt"):
+     DIRS += ["linux"]
+ elif CONFIG["MOZ_WIDGET_TOOLKIT"] == "cocoa":
+     DIRS += ["osx"]
+diff --git a/comm/calendar/base/themes/moz.build b/comm/calendar/base/themes/moz.build
+--- a/comm/calendar/base/themes/moz.build
++++ b/comm/calendar/base/themes/moz.build
+@@ -5,7 +5,7 @@
+ with Files("**"):
+     BUG_COMPONENT = ("Thunderbird", "Theme")
+ 
+-if CONFIG["MOZ_WIDGET_TOOLKIT"] == "gtk":
++if CONFIG["MOZ_WIDGET_TOOLKIT"] in ("gtk", "qt"):
+     DIRS += ["linux"]
+ elif CONFIG["MOZ_WIDGET_TOOLKIT"] == "cocoa":
+     DIRS += ["osx"]
+diff --git a/comm/mail/components/preferences/moz.build b/comm/mail/components/preferences/moz.build
+--- a/comm/mail/components/preferences/moz.build
++++ b/comm/mail/components/preferences/moz.build
+@@ -10,7 +10,7 @@
+ for var in ("MOZ_APP_NAME", "MOZ_MACBUNDLE_NAME"):
+     DEFINES[var] = CONFIG[var]
+ 
+-if CONFIG["MOZ_WIDGET_TOOLKIT"] in ("windows", "gtk", "cocoa"):
++if CONFIG["MOZ_WIDGET_TOOLKIT"] in ("windows", "gtk", "qt", "cocoa"):
+     DEFINES["HAVE_SHELL_SERVICE"] = 1
+ 
+ if CONFIG["MOZ_UPDATE_AGENT"]:
+diff --git a/comm/mail/base/moz.build b/comm/mail/base/moz.build
+--- a/comm/mail/base/moz.build
++++ b/comm/mail/base/moz.build
+@@ -27,7 +27,7 @@
+ if CONFIG["MOZILLA_OFFICIAL"]:
+     DEFINES["OFFICIAL_BUILD"] = 1
+ 
+-if CONFIG["MOZ_WIDGET_TOOLKIT"] in ("windows", "gtk", "cocoa"):
++if CONFIG["MOZ_WIDGET_TOOLKIT"] in ("windows", "gtk", "qt", "cocoa"):
+     DEFINES["HAVE_SHELL_SERVICE"] = 1
+ 
+ if CONFIG["MOZ_UPDATER"]:
+diff --git a/comm/mailnews/base/src/moz.build b/comm/mailnews/base/src/moz.build
+--- a/comm/mailnews/base/src/moz.build
++++ b/comm/mailnews/base/src/moz.build
+@@ -108,7 +108,7 @@
+     SOURCES += [
+         "nsUserInfoWin.cpp",
+     ]
+-elif CONFIG["MOZ_WIDGET_TOOLKIT"] == "gtk":
++elif CONFIG["MOZ_WIDGET_TOOLKIT"] in ("gtk", "qt"):
+     UNIFIED_SOURCES += [
+         "nsUserInfoUnix.cpp",
+     ]
+diff --git a/comm/mail/components/shell/moz.build b/comm/mail/components/shell/moz.build
+--- a/comm/mail/components/shell/moz.build
++++ b/comm/mail/components/shell/moz.build
+@@ -32,6 +32,10 @@
+     SOURCES += [
+         "nsGNOMEShellService.cpp",
+     ]
++elif CONFIG["MOZ_WIDGET_TOOLKIT"] == "qt":
++    SOURCES += [
++        "nsQtShellService.cpp",
++    ]
+ 
+ if SOURCES:
+     FINAL_LIBRARY = "mailcomps"
+diff --git a/comm/mail/components/shell/components.conf b/comm/mail/components/shell/components.conf
+--- a/comm/mail/components/shell/components.conf
++++ b/comm/mail/components/shell/components.conf
+@@ -26,6 +26,17 @@
+         },
+     ]
+ 
++if buildconfig.substs["MOZ_WIDGET_TOOLKIT"] == "qt":
++    Classes += [
++        {
++            "cid": "{7c8c2a2e-0f1b-4a9e-9c3d-2e5f6a7b8c9d}",
++            "contract_ids": ["@mozilla.org/mail/shell-service;1"],
++            "type": "nsQtShellService",
++            "init_method": "Init",
++            "headers": ["/comm/mail/components/shell/nsQtShellService.h"],
++        },
++    ]
++
+ if buildconfig.substs["OS_ARCH"] == "Darwin":
+     Classes += [
+         {
+diff --git a/comm/mail/components/shell/nsQtShellService.h b/comm/mail/components/shell/nsQtShellService.h
+new file mode 100644
+--- /dev/null
++++ b/comm/mail/components/shell/nsQtShellService.h
+@@ -0,0 +1,46 @@
++/* This Source Code Form is subject to the terms of the Mozilla Public
++ * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
++
++#ifndef COMM_MAIL_COMPONENTS_SHELL_NSQTSHELLSERVICE_H_
++#define COMM_MAIL_COMPONENTS_SHELL_NSQTSHELLSERVICE_H_
++
++#include "nsIShellService.h"
++#include "nsString.h"
++#include "nsToolkitShellService.h"
++#include "nsTArray.h"
++
++/**
++ * Linux/Qt shell service for Thunderbird: FreeDesktop default client
++ * registration via xdg-settings / xdg-mime (no GIO/GTK).
++ */
++class nsQtShellService final : public nsIShellService,
++                               public nsToolkitShellService {
++ public:
++  NS_DECL_ISUPPORTS
++  NS_DECL_NSISHELLSERVICE
++
++  nsresult Init();
++  nsQtShellService() = default;
++
++ private:
++  ~nsQtShellService() = default;
++
++  static nsresult RunProcess(const char* aExecutable,
++                             const nsTArray<nsCString>& aArgs,
++                             nsACString* aStdout, int* aExitStatus);
++  static nsresult RunXdgSettings(const nsTArray<nsCString>& aArgs,
++                                 nsACString* aStdout, int* aExitStatus);
++  static bool ResolveDesktopId(nsACString& aDesktopId);
++
++  bool checkDefault(const char* const* aProtocols, unsigned int aLength);
++  nsresult MakeDefault(const char* const* aProtocols,
++                       unsigned int aProtocolsLength, const char* aMimeType,
++                       const char* aExtensions);
++  bool DesktopIdMatchesHandler(const nsACString& aHandlerId) const;
++
++  bool mCheckedThisSession = false;
++  nsCString mDesktopId;
++};
++
++#endif  // COMM_MAIL_COMPONENTS_SHELL_NSQTSHELLSERVICE_H_
+diff --git a/comm/mail/components/shell/nsQtShellService.cpp b/comm/mail/components/shell/nsQtShellService.cpp
+new file mode 100644
+--- /dev/null
++++ b/comm/mail/components/shell/nsQtShellService.cpp
+@@ -0,0 +1,376 @@
++/* This Source Code Form is subject to the terms of the Mozilla Public
++ * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
++
++#include "nsQtShellService.h"
++
++#include "mozilla/Preferences.h"
++#include "nsReadableUtils.h"
++#include "nsString.h"
++#include "prenv.h"
++
++#include <fcntl.h>
++#include <spawn.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++// From glibc / POSIX: environ for posix_spawnp.
++extern char** environ;
++
++using mozilla::Preferences;
++
++static const char* const sMailProtocols[] = {"mailto", "mid"};
++static const char* const sNewsProtocols[] = {"news", "snews", "nntp"};
++static const char* const sFeedProtocols[] = {"feed"};
++static const char* const sCalendarProtocols[] = {"webcal", "webcals"};
++static const char* const sNetThunderbirdProtocols[] = {"net.thunderbird"};
++
++struct AppTypeAssociation {
++  uint16_t type;
++  const char* const* protocols;
++  unsigned int protocolsLength;
++  const char* mimeType;
++  const char* extensions;
++};
++
++static const AppTypeAssociation sAppTypes[] = {
++    {nsIShellService::MAIL, sMailProtocols, std::size(sMailProtocols),
++     "message/rfc822",
++     nullptr},  // do not associate .eml — breaks printing those
++    {nsIShellService::NEWS, sNewsProtocols, std::size(sNewsProtocols), nullptr,
++     nullptr},
++    {nsIShellService::RSS, sFeedProtocols, std::size(sFeedProtocols),
++     "application/rss+xml", "rss"},
++    {nsIShellService::CALENDAR, sCalendarProtocols,
++     std::size(sCalendarProtocols), "text/calendar", "ics"},
++    {nsIShellService::NET_THUNDERBIRD, sNetThunderbirdProtocols,
++     std::size(sNetThunderbirdProtocols), nullptr, nullptr}};
++
++static void AppendLiteral(nsTArray<nsCString>& aArgs, const char* aLit) {
++  aArgs.AppendElement()->Assign(aLit);
++}
++
++NS_IMPL_ISUPPORTS(nsQtShellService, nsIShellService, nsIToolkitShellService)
++
++/* static */
++nsresult nsQtShellService::RunProcess(const char* aExecutable,
++                                      const nsTArray<nsCString>& aArgs,
++                                      nsACString* aStdout, int* aExitStatus) {
++  if (aExitStatus) {
++    *aExitStatus = -1;
++  }
++  if (aStdout) {
++    aStdout->Truncate();
++  }
++
++  nsTArray<const char*> argv;
++  argv.AppendElement(aExecutable);
++  for (const auto& arg : aArgs) {
++    argv.AppendElement(arg.get());
++  }
++  argv.AppendElement(nullptr);
++
++  int pipefd[2] = {-1, -1};
++  if (aStdout && pipe(pipefd) != 0) {
++    return NS_ERROR_FAILURE;
++  }
++
++  posix_spawn_file_actions_t actions;
++  posix_spawn_file_actions_init(&actions);
++  if (aStdout) {
++    posix_spawn_file_actions_addclose(&actions, pipefd[0]);
++    posix_spawn_file_actions_adddup2(&actions, pipefd[1], STDOUT_FILENO);
++    posix_spawn_file_actions_addclose(&actions, pipefd[1]);
++  } else {
++    posix_spawn_file_actions_addopen(&actions, STDOUT_FILENO, "/dev/null",
++                                     O_WRONLY, 0);
++  }
++  posix_spawn_file_actions_addopen(&actions, STDERR_FILENO, "/dev/null",
++                                   O_WRONLY, 0);
++
++  pid_t pid = 0;
++  const int spawnRv =
++      posix_spawnp(&pid, aExecutable, &actions, nullptr,
++                   const_cast<char* const*>(argv.Elements()), environ);
++  posix_spawn_file_actions_destroy(&actions);
++
++  if (aStdout) {
++    close(pipefd[1]);
++  }
++
++  if (spawnRv != 0) {
++    if (aStdout) {
++      close(pipefd[0]);
++    }
++    return NS_ERROR_NOT_AVAILABLE;
++  }
++
++  if (aStdout) {
++    char buf[512];
++    ssize_t n;
++    while ((n = read(pipefd[0], buf, sizeof(buf))) > 0) {
++      aStdout->Append(buf, n);
++    }
++    close(pipefd[0]);
++  }
++
++  int status = 0;
++  if (waitpid(pid, &status, 0) < 0) {
++    return NS_ERROR_FAILURE;
++  }
++  if (aExitStatus) {
++    *aExitStatus = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
++  }
++  return NS_OK;
++}
++
++/* static */
++nsresult nsQtShellService::RunXdgSettings(const nsTArray<nsCString>& aArgs,
++                                          nsACString* aStdout,
++                                          int* aExitStatus) {
++  return RunProcess("xdg-settings", aArgs, aStdout, aExitStatus);
++}
++
++/* static */
++bool nsQtShellService::ResolveDesktopId(nsACString& aDesktopId) {
++  if (const char* envDesktop = PR_GetEnv("MOZ_DESKTOP_FILE_NAME")) {
++    aDesktopId.Assign(envDesktop);
++    if (!StringEndsWith(aDesktopId, ".desktop"_ns)) {
++      aDesktopId.AppendLiteral(".desktop");
++    }
++    return true;
++  }
++
++  static const char* kCandidates[] = {
++      MOZ_APP_NAME ".desktop",
++      "org.mozilla." MOZ_APP_NAME ".desktop",
++      "mozilla-" MOZ_APP_NAME ".desktop",
++  };
++
++  for (const char* candidate : kCandidates) {
++    // Probe whether xdg-settings accepts this desktop id for a mail scheme.
++    nsTArray<nsCString> args;
++    AppendLiteral(args, "check");
++    AppendLiteral(args, "default-url-scheme-handler");
++    AppendLiteral(args, "mailto");
++    nsCString cand;
++    cand.Assign(candidate);
++    args.AppendElement(cand);
++
++    nsAutoCString output;
++    int exitStatus = -1;
++    if (NS_SUCCEEDED(RunXdgSettings(args, &output, &exitStatus))) {
++      if (StringBeginsWith(output, "yes"_ns) ||
++          StringBeginsWith(output, "no"_ns)) {
++        aDesktopId.Assign(candidate);
++        return true;
++      }
++    }
++  }
++
++  aDesktopId.AssignLiteral(MOZ_APP_NAME ".desktop");
++  return true;
++}
++
++nsresult nsQtShellService::Init() {
++  if (!ResolveDesktopId(mDesktopId)) {
++    return NS_ERROR_NOT_AVAILABLE;
++  }
++  return NS_OK;
++}
++
++bool nsQtShellService::DesktopIdMatchesHandler(
++    const nsACString& aHandlerId) const {
++  if (aHandlerId.IsEmpty()) {
++    return false;
++  }
++  nsAutoCString handler(aHandlerId);
++  // xdg-mime may return trailing whitespace/newline
++  handler.StripWhitespace();
++  if (mDesktopId.Equals(handler)) {
++    return true;
++  }
++  auto strip = [](const nsACString& id) {
++    nsAutoCString s(id);
++    if (StringEndsWith(s, ".desktop"_ns)) {
++      s.Truncate(s.Length() - strlen(".desktop"));
++    }
++    return s;
++  };
++  return strip(mDesktopId).Equals(strip(handler));
++}
++
++bool nsQtShellService::checkDefault(const char* const* aProtocols,
++                                    unsigned int aLength) {
++  for (unsigned int i = 0; i < aLength; ++i) {
++    // Prefer xdg-settings check default-url-scheme-handler SCHEME DESKTOP
++    {
++      nsTArray<nsCString> args;
++      AppendLiteral(args, "check");
++      AppendLiteral(args, "default-url-scheme-handler");
++      args.AppendElement()->Assign(aProtocols[i]);
++      args.AppendElement(mDesktopId);
++      nsAutoCString output;
++      int exitStatus = -1;
++      if (NS_SUCCEEDED(RunXdgSettings(args, &output, &exitStatus)) &&
++          exitStatus == 0 && StringBeginsWith(output, "yes"_ns)) {
++        continue;
++      }
++    }
++
++    // Fallback: xdg-mime query default x-scheme-handler/SCHEME
++    {
++      nsAutoCString mime("x-scheme-handler/");
++      mime.Append(aProtocols[i]);
++      nsTArray<nsCString> args;
++      AppendLiteral(args, "query");
++      AppendLiteral(args, "default");
++      args.AppendElement(mime);
++      nsAutoCString output;
++      int exitStatus = -1;
++      if (NS_FAILED(RunProcess("xdg-mime", args, &output, &exitStatus)) ||
++          exitStatus != 0 || !DesktopIdMatchesHandler(output)) {
++        return false;
++      }
++    }
++  }
++  return true;
++}
++
++nsresult nsQtShellService::MakeDefault(const char* const* aProtocols,
++                                       unsigned int aProtocolsLength,
++                                       const char* aMimeType,
++                                       const char* aExtensions) {
++  nsresult rv = NS_OK;
++
++  for (unsigned int i = 0; i < aProtocolsLength; ++i) {
++    nsTArray<nsCString> schemeArgs;
++    AppendLiteral(schemeArgs, "set");
++    AppendLiteral(schemeArgs, "default-url-scheme-handler");
++    schemeArgs.AppendElement()->Assign(aProtocols[i]);
++    schemeArgs.AppendElement(mDesktopId);
++    int st = -1;
++    nsresult tmp = RunXdgSettings(schemeArgs, nullptr, &st);
++    if (NS_FAILED(tmp) || st != 0) {
++      // Fall back to xdg-mime for the scheme handler.
++      nsAutoCString mime("x-scheme-handler/");
++      mime.Append(aProtocols[i]);
++      nsTArray<nsCString> mimeArgs;
++      AppendLiteral(mimeArgs, "default");
++      mimeArgs.AppendElement(mDesktopId);
++      mimeArgs.AppendElement(mime);
++      st = -1;
++      tmp = RunProcess("xdg-mime", mimeArgs, nullptr, &st);
++      if (NS_FAILED(tmp) || st != 0) {
++        rv = NS_FAILED(tmp) ? tmp : NS_ERROR_FAILURE;
++      }
++    }
++  }
++
++  if (aMimeType) {
++    nsTArray<nsCString> mimeArgs;
++    AppendLiteral(mimeArgs, "default");
++    mimeArgs.AppendElement(mDesktopId);
++    mimeArgs.AppendElement()->Assign(aMimeType);
++    int st = -1;
++    (void)RunProcess("xdg-mime", mimeArgs, nullptr, &st);
++  }
++
++  // Optional: map common file extensions via mime types already handled.
++  // aExtensions is informational for GIO path; FreeDesktop uses mime types.
++  (void)aExtensions;
++
++  return rv;
++}
++
++NS_IMETHODIMP
++nsQtShellService::IsDefaultClient(bool aStartupCheck, uint16_t aApps,
++                                  bool* aIsDefaultClient) {
++  NS_ENSURE_ARG_POINTER(aIsDefaultClient);
++  *aIsDefaultClient = true;
++
++  for (unsigned int i = 0; i < std::size(sAppTypes); i++) {
++    if (aApps & sAppTypes[i].type) {
++      *aIsDefaultClient &=
++          checkDefault(sAppTypes[i].protocols, sAppTypes[i].protocolsLength);
++    }
++  }
++
++  if (aStartupCheck) {
++    mCheckedThisSession = true;
++  }
++  return NS_OK;
++}
++
++NS_IMETHODIMP
++nsQtShellService::SetDefaultClient(bool aForAllUsers, uint16_t aApps) {
++#ifdef DEBUG
++  if (aForAllUsers) {
++    NS_WARNING(
++        "Setting the default client for all users is not supported on Linux");
++  }
++#else
++  (void)aForAllUsers;
++#endif
++
++  nsresult rv = NS_OK;
++  for (unsigned int i = 0; i < std::size(sAppTypes); i++) {
++    if (aApps & sAppTypes[i].type) {
++      nsresult tmp =
++          MakeDefault(sAppTypes[i].protocols, sAppTypes[i].protocolsLength,
++                      sAppTypes[i].mimeType, sAppTypes[i].extensions);
++      if (NS_FAILED(tmp)) {
++        rv = tmp;
++      }
++    }
++  }
++
++  // Plasma: also set EmailClient in kdeglobals when present.
++  if (const char* desktop = PR_GetEnv("XDG_CURRENT_DESKTOP")) {
++    if (strstr(desktop, "KDE") || strstr(desktop, "Plasma")) {
++      for (const char* bin : {"kwriteconfig6", "kwriteconfig5"}) {
++        nsTArray<nsCString> kargs;
++        AppendLiteral(kargs, "--file");
++        AppendLiteral(kargs, "kdeglobals");
++        AppendLiteral(kargs, "--group");
++        AppendLiteral(kargs, "General");
++        AppendLiteral(kargs, "--key");
++        AppendLiteral(kargs, "EmailClient");
++        // Prefer full command path; desktop id alone is often enough for KDE.
++        kargs.AppendElement(mDesktopId);
++        int st = -1;
++        if (NS_SUCCEEDED(RunProcess(bin, kargs, nullptr, &st)) && st == 0) {
++          break;
++        }
++      }
++    }
++  }
++
++  return rv;
++}
++
++NS_IMETHODIMP
++nsQtShellService::GetShouldCheckDefaultClient(bool* aResult) {
++  NS_ENSURE_ARG_POINTER(aResult);
++  if (mCheckedThisSession) {
++    *aResult = false;
++    return NS_OK;
++  }
++  return Preferences::GetBool("mail.shell.checkDefaultClient", aResult);
++}
++
++NS_IMETHODIMP
++nsQtShellService::SetShouldCheckDefaultClient(bool aShouldCheck) {
++  return Preferences::SetBool("mail.shell.checkDefaultClient", aShouldCheck);
++}
++
++// Rust sys_tray (comm/rust/sys_tray) links this symbol for Do-Not-Disturb
++// detection. On GTK it reads GSettings; on Qt we have no GSettings backend, so
++// return the provided default (no DND).
++extern "C" bool nsGNOMEShellService_GetGSettingsBoolean(
++    const nsACString& /*aSchema*/, const nsACString& /*aKey*/, bool aDefault) {
++  return aDefault;
++}

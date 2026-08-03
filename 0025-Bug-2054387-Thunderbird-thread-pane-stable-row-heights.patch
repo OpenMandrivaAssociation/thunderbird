@@ -1,0 +1,207 @@
+From: OpenMandriva <packager@openmandriva.org>
+Subject: [PATCH] Bug 2054387 - Thunderbird: stabilize thread-pane row heights (table/cards)
+
+Thunderbird-only (comm/mail). Do not apply to Firefox.
+
+- Clamp virtual-list row height (max/min/overflow) in tree-view.mjs
+- Density ROW_HEIGHT headroom for HiDPI font metrics
+- Card absolute-fill + overflow clip so content cannot expand rows
+- Subject/sender/date ellipsis clamps
+
+
+diff -Naur a/comm/mail/base/content/about3Pane.js b/comm/mail/base/content/about3Pane.js
+--- a/comm/mail/base/content/about3Pane.js	2026-08-03 23:47:29.246850574 +0200
++++ b/comm/mail/base/content/about3Pane.js	2026-08-03 23:47:29.248203011 +0200
+@@ -5740,8 +5740,11 @@
+           cardRowConstant + lineGap * this.rowCount + densityPaddingConstant;
+         break;
+     }
+-    cardClass.ROW_HEIGHT = Math.max(cardRowHeight, 40);
+-    rowClass.ROW_HEIGHT = Math.max(rowHeight, 18);
++    // Extra CSS px slack for HiDPI font metrics. Cards use two line-height
++    // bands plus borders/padding; table-row height is only a minimum without
++    // absolute fill, so keep a couple of pixels of headroom.
++    cardClass.ROW_HEIGHT = Math.max(cardRowHeight + 2, 40);
++    rowClass.ROW_HEIGHT = Math.max(rowHeight + 1, 18);
+   },
+ 
+   /**
+diff -Naur a/comm/mail/base/content/widgets/tree-view.mjs b/comm/mail/base/content/widgets/tree-view.mjs
+--- a/comm/mail/base/content/widgets/tree-view.mjs	2026-08-03 23:47:29.252002129 +0200
++++ b/comm/mail/base/content/widgets/tree-view.mjs	2026-08-03 23:47:29.253172804 +0200
+@@ -1072,7 +1072,16 @@
+     row.setAttribute("is", this._rowElementName);
+     this.table.body.insertBefore(row, before);
+ 
+-    row.style.height = `${this._rowElementClass.ROW_HEIGHT}px`;
++    // height alone is a *minimum* for table-row layout; content (font metrics,
++    // hover repaint) can still grow the row by 1px and shove neighbors.
++    // Clamp with max-height + overflow so the virtual list stays stable.
++    // Cards also absolute-fill .card-container (see tree-listbox.css).
++    const rowHeightPx = `${this._rowElementClass.ROW_HEIGHT}px`;
++    row.style.height = rowHeightPx;
++    row.style.maxHeight = rowHeightPx;
++    row.style.minHeight = rowHeightPx;
++    row.style.boxSizing = "border-box";
++    row.style.overflow = "hidden";
+     row.index = index;
+     if (fillImmediately) {
+       row.fillRow();
+diff -Naur a/comm/mail/themes/shared/mail/threadCard.css b/comm/mail/themes/shared/mail/threadCard.css
+--- a/comm/mail/themes/shared/mail/threadCard.css	2026-08-03 23:47:29.256998272 +0200
++++ b/comm/mail/themes/shared/mail/threadCard.css	2026-08-03 23:47:29.258045435 +0200
+@@ -294,8 +294,10 @@
+         grid-template-columns: auto 1fr;
+         box-sizing: border-box;
+         position: relative;
+-        overflow: visible;
++        /* Must clip: visible lets font/hover metrics expand the virtual row. */
++        overflow: hidden;
+         isolation: isolate;
++        min-height: 0;
+ 
+         & .thread-card-column {
+           display: flex;
+@@ -304,6 +306,8 @@
+           box-sizing: border-box;
+           position: relative;
+           padding-block: var(--thread-pane-container-gap);
++          min-height: 0;
++          overflow: hidden;
+         }
+ 
+         & .thread-card-row {
+@@ -313,24 +317,39 @@
+           gap: var(--thread-card-content-gap);
+           padding: 0;
+           margin: 0;
+-          line-height: 1.5;
++          line-height: 1.4;
++          max-block-size: 1.4em;
++          overflow: hidden;
+           position: relative;
+           isolation: isolate;
++          flex-shrink: 0;
+         }
+ 
+         & .thread-card-dynamic-row {
+           display: grid;
+           grid-template:
+-            "subject subject" max-content
+-            "button info" minmax(auto, 1fr)
++            "subject subject" minmax(0, 1.4em)
++            "button info" minmax(0, 1.4em)
+             / auto 1fr;
+           gap: var(--thread-card-content-gap);
+           align-items: center;
+           padding: 0;
+           margin: 0;
+-          line-height: 1.5;
++          line-height: 1.4;
+           position: relative;
+           isolation: isolate;
++          min-height: 0;
++          overflow: hidden;
++        }
++
++        & .sender,
++        & .subject,
++        & .date {
++          overflow: hidden;
++          text-overflow: ellipsis;
++          white-space: nowrap;
++          min-width: 0;
++          max-block-size: 1.4em;
+         }
+ 
+         & .state,
+@@ -449,7 +468,7 @@
+   &.cards-row-compact td .card-container {
+     & .thread-card-dynamic-row {
+       grid-template:
+-        "button subject info" max-content
++        "button subject info" minmax(0, 1.4em)
+         / auto 1fr auto;
+     }
+ 
+diff -Naur a/comm/mail/themes/shared/mail/threadPane.css b/comm/mail/themes/shared/mail/threadPane.css
+--- a/comm/mail/themes/shared/mail/threadPane.css	2026-08-03 23:47:29.261879714 +0200
++++ b/comm/mail/themes/shared/mail/threadPane.css	2026-08-03 23:47:29.263137309 +0200
+@@ -371,13 +371,20 @@
+     /* To avoid vertical cut off of characters, JS in about3Pane's densityChange
+       that needs to be updated if line height value is changed.*/
+     line-height: 1.4;
++    /* One line only — overflow must not grow the fixed-height table row. */
++    max-block-size: 1.4em;
++    overflow: hidden;
++    white-space: nowrap;
++    text-overflow: ellipsis;
+ 
+     & img {
+       visibility: hidden;
+       inline-size: 16px;
+       block-size: 16px;
+-      vertical-align: middle;
+-      margin-block-start: -2px;
++      /* Avoid vertical-align/margin that can inflate the line box by 1px on
++         HiDPI when the row background changes under :hover. */
++      vertical-align: text-bottom;
++      margin-block: 0;
+       margin-inline-end: 3px;
+     }
+   }
+diff -Naur a/comm/mail/themes/shared/mail/tree-listbox.css b/comm/mail/themes/shared/mail/tree-listbox.css
+--- a/comm/mail/themes/shared/mail/tree-listbox.css	2026-08-03 23:47:29.267448303 +0200
++++ b/comm/mail/themes/shared/mail/tree-listbox.css	2026-08-03 23:47:29.268632068 +0200
+@@ -299,13 +299,28 @@
+   }
+ 
+   & > .card-layout > td {
+-    padding: var(--card-container-padding-block) 3px;
++    /* Fixed virtual-list height is set on the <tr>. Table cells treat height
++     * as a minimum; absolute-fill the card so in-flow metrics (line-height
++     * 1.5, bold unread, hover repaint) cannot grow the row by 1px. */
++    position: relative;
++    overflow: hidden;
++    box-sizing: border-box;
++    height: inherit;
++    max-height: inherit;
++    /* Zero in-flow content height; padding is recreated via absolute inset. */
++    padding: 0;
++    vertical-align: top;
+ 
+     & > .card-container {
+-      block-size: 100%;
++      position: absolute;
++      inset: var(--card-container-padding-block) 3px;
++      block-size: auto;
++      max-block-size: none;
+       background-color: var(--tree-card-background);
+       border: 1px solid var(--tree-card-border);
+       border-radius: var(--listbox-border-radius);
++      /* Override threadCard.css overflow: visible which defeats height clamp. */
++      overflow: hidden;
+ 
+       @media (-moz-overlay-scrollbars) {
+         padding-inline-end: env(scrollbar-inline-size);
+@@ -720,6 +735,20 @@
+   }
+ }
+ 
++/* Virtual-list rows: keep used height equal to the inline height set by
++ * TreeView (ROW_HEIGHT). Table-row height is only a minimum; clipping cells
++ * stops hover/font-metric 1px expansions from shifting neighbors. */
++table[is="tree-view-table"] tbody > tr {
++  box-sizing: border-box;
++  overflow: hidden;
++}
++
++table[is="tree-view-table"] tbody > tr > td {
++  overflow: hidden;
++  vertical-align: middle;
++  box-sizing: border-box;
++}
++
+ :is(ul, ol):is([role="tree"], [role="treegrid"], [role="group"]) li > div {
+   min-block-size: var(--list-item-min-height);
+ }
