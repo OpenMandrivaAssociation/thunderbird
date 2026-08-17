@@ -317,6 +317,7 @@ Patch615:	0016-Bug-2054387-Thunderbird-Qt-shell-service-and-themes.patch
 # Thread-pane table/card virtual-list row height clamp (HiDPI hover jitter)
 Patch624:	0025-Bug-2054387-Thunderbird-thread-pane-stable-row-heights.patch
 
+BuildRequires:	gnutar
 BuildRequires:	gzip
 BuildRequires:	unzip
 BuildRequires:	yasm >= 1.0.1
@@ -532,6 +533,7 @@ cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
 mk_add_options MOZ_MAKE_FLAGS="$SMP_FLAGS"
+export TAR=gtar
 ac_add_options --enable-application=comm/mail
 ac_add_options --prefix="%{_prefix}"
 ac_add_options --libdir="%{_libdir}"
