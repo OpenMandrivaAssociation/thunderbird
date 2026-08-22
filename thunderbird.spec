@@ -9,8 +9,13 @@
 %define oname thunderbird
 %define thunderbird_package thunderbird
 %define tb_appid \{3550f703-e582-4d05-9a08-453d09bdfdc6\}
+%define tbdir %{_libdir}/%{oname}
 %define tbextdir %{_libdir}/mozilla/extensions/%{tb_appid}
+%define tbdistextdir %{tbdir}/distribution/extensions
 %define tblangdir %{_datadir}/mozilla/extensions/%{tb_appid}
+
+
+%define objdir obj
 
 %define xpi 0
 
@@ -30,27 +35,18 @@
 # currently enabled as updating all rust deps would take eons
 %global use_bundled_cbindgen  1
 
-# Dual toolkit by default. For faster local Qt-only iteration (abb needs one argv):
-#   abb build '--define=_without_gtk 1'
-#   rpmbuild -bb --without gtk …
-# Same with '--define=_without_qt 1' for GTK-only.
-%bcond_without gtk
-%bcond_without qt
+# Optional Qt 6 build. The default (GTK) build is always done; enabling Qt
+# results in a WebKitGTK-style double build producing a separate
+# thunderbird-qt package with its own tree (toolkit is compiled into libxul):
+#   rpmbuild -bb --with qt ...
+#   abb build --define=_with_qt=1
+%bcond_with qt
 
-%if !%{with gtk} && !%{with qt}
-%{error:Need at least one of --with gtk or --with qt}
-%endif
-
-# Toolkit builds install to separate trees (toolkit is compiled into libxul).
-%define tbdir_qt  %{_libdir}/%{name}-qt-%{version}
-%define tbdir_gtk %{_libdir}/%{name}-gtk-%{version}
-# Default path for extension packaging (prefer Qt when both built).
 %if %{with qt}
-%define tbdir %{tbdir_qt}
-%else
-%define tbdir %{tbdir_gtk}
+# Qt build installs to a separate tree, the default (GTK) build keeps
+# the original %%{tbdir} path.
+%define tbdir_qt %{_libdir}/%{oname}-qt-%{version}
 %endif
-%define tbdistextdir %{tbdir}/distribution/extensions
 
 %define build_py python3
 
@@ -219,7 +215,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	153.0.3
-Release:	1
+Release:	2
 License:	MPL
 Group:		Networking/Mail
 Url:		https://www.thunderbird.net/
@@ -272,6 +268,7 @@ Patch201:       mozilla-thunderbird-default-mailer.patch
 # In-tree HarfBuzz: Clang 23 promotes -Wunused-template via -Wunused error pragma
 Patch70:	firefox-harfbuzz-clang-unused-template.patch
 
+%if %{with qt}
 # =============================================================================
 # Qt toolkit patches (shared Gecko — port these to Firefox cairo-qt as well)
 # Numbering: Patch600–614, 616–623 map to 0001–0015, 0017–0024.
@@ -316,6 +313,7 @@ Patch623:	0024-Bug-2054387-Qt-modal-compose-theme-and-geometry-stabilization.pat
 Patch615:	0016-Bug-2054387-Thunderbird-Qt-shell-service-and-themes.patch
 # Thread-pane table/card virtual-list row height clamp (HiDPI hover jitter)
 Patch624:	0025-Bug-2054387-Thunderbird-thread-pane-stable-row-heights.patch
+%endif
 
 BuildRequires:	gnutar
 BuildRequires:	gzip
@@ -328,19 +326,20 @@ BuildRequires:	jpeg-devel
 BuildRequires:	nss-static-devel
 BuildRequires:	glibc-static-devel
 BuildRequires:	icu-devel
-BuildRequires:	pkgconfig(python3)
+BuildRequires:  pkgconfig(python3)
 BuildRequires:	pkgconfig(alsa)
 BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(fontconfig)
 BuildRequires:	pkgconfig(freetype2)
 BuildRequires:	pkgconfig(gl)
-BuildRequires:	pkgconfig(libdrm)
+BuildRequires:  pkgconfig(libdrm)
 BuildRequires:	pkgconfig(gbm)
+BuildRequires:  pkgconfig(gtk+-3.0)
 BuildRequires:	pkgconfig(hunspell)
 BuildRequires:	pkgconfig(libevent) >= 1.4.7
 BuildRequires:	pkgconfig(libIDL-2.0)
 BuildRequires:	pkgconfig(libnotify)
-BuildRequires:	pkgconfig(libpulse)
+BuildRequires:  pkgconfig(libpulse)
 BuildRequires:	pkgconfig(libstartup-notification-1.0)
 BuildRequires:	pkgconfig(nspr)
 BuildRequires:	pkgconfig(nss) >= 3.125
@@ -350,17 +349,14 @@ BuildRequires:	pkgconfig(vpx) >= 0.9.7
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(libpng) >= 1.4.8
 BuildRequires:	pkgconfig(libproxy-1.0)
-BuildRequires:	rust >= 1.59.0
-BuildRequires:	cargo >= 1.59.0
+BuildRequires:  rust >= 1.59.0
+BuildRequires:  cargo >= 1.59.0
 %if !0%{?use_bundled_cbindgen}
-BuildRequires:	cbindgen >= 0.29.4
+BuildRequires:  cbindgen >= 0.29.4
 %endif
-BuildRequires:	nodejs >= 10.19
+BuildRequires:  nodejs >= 10.19
 BuildRequires:	clang-devel
 BuildRequires:	llvm-devel
-%if %{with gtk}
-BuildRequires:	pkgconfig(gtk+-3.0)
-%endif
 %if %{with qt}
 BuildRequires:	pkgconfig(Qt6Core)
 BuildRequires:	pkgconfig(Qt6DBus)
@@ -376,55 +372,33 @@ Requires:	%{nss_libname} >= %{nss_version}
 Requires(post,postun):	desktop-file-utils
 Requires(post):	mktemp
 Requires(post,postun): rpm-helper
-Requires:	xdg-utils
-Obsoletes:	mozilla-thunderbird < %{version}-%{release}
-Obsoletes:	thunderbird-lightning < %{version}-%{release}
-Obsoletes:	thunderbird-enigmail < %{version}-%{release}
+Requires: xdg-utils
+Requires: gtk3-modules
+Obsoletes: %{name}-gtk < %{EVRD}
+Obsoletes: mozilla-thunderbird < %{version}-%{release}
+Obsoletes: thunderbird-lightning < %{version}-%{release}
+Obsoletes: thunderbird-enigmail < %{version}-%{release}
 
-Provides:	mozilla-thunderbird = %{version}-%{release}
-
-# Need at least one toolkit binary for the neutral /usr/bin/thunderbird wrapper.
-%if %{with qt} && %{with gtk}
-Requires:	(%{name}-qt = %{EVRD} or %{name}-gtk = %{EVRD})
-Recommends:	(%{name}-qt = %{EVRD} if %{_lib}Qt6Widgets)
-Recommends:	(%{name}-gtk = %{EVRD} if %{_lib}gtk3_0)
-%elif %{with qt}
-Requires:	%{name}-qt = %{EVRD}
-%elif %{with gtk}
-Requires:	%{name}-gtk = %{EVRD}
-%endif
+Provides: mozilla-thunderbird = %{version}-%{release}
 
 %description
 %{title} is a full-featured email, RSS and newsgroup client that
 makes emailing safer, faster and easier than ever before.
 
-This package provides the shared launcher, desktop entry and icons. The actual
-application builds are in the thunderbird-qt and/or thunderbird-gtk
-subpackages. The /usr/bin/thunderbird wrapper picks GTK on GNOME/MATE/Cinnamon/XFCE
-and Qt on other desktops, falling back to whichever toolkit is installed.
-
 %if %{with qt}
 %package qt
 Summary:	Thunderbird built with the Qt 6 toolkit
 Group:		Networking/Mail
-Requires:	%{name} = %{EVRD}
+Requires:	%{nss_libname} >= %{nss_version}
+Requires(post,postun):	desktop-file-utils
+Requires(post):	mktemp
+Requires(post,postun): rpm-helper
+Requires:	xdg-utils
 
 %description qt
-Thunderbird email client built against the Qt 6 toolkit (cairo-qt). On Plasma
-and other non-GTK desktops, /usr/bin/thunderbird selects this build by default.
-%endif
-
-%if %{with gtk}
-%package gtk
-Summary:	Thunderbird built with the GTK 3 toolkit
-Group:		Networking/Mail
-Requires:	%{name} = %{EVRD}
-Requires:	gtk3-modules
-
-%description gtk
-Thunderbird email client built against the GTK 3 toolkit (cairo-gtk3-wayland).
-On GNOME, MATE, Cinnamon and XFCE, /usr/bin/thunderbird selects this build by
-default.
+Thunderbird email client built against the Qt 6 toolkit (cairo-qt).
+This is an alternative build to the default GTK based thunderbird package,
+installed to its own tree and started with /usr/bin/thunderbird-qt.
 %endif
 
 #===============================================================================
@@ -499,9 +473,9 @@ export HOST_CXX=/usr/bin/clang++
 %set_build_flags
 
 if [ $(getconf _NPROCESSORS_ONLN) -le 16 ]; then
-	export SMP_FLAGS="%{_smp_mflags}"
+    export SMP_FLAGS="%{_smp_mflags}"
 else
-	export SMP_FLAGS="-j16"
+    export SMP_FLAGS="-j16"
 fi
 
 export PATH=$(pwd)/.cargo/bin:$PATH
@@ -526,13 +500,14 @@ cd -
 
 # https://bugzilla.mozilla.org/show_bug.cgi?id=2041134
 sed -i 's/log\.warn(/log.warning(/' \
-	comm/build/moz.configure/gecko_source.configure
+    comm/build/moz.configure/gecko_source.configure
 
 export MOZCONFIG=$(pwd)/.mozconfig
 cat > $MOZCONFIG << EOF
 mk_add_options MOZILLA_OFFICIAL=1
 mk_add_options BUILD_OFFICIAL=1
 mk_add_options MOZ_MAKE_FLAGS="$SMP_FLAGS"
+mk_add_options MOZ_OBJDIR=$(pwd)/%{objdir}
 export TAR=gtar
 ac_add_options --enable-application=comm/mail
 ac_add_options --prefix="%{_prefix}"
@@ -547,59 +522,61 @@ ac_add_options --disable-tests
 ac_add_options --disable-debug
 ac_add_options --disable-updater
 ac_add_options --disable-crashreporter
+ac_add_options --enable-default-toolkit=cairo-gtk3-wayland
 ac_add_options --disable-strip
 ac_add_options --disable-elf-hack
 ac_add_options --enable-strip
 ac_add_options --enable-update-channel=release
 ac_add_options --enable-official-branding
 ac_add_options --enable-optimize="-O2"
+%ifarch %{x86_64} %{aarch64}
+# ERROR: --enable-rust-simd does not work with Rust 1.33 or later. 
+# See https://bugzilla.mozilla.org/show_bug.cgi?id=1521249 .
+# ac_add_options --enable-rust-simd
+%endif
 ac_add_options --without-wasm-sandboxed-libraries
 ac_add_options --enable-linker=lld
 ac_add_options --disable-lto
 # Distro builds use system toolchains and libraries, not mach bootstrap
 # sysroots (which reject --with-system-nspr/nss among others).
 ac_add_options --disable-bootstrap
-# Use libproxy instead of GSettings-based unixproxy (GSettings lives under
-# widget/gtk and is not built for cairo-qt).
+# Use libproxy instead of GSettings-based unixproxy.
 ac_add_options --enable-libproxy
 # We don't care about binary compatibility with prehistoric libstdc++.
 unset MOZ_STDCXX_COMPAT
 EOF
 
 %if %{with qt}
-cp -a $MOZCONFIG $MOZCONFIG-qt
-echo 'mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-qt' >>$MOZCONFIG-qt
-echo 'ac_add_options --enable-default-toolkit=cairo-qt' >>$MOZCONFIG-qt
-%endif
-%if %{with gtk}
-cp -a $MOZCONFIG $MOZCONFIG-gtk
-echo 'mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-gtk' >>$MOZCONFIG-gtk
-echo 'ac_add_options --enable-default-toolkit=cairo-gtk3-wayland' >>$MOZCONFIG-gtk
+# Second mozconfig for the Qt build: same options, different toolkit and objdir.
+sed -e 's!--enable-default-toolkit=cairo-gtk3-wayland!--enable-default-toolkit=cairo-qt!' \
+    -e 's!MOZ_OBJDIR=.*!MOZ_OBJDIR=@TOPSRCDIR@/obj-qt!' \
+    $MOZCONFIG > $MOZCONFIG-qt
 %endif
 
-MC=$(pwd)/.mozconfig
-MOZCONFIGS=""
-%if %{with gtk}
-MOZCONFIGS="$MOZCONFIGS $MC-gtk"
-%endif
-%if %{with qt}
-MOZCONFIGS="$MOZCONFIGS $MC-qt"
-%endif
+# (tpg) do not create new user profiles on each upgrade, use exsting one
+export MOZ_LEGACY_PROFILES=1
+
+# (tpg) re-use already existing user profile
+export MOZ_ALLOW_DOWNGRADE=1
 
 export LDFLAGS="${LDFLAGS:+$LDFLAGS }-Wl,--no-keep-memory"
 export RUSTFLAGS="-Cdebuginfo=0"
 export MOZ_NOSPAM=1
 export MACH_USE_SYSTEM_PYTHON=1
 export MACH_NO_WRITE_TIMES=1
-# (tpg) re-use already existing user profile
-export MOZ_ALLOW_DOWNGRADE=1
-export MOZ_LEGACY_PROFILES=1
 
-for MOZCONFIG in $MOZCONFIGS; do
-	export MOZCONFIG
-	cat $MOZCONFIG
-	%build_py ./mach build
-done
+%build_py ./mach build
+
+%if %{with qt}
+# Second, separate Qt build (double build, WebKitGTK-style)
+export MOZCONFIG=$(pwd)/.mozconfig-qt
+cat $MOZCONFIG
+
+%build_py ./mach build
+
+# switch back to the default build for %%install (mach install)
+export MOZCONFIG=$(pwd)/.mozconfig
+%endif
 
 #===============================================================================
 
@@ -607,184 +584,119 @@ done
 
 export MACH_USE_SYSTEM_PYTHON=1
 
-# Install one toolkit build into its libdir and apply shared distro customizations.
-# Prefer packaging from the objdir (like Firefox) so dual-toolkit installs do not
-# clobber each other under a shared DESTDIR path.
-install_toolkit() {
-	local toolkit="$1"
-	local libdir="$2"
-	local obj="obj-${toolkit}"
-
-	export MOZCONFIG=$(pwd)/.mozconfig-${toolkit}
-
-	mkdir -p %{buildroot}${libdir}
-
-	# Stage package into ${obj}/dist via the mail installer (no DESTDIR).
-	if [ -d ${obj}/comm/mail/installer ]; then
-		make -C ${obj}/comm/mail/installer STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0
-	elif [ -d ${obj}/mail/installer ]; then
-		make -C ${obj}/mail/installer STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0
-	else
-		echo "install_toolkit: no mail installer in ${obj}" >&2
-		return 1
-	fi
-
-	if [ -d ${obj}/dist/thunderbird ]; then
-		cp -a ${obj}/dist/thunderbird/. %{buildroot}${libdir}/
-	elif [ -d ${obj}/dist/bin ]; then
-		cp -a ${obj}/dist/bin/. %{buildroot}${libdir}/
-	else
-		echo "install_toolkit: staged tree missing under ${obj}/dist" >&2
-		ls -la ${obj}/dist 2>/dev/null || true
-		return 1
-	fi
-
-	rm -rf %{buildroot}${libdir}/dictionaries
-	ln -s %{_datadir}/dict/mozilla %{buildroot}${libdir}/dictionaries
-
-	# For backwards compatibility with old profiles. Bug #37528
-	install -m 755 %{SOURCE31} %{buildroot}${libdir}/open-browser.sh
-
-	mkdir -p %{buildroot}${libdir}/defaults/pref
-	sed -e 's,THUNDERBIRD_RPM_VR,%{version}-%{release},g;' \
-		-e 's,THUNDERBIRD_VENDOR_COMMENT,%{distro_release},g;' \
-		%{SOURCE12} > %{buildroot}${libdir}/defaults/pref/all-omv.js
-
-	# Drop SDK/devel bits if present
-	rm -rf %{buildroot}%{_datadir}/idl/%{oname}-%{version}
-	rm -rf %{buildroot}%{_includedir}/%{oname}-%{version}
-	rm -rf %{buildroot}%{_libdir}/%{oname}-devel-%{version}
-	# Ensure neutral bindir is ours (wrappers installed below)
-	rm -f %{buildroot}%{_bindir}/thunderbird
-}
-
 mkdir -p %{buildroot}{%{_libdir},%{_bindir},%{_datadir}/applications}
+mkdir -p %buildroot%tbdir
+
+#rm -f extensions/spellcheck/locales/en-US/hunspell/en-US.{dic,aff}
+
+export MOZCONFIG=$(pwd)/.mozconfig
+DESTDIR=%buildroot STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0 %build_py ./mach install
+
+rm -rf %buildroot%tbdir/dictionaries
+ln -s /usr/share/dict/mozilla %buildroot%tbdir/dictionaries
+
+%{__install} -p -D %{SOURCE303} %{buildroot}/%{_datadir}/applications/%{name}.desktop
+
+# set up the thunderbird start script
+# For backwards compatibility with old profiles. Bug #37528
+install -m 755 %{SOURCE31} %{buildroot}%{tbdir}/open-browser.sh
+# For new profiles
+%define COMMAND /usr/bin/xdg-open
+
+sed -e 's,THUNDERBIRD_RPM_VR,%{version}-%{release},g;' \
+    -e 's,THUNDERBIRD_VENDOR_COMMENT,%{distro_release},g;' \
+  %{SOURCE12} > %{buildroot}%{tbdir}/defaults/pref/all-omv.js
+
+#===============================================================================
+
+# icons
+mkdir -p %{buildroot}{%{_liconsdir},%{_iconsdir},%{_miconsdir}}
+mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{16x16,22x22,24x24,32x32,48x48,64x64,128x128,256x256}/apps
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default48.png %{buildroot}%{_liconsdir}/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default32.png %{buildroot}%{_iconsdir}/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default16.png %{buildroot}%{_miconsdir}/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default16.png %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default22.png %{buildroot}%{_datadir}/icons/hicolor/22x22/apps/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default24.png %{buildroot}%{_datadir}/icons/hicolor/24x24/apps/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default32.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default48.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default64.png %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/%{name}.png
+install -m 644 %{buildroot}/%{tbdir}/chrome/icons/default/default256.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/%{name}.png
+
+#===============================================================================
+
+#exclude devel files
+rm -rf %{buildroot}%{_datadir}/idl/%{oname}-%{version}
+rm -rf %{buildroot}%{_includedir}/%{oname}-%{version}
+rm -rf %{buildroot}%{_libdir}/%{oname}-devel-%{version}
+
+#===============================================================================
 
 %if %{with qt}
-install_toolkit qt %{tbdir_qt}
-%endif
-%if %{with gtk}
-install_toolkit gtk %{tbdir_gtk}
-%endif
+# ---------------------------------------------------------------------------
+# Qt build: install the second (obj-qt) build into its own tree and apply the
+# same distro customizations as the default build.
+# Package from the objdir via the mail installer so the Qt install does not
+# clobber the default tree.
+# ---------------------------------------------------------------------------
+export MOZCONFIG=$(pwd)/.mozconfig-qt
 
-# Toolkit-specific launchers
-%if %{with qt}
+if [ -d obj-qt/comm/mail/installer ]; then
+	make -C obj-qt/comm/mail/installer STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0
+elif [ -d obj-qt/mail/installer ]; then
+	make -C obj-qt/mail/installer STRIP=/bin/true MOZ_PKG_FATAL_WARNINGS=0
+else
+	echo "no mail installer in obj-qt" >&2
+	exit 1
+fi
+
+mkdir -p %{buildroot}%{tbdir_qt}
+if [ -d obj-qt/dist/thunderbird ]; then
+	cp -a obj-qt/dist/thunderbird/. %{buildroot}%{tbdir_qt}/
+elif [ -d obj-qt/dist/bin ]; then
+	cp -a obj-qt/dist/bin/. %{buildroot}%{tbdir_qt}/
+else
+	echo "staged tree missing under obj-qt/dist" >&2
+	ls -la obj-qt/dist 2>/dev/null || true
+	exit 1
+fi
+
+rm -rf %{buildroot}%{tbdir_qt}/dictionaries
+ln -s /usr/share/dict/mozilla %{buildroot}%{tbdir_qt}/dictionaries
+
+# For backwards compatibility with old profiles. Bug #37528
+install -m 755 %{SOURCE31} %{buildroot}%{tbdir_qt}/open-browser.sh
+
+mkdir -p %{buildroot}%{tbdir_qt}/defaults/pref
+sed -e 's,THUNDERBIRD_RPM_VR,%{version}-%{release},g;' \
+    -e 's,THUNDERBIRD_VENDOR_COMMENT,%{distro_release},g;' \
+  %{SOURCE12} > %{buildroot}%{tbdir_qt}/defaults/pref/all-omv.js
+
+# Qt launcher
 cat > %{buildroot}%{_bindir}/thunderbird-qt << EOF
 #!/bin/sh
 export MOZ_LEGACY_PROFILES=1
 exec %{tbdir_qt}/thunderbird "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/thunderbird-qt
+
+export MOZCONFIG=$(pwd)/.mozconfig
 %endif
 
-%if %{with gtk}
-cat > %{buildroot}%{_bindir}/thunderbird-gtk << EOF
-#!/bin/sh
-export MOZ_LEGACY_PROFILES=1
-if [ "\${XDG_SESSION_TYPE:-}" = wayland ]; then
-	export MOZ_ENABLE_WAYLAND=1
-	unset MOZ_DISABLE_WAYLAND
-else
-	export MOZ_DISABLE_WAYLAND=1
-	unset MOZ_ENABLE_WAYLAND
-fi
-exec %{tbdir_gtk}/thunderbird "\$@"
-EOF
-chmod +x %{buildroot}%{_bindir}/thunderbird-gtk
-%endif
-
-# Neutral dispatcher: GTK on GNOME/MATE/Cinnamon/XFCE, Qt elsewhere;
-# fall back to whichever toolkit is installed.
-cat > %{buildroot}%{_bindir}/thunderbird << EOF
-#!/bin/sh
-export MOZ_LEGACY_PROFILES=1
-
-GTK_BIN="%{tbdir_gtk}/thunderbird"
-QT_BIN="%{tbdir_qt}/thunderbird"
-
-prefer=qt
-# XDG_CURRENT_DESKTOP is often colon-separated, e.g. ubuntu:GNOME
-desktop=\$(printf '%s' "\${XDG_CURRENT_DESKTOP:-}" | tr '[:upper:]' '[:lower:]')
-oifs=\$IFS
-IFS=:
-for d in \$desktop; do
-	case "\$d" in
-	gnome|gnome-classic|gnome-flashback|unity|mate|cinnamon|x-cinnamon|xfce)
-		prefer=gtk
-		break
-		;;
-	esac
-done
-IFS=\$oifs
-
-if [ -z "\${XDG_CURRENT_DESKTOP:-}" ]; then
-	case "\$(printf '%s' "\${DESKTOP_SESSION:-}" | tr '[:upper:]' '[:lower:]')" in
-	gnome*|mate*|cinnamon*|xfce*)
-		prefer=gtk
-		;;
-	esac
-fi
-
-run_gtk() {
-	if [ "\${XDG_SESSION_TYPE:-}" = wayland ]; then
-		export MOZ_ENABLE_WAYLAND=1
-		unset MOZ_DISABLE_WAYLAND
-	else
-		export MOZ_DISABLE_WAYLAND=1
-		unset MOZ_ENABLE_WAYLAND
-	fi
-	exec "\$GTK_BIN" "\$@"
-}
-
-run_qt() {
-	unset MOZ_ENABLE_WAYLAND
-	unset MOZ_DISABLE_WAYLAND
-	exec "\$QT_BIN" "\$@"
-}
-
-if [ "\$prefer" = gtk ]; then
-	if [ -x "\$GTK_BIN" ]; then
-		run_gtk "\$@"
-	elif [ -x "\$QT_BIN" ]; then
-		run_qt "\$@"
-	fi
-else
-	if [ -x "\$QT_BIN" ]; then
-		run_qt "\$@"
-	elif [ -x "\$GTK_BIN" ]; then
-		run_gtk "\$@"
-	fi
-fi
-
-echo "thunderbird: no toolkit binary found (install thunderbird-qt and/or thunderbird-gtk)" >&2
-exit 1
-EOF
-chmod +x %{buildroot}%{_bindir}/thunderbird
-
-%{__install} -p -D %{SOURCE303} %{buildroot}%{_datadir}/applications/%{name}.desktop
-
-# Icons live in the main package so either toolkit can be removed independently.
-# Official branding icons live in the source tree (package-manifest may not
-# stage chrome/icons/default for all layouts).
-BRAND_ICONS=comm/mail/branding/thunderbird
-mkdir -p %{buildroot}{%{_liconsdir},%{_iconsdir},%{_miconsdir}}
-mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{16x16,22x22,24x24,32x32,48x48,64x64,128x128,256x256}/apps
-install -m 644 ${BRAND_ICONS}/default48.png %{buildroot}%{_liconsdir}/%{name}.png
-install -m 644 ${BRAND_ICONS}/default32.png %{buildroot}%{_iconsdir}/%{name}.png
-install -m 644 ${BRAND_ICONS}/default16.png %{buildroot}%{_miconsdir}/%{name}.png
-for i in 16 22 24 32 48 64 128 256; do
-	if [ -f ${BRAND_ICONS}/default$i.png ]; then
-		install -m 644 ${BRAND_ICONS}/default$i.png \
-			%{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/%{name}.png
-	fi
-done
+#===============================================================================
 
 # Convert rpm macros to bash variables
 %{expand:%(for lang in %langlist; do echo "language_$lang=%%{language_$lang}"; done)}
 %{expand:%(for lang in %langlist; do echo "with_$lang=%%{with_$lang}"; done)}
 %{expand:%(for lang in %langlist; do echo "dict_$lang=%%{with_dict_$lang}"; done)}
 
-# Install all languages (shared, not toolkit-specific)
+# Create dicts dir
+%if %use_dict
+mkdir -p %{buildroot}%{mozillalibdir}/dictionaries
+%endif
+
+# Install all languages
 for lang in %langlist; do
 	with="with_$lang"
 	with=${!with}
@@ -793,43 +705,51 @@ for lang in %langlist; do
 	language="language_$lang"
 	language=${!language}
 
+	# l10n
 	cd $language
 	mkdir -p %{buildroot}%{tblangdir}/langpack-${language}@thunderbird.mozilla.org/
 	cp -f -r * %{buildroot}%{tblangdir}/langpack-${language}@thunderbird.mozilla.org/
 	cd ..
+
 done
 
-%if %{with qt}
-%pre qt
-if [ -d %{tbdir_qt}/dictionaries ]; then
-	rm -rf %{tbdir_qt}/dictionaries
+%pre
+if [ $1 == 2 ]; then
+  if [ -d %{tbdir}/dictionaries ]; then
+    # Otherelse rpm can't switch this into a symlink :(
+    rm -rf %{tbdir}/dictionaries
+  fi
 fi
-%endif
-
-%if %{with gtk}
-%pre gtk
-if [ -d %{tbdir_gtk}/dictionaries ]; then
-	rm -rf %{tbdir_gtk}/dictionaries
-fi
-%endif
 
 %post
 %{_bindir}/update-desktop-database %{_datadir}/applications
+
 if [ -x %{_bindir}/gtk-update-icon-cache ]; then
-	%{_bindir}/gtk-update-icon-cache --force --quiet %{_datadir}/icons/hicolor
+ %{_bindir}/gtk-update-icon-cache --force --quiet %{_datadir}/icons/hicolor
 fi
 
 %postun
 %{_bindir}/update-desktop-database %{_datadir}/applications
 if [ "$1" = "0" -a -x %{_bindir}/gtk-update-icon-cache ]; then
-	%{_bindir}/gtk-update-icon-cache --force --quiet %{_datadir}/icons/hicolor
+  %{_bindir}/gtk-update-icon-cache --force --quiet %{_datadir}/icons/hicolor
 fi
+
+%if %{with qt}
+%pre qt
+if [ $1 == 2 ]; then
+  if [ -d %{tbdir_qt}/dictionaries ]; then
+    # Otherelse rpm can't switch this into a symlink :(
+    rm -rf %{tbdir_qt}/dictionaries
+  fi
+fi
+%endif
 
 #===============================================================================
 
 %files
 %{_bindir}/thunderbird
 %{_datadir}/applications/*.desktop
+%{tbdir}
 %if %{xpi}
 %dir %{tbextdir}
 %endif
@@ -851,10 +771,4 @@ fi
 %files qt
 %{_bindir}/thunderbird-qt
 %{tbdir_qt}/
-%endif
-
-%if %{with gtk}
-%files gtk
-%{_bindir}/thunderbird-gtk
-%{tbdir_gtk}/
 %endif
