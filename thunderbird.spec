@@ -1,4 +1,4 @@
-%define _disable_lto 1
+#define _disable_lto 1
 
 
 %define __libtoolize /bin/true
@@ -215,7 +215,7 @@
 Summary:	Full-featured email, RSS, and newsgroup client
 Name:		thunderbird
 Version:	153.0.3
-Release:	2
+Release:	3
 License:	MPL
 Group:		Networking/Mail
 Url:		https://www.thunderbird.net/
@@ -459,7 +459,7 @@ done
 %global optflags %{optflags} -g0
 
 %global optflags %{optflags} -Wno-error=c++11-narrowing-const-reference
-%global optflags %{optflags} -Qunused-arguments -g0 -fno-lto
+%global optflags %{optflags} -Qunused-arguments -g0
 # botan cant detect clang with cc/c++
 # Full paths: otherwise mach may prefer a broken toolchain under ~/.mozbuild
 export CXX=/usr/bin/clang++
@@ -536,7 +536,7 @@ ac_add_options --enable-optimize="-O2"
 %endif
 ac_add_options --without-wasm-sandboxed-libraries
 ac_add_options --enable-linker=lld
-ac_add_options --disable-lto
+ac_add_options --enable-lto=cross
 # Distro builds use system toolchains and libraries, not mach bootstrap
 # sysroots (which reject --with-system-nspr/nss among others).
 ac_add_options --disable-bootstrap
